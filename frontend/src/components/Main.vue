@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div class="main-block">
+    <Nav></Nav>
     <router-view></router-view>
   </div>
 </template>
@@ -7,15 +8,13 @@
 <script>
 import Nav from "@/components/Nav";
 export default {
-  name: "App",
+  name: "Main",
   components: {Nav}
 }
 </script>
 
 <style scoped>
-body{
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #E5E5E5;
+.main-block{
+  display:flex;
 }
 </style>
