@@ -24,6 +24,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import Listbox from "primevue/listbox";
 import InputNumber from "primevue/inputnumber";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import Dialog from "primevue/dialog";
+import InputText from "primevue/inputtext";
+import Tooltip from "primevue/tooltip";
+import Dropdown from "primevue/dropdown";
+import Slider from "primevue/slider";
 
 const app = createApp(App)
 
@@ -34,6 +41,14 @@ app.component('Card', Card)
 app.component('Button', Button)
 app.component('Listbox', Listbox)
 app.component('InputNumber', InputNumber)
+app.component('InputText', InputText)
+app.component('DataTable', DataTable)
+app.component('Column', Column)
+app.component('Dialog', Dialog)
+app.component('Dropdown', Dropdown)
+app.component('Slider', Slider)
+app.directive('tooltip', Tooltip)
+
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 

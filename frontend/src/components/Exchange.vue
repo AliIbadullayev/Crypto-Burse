@@ -31,7 +31,7 @@
         </template>
       </Card>
     </div>
-    <div class="exchange-block" @click="onClickNew($event)">
+    <div class="exchange-block">
       <Card class="exchange-block-card">
         <template #content>
           <div class="field-1">

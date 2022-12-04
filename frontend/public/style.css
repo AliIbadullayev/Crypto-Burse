@@ -2,3 +2,13 @@ body{
     font-family: Roboto, "Helvetica Neue", sans-serif;
     background-color: #E5E5E5;
 }
+
+.custom-card{
+    height: 98vh;
+    background: #FFFFFF;
+    border-radius: 15px;
+    margin-left: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

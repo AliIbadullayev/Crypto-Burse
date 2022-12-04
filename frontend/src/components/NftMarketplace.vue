@@ -1,12 +1,14 @@
 <template>
   <div class="market">
-    Here is marketPlace !!!
+    <NftEntity/>
   </div>
 </template>
 
 <script>
+import NftEntity from "@/components/NftEntity";
 export default {
-  name: "NftMarketplace"
+  name: "NftMarketplace",
+  components: {NftEntity}
 }
 </script>
 
