@@ -1,7 +1,9 @@
 package db.service.crypto.rest;
 
 import db.service.crypto.dto.AuthenticationRequestDto;
+import db.service.crypto.dto.RegistrationRequestDto;
 import db.service.crypto.exception.UserAlreadyExistException;
+import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.UserService;
@@ -61,14 +63,19 @@ public class AuthenticationRestControllerV1 {
     }
 
     @PostMapping("register")
-    public ResponseEntity<String> register(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<String> register(@RequestBody RegistrationRequestDto requestDto) {
         try {
 
             User userToAdd = new User();
+            Client clientToAdd = new Client();
+
             userToAdd.setUsername(requestDto.getUsername());
             userToAdd.setPassword(requestDto.getPassword());
+            clientToAdd.setUser_login(requestDto.getUsername());
+            clientToAdd.setName(requestDto.getName());
+            clientToAdd.setSurname(requestDto.getSurname());
 
-            userService.register(userToAdd);
+            userService.register(userToAdd,clientToAdd);
 
             return ResponseEntity.ok("Пользователь успешно зарегистрирован");
         } catch (AuthenticationException e) {

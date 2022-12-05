@@ -3,6 +3,8 @@ package db.service.crypto.service.impl;
 import db.service.crypto.exception.UserAlreadyExistException;
 import db.service.crypto.model.Role;
 import db.service.crypto.model.User;
+import db.service.crypto.model.Client;
+import db.service.crypto.repository.ClientRepository;
 import db.service.crypto.repository.UserRepository;
 import db.service.crypto.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,16 +20,18 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository, BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public User register(User user) throws UserAlreadyExistException {
+    public User register(User user, Client client) throws UserAlreadyExistException {
 
 
         if (findByUsername(user.getUsername())!=null)
@@ -38,6 +42,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(Role.ROLE_CLIENT);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User registeredUser = userRepository.save(user);
+        clientRepository.save(client);
 
         log.info("IN register - user {} successfully registred", registeredUser);
 
