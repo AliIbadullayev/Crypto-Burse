@@ -47,7 +47,6 @@ app.component('Column', Column)
 app.component('Dialog', Dialog)
 app.component('Dropdown', Dropdown)
 app.component('Slider', Slider)
-app.directive('tooltip', Tooltip)
 
 
 app.component('font-awesome-icon', FontAwesomeIcon)

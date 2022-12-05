@@ -1,6 +1,5 @@
 package db.service.crypto.rest;
 
-
 import db.service.crypto.dto.UserDto;
 import db.service.crypto.model.User;
 import db.service.crypto.service.UserService;

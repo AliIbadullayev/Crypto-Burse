@@ -10,13 +10,14 @@ import javax.persistence.*;
 public class Admin {
 
     @Id
-    @Column(name="user_login")
+    @Column
     private String user_login;
+
 
     @OneToOne
     @PrimaryKeyJoinColumn()
     private User user;
 
-    @Column(name="name")
+    @Column
     private String name;
 }

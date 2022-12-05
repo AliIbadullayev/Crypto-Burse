@@ -6,6 +6,7 @@ import db.service.crypto.exception.UserAlreadyExistException;
 import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
+import db.service.crypto.service.ClientService;
 import db.service.crypto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,12 +32,14 @@ public class AuthenticationRestControllerV1 {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final UserService userService;
+    private final ClientService clientService;
 
     @Autowired
-    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
+    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
+        this.clientService = clientService;
     }
 
     @PostMapping("login")
@@ -71,11 +74,12 @@ public class AuthenticationRestControllerV1 {
 
             userToAdd.setUsername(requestDto.getUsername());
             userToAdd.setPassword(requestDto.getPassword());
-            clientToAdd.setUser_login(requestDto.getUsername());
+            clientToAdd.setUserLogin(requestDto.getUsername());
             clientToAdd.setName(requestDto.getName());
             clientToAdd.setSurname(requestDto.getSurname());
 
-            userService.register(userToAdd,clientToAdd);
+            userService.register(userToAdd);
+            clientService.createClient(clientToAdd);
 
             return ResponseEntity.ok("Пользователь успешно зарегистрирован");
         } catch (AuthenticationException e) {

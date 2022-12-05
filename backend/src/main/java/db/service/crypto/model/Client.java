@@ -11,19 +11,19 @@ public class Client{
 
     @Id
     @Column(name="user_login")
-    private String user_login;
+    private String userLogin;
 
     @OneToOne
     @PrimaryKeyJoinColumn()
     private User user;
 
-    @Column(name="name")
+    @Column
     private String name;
 
-    @Column(name="surname")
+    @Column
     private String surname;
 
-    @Column(name="fiat_balance")
+    @Column
     private double fiat_balance;
 
 

@@ -12,7 +12,7 @@ import P2PMyTransactions from "@/components/P2PMyTransactions";
 import Tutorial from "@/components/Tutorial";
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes: [
         { path: '/main', component: Main,
             children: [
