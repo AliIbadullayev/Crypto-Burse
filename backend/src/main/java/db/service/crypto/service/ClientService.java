@@ -55,4 +55,12 @@ public class ClientService {
         return result;
     }
 
+    public boolean depositFiat(Client client,double amount){
+        if (amount > 0 && amount <= 1000000) {
+            client.setFiatBalance(client.getFiatBalance()+amount);
+            clientRepository.save(client);
+            return true;
+        } else return false;
+    }
+
 }

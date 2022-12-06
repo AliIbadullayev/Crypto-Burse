@@ -24,7 +24,7 @@ public class Client{
     private String surname;
 
     @Column
-    private double fiat_balance;
+    private double fiatBalance;
 
 
 

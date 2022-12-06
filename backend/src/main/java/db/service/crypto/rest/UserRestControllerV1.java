@@ -1,6 +1,7 @@
 package db.service.crypto.rest;
 
 import db.service.crypto.dto.AddCardRequestDto;
+import db.service.crypto.dto.FiatDepositDto;
 import db.service.crypto.dto.UserDto;
 import db.service.crypto.exception.CardAlreadyExistException;
 import db.service.crypto.exception.IncorrectCardDataException;
@@ -78,6 +79,17 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>("Карта уже добавлена либо введены некорректные данные!", HttpStatus.OK);
         }
     }
+
+    @PostMapping("depositFiat")
+    public ResponseEntity<String> depositFiat(@RequestBody FiatDepositDto fiatDepositDto){
+        Client owner = clientService.findByUsername(fiatDepositDto.getClientLogin().trim());
+        if (owner == null) return new ResponseEntity<>("Такого клиента не существует",HttpStatus.OK);
+
+        if (clientService.depositFiat(owner, fiatDepositDto.getAmount())) {
+            return new ResponseEntity<>("Фиатный баланс успешно пополнен", HttpStatus.OK);
+        } else return new ResponseEntity<>("Некорректная сумма при пополнении баланса", HttpStatus.OK);
+    }
+
 
 
 }

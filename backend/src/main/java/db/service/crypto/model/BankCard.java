@@ -1,11 +1,8 @@
 package db.service.crypto.model;
 
-import com.sun.istack.NotNull;
-import lombok.Cleanup;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name="bank_card")
