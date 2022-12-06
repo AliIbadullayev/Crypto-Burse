@@ -45,7 +45,7 @@ public class WalletService {
     public String generateId(){
         int leftLimit = 48; // numeral '0'
         int rightLimit = 122; // letter 'z'
-        int targetStringLength = 20;
+        int targetStringLength = 30;
         Random random = new Random();
 
         String generatedString = random.ints(leftLimit, rightLimit + 1)

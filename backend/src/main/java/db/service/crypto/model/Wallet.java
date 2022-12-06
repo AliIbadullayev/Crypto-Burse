@@ -19,9 +19,10 @@ public class Wallet {
     @Column
     private String crypto_name;
 
+
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_login")
-
     private Client client;
 
 }

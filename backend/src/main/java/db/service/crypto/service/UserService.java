@@ -27,6 +27,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+//TODO проверку на пробелы в нике и пароле (не по краям). Пока работает обычный трим по краям
     public User register(User user) throws UserAlreadyExistException {
 
 

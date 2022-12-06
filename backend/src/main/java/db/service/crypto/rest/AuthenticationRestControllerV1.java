@@ -45,7 +45,7 @@ public class AuthenticationRestControllerV1 {
     @PostMapping("login")
     public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
-            String username = requestDto.getUsername();
+            String username = requestDto.getUsername().trim();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
             User user = userService.findByUsername(username);
 
@@ -72,11 +72,11 @@ public class AuthenticationRestControllerV1 {
             User userToAdd = new User();
             Client clientToAdd = new Client();
 
-            userToAdd.setUsername(requestDto.getUsername());
-            userToAdd.setPassword(requestDto.getPassword());
-            clientToAdd.setUserLogin(requestDto.getUsername());
-            clientToAdd.setName(requestDto.getName());
-            clientToAdd.setSurname(requestDto.getSurname());
+            userToAdd.setUsername(requestDto.getUsername().trim());
+            userToAdd.setPassword(requestDto.getPassword().trim());
+            clientToAdd.setUserLogin(requestDto.getUsername().trim());
+            clientToAdd.setName(requestDto.getName().trim());
+            clientToAdd.setSurname(requestDto.getSurname().trim());
 
             userService.register(userToAdd);
             clientService.createClient(clientToAdd);
