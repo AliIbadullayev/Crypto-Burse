@@ -2,14 +2,15 @@ package db.service.crypto.rest;
 
 import db.service.crypto.dto.AddCardRequestDto;
 import db.service.crypto.dto.FiatDepositDto;
+import db.service.crypto.dto.TransactionRequestDto;
 import db.service.crypto.dto.UserDto;
-import db.service.crypto.exception.CardAlreadyExistException;
-import db.service.crypto.exception.IncorrectCardDataException;
+import db.service.crypto.exception.*;
 import db.service.crypto.model.BankCard;
 import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
 import db.service.crypto.service.BankCardService;
 import db.service.crypto.service.ClientService;
+import db.service.crypto.service.TransactionService;
 import db.service.crypto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,11 +28,14 @@ public class UserRestControllerV1 {
 
     private final BankCardService bankCardService;
 
+    private final TransactionService transactionService;
+
     @Autowired
-    public UserRestControllerV1(UserService userService, ClientService clientService, BankCardService bankCardService) {
+    public UserRestControllerV1(UserService userService, ClientService clientService, BankCardService bankCardService, TransactionService transactionService) {
         this.userService = userService;
         this.clientService = clientService;
         this.bankCardService = bankCardService;
+        this.transactionService = transactionService;
     }
 
     @GetMapping(value = "{username}")
@@ -75,8 +79,10 @@ public class UserRestControllerV1 {
         try {
             bankCardService.addCard(bankCardToAdd);
             return new ResponseEntity<>("Карта успешно добавлена",HttpStatus.OK);
-        } catch (CardAlreadyExistException | IncorrectCardDataException e) {
-            return new ResponseEntity<>("Карта уже добавлена либо введены некорректные данные!", HttpStatus.OK);
+        } catch (CardAlreadyExistException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (IncorrectCardDataException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
     }
 
@@ -89,6 +95,26 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>("Фиатный баланс успешно пополнен", HttpStatus.OK);
         } else return new ResponseEntity<>("Некорректная сумма при пополнении баланса", HttpStatus.OK);
     }
+
+
+//    TODO: сделать проверку на принадлежность кошелька-отправителя пользователю, которые отправляет этот запрос. Либо добавить поле owner в transactionRequestDto, либо достать username из jwt-токена
+    @PostMapping("sendMoney")
+    public ResponseEntity<String>  sendMoney(@RequestBody TransactionRequestDto transactionRequestDto){
+        try {
+            transactionService.makeTransaction(transactionRequestDto);
+            return new ResponseEntity<>("Транзакция успешно проведена", HttpStatus.OK);
+        } catch (InsufficientWalletBalanceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (WalletNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (NotSameCryptoInWalletsException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
+
+
+    }
+
+
 
 
 

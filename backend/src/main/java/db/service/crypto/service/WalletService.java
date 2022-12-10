@@ -4,6 +4,7 @@ package db.service.crypto.service;
 import db.service.crypto.model.Wallet;
 import db.service.crypto.model.Client;
 import db.service.crypto.repository.WalletRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 @Service
+@Slf4j
 public class WalletService {
 
     private final WalletRepository walletRepository;
@@ -38,8 +40,6 @@ public class WalletService {
             wallet.setClient(client);
             walletRepository.save(wallet);
         }
-
-
     }
 
     public String generateId(){
@@ -55,6 +55,28 @@ public class WalletService {
                 .toString();
 
         return generatedString;
+    }
+
+    public boolean depositWallet(Wallet wallet,double amount){
+        if (amount>0){
+            double amountBefore = wallet.getAmount();
+            double amountAfter = amountBefore+amount;
+            wallet.setAmount(amountAfter);
+            walletRepository.save(wallet);
+            log.info("Deposit wallet with address {}. Amount before: {}. Amount after: {}",wallet.getAddress(),amountBefore,amountAfter);
+            return true;
+        } else return false;
+    }
+
+    public boolean withdrawFromWallet(Wallet wallet, double amount){
+        if (amount>0){
+            double amountBefore = wallet.getAmount();
+            double amountAfter = amountBefore-amount;
+            wallet.setAmount(amountAfter);
+            walletRepository.save(wallet);
+            log.info("Deposit wallet with address {}. Amount before: {}. Amount after: {}",wallet.getAddress(),amountBefore,amountAfter);
+            return true;
+        } else return false;
     }
 
 

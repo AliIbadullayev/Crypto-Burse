@@ -48,13 +48,13 @@ public class BankCardService {
                     if (checkName(nameOnCard)) {
                         if (checkCVV(cvv)) {
                             bankCard.setCardNumber(cardNumber);
-                            bankCard.setNameOnCard(cardNumber);
-                            bankCard.setExpireDate(cardNumber);
-                            bankCard.setCvv(cardNumber);
+                            bankCard.setNameOnCard(nameOnCard);
+                            bankCard.setExpireDate(expDate);
+                            bankCard.setCvv(cvv);
                             return bankCard;
                         } else throw new IncorrectCardDataException("Неверный формат CVV кода на карте");
                     } else throw new IncorrectCardDataException("Неверный формат имени на карте!");
-                }
+                } else throw new IncorrectCardDataException("Неверный формат даты на карте, либо срок действия истёк!");
             } catch (ParseException e) {
                 throw new IncorrectCardDataException("Неверный формат даты на карте, либо срок действия истёк!");
             }
