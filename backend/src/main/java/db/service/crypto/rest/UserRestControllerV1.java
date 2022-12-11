@@ -1,18 +1,12 @@
 package db.service.crypto.rest;
 
-import db.service.crypto.dto.AddCardRequestDto;
-import db.service.crypto.dto.FiatDepositDto;
-import db.service.crypto.dto.TransactionRequestDto;
-import db.service.crypto.dto.UserDto;
+import db.service.crypto.dto.*;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.BankCard;
 import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
-import db.service.crypto.service.BankCardService;
-import db.service.crypto.service.ClientService;
-import db.service.crypto.service.TransactionService;
-import db.service.crypto.service.UserService;
+import db.service.crypto.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,13 +29,16 @@ public class UserRestControllerV1 {
 
     private final TransactionService transactionService;
 
+    private final ExchangeService exchangeService;
+
     @Autowired
-    public UserRestControllerV1(JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService, BankCardService bankCardService, TransactionService transactionService) {
+    public UserRestControllerV1(JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService, BankCardService bankCardService, TransactionService transactionService, ExchangeService exchangeService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.clientService = clientService;
         this.bankCardService = bankCardService;
         this.transactionService = transactionService;
+        this.exchangeService = exchangeService;
     }
 
     @GetMapping(value = "{username}")
@@ -125,7 +122,7 @@ public class UserRestControllerV1 {
     }
 
 
-    @PostMapping("sendMoney")
+    @PostMapping("sendCrypto")
     public ResponseEntity<String>  sendMoney(@RequestBody TransactionRequestDto transactionRequestDto, HttpServletRequest request){
 
         String username = null;
@@ -152,7 +149,41 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (IllegalSendAttemptException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InvalidAmountException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
+    }
+
+
+    @PostMapping("exchangeCrypto")
+    public ResponseEntity<String> exchangeCrypto(@RequestBody ExchangeRequestDto exchangeRequestDto, HttpServletRequest request){
+        String username = null;
+
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+
+
+        try {
+            exchangeService.makeExchange(exchangeRequestDto,username);
+            return new ResponseEntity<>("Обмен успешно проведён", HttpStatus.OK);
+        } catch (WalletNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (SameCryptoInWalletsException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InsufficientWalletBalanceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (IllegalSendAttemptException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InvalidAmountException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
+
+
     }
 
 

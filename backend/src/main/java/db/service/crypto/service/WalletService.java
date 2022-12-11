@@ -1,6 +1,7 @@
 package db.service.crypto.service;
 
 
+import db.service.crypto.exception.InvalidAmountException;
 import db.service.crypto.model.Wallet;
 import db.service.crypto.model.Client;
 import db.service.crypto.repository.WalletRepository;
@@ -57,7 +58,7 @@ public class WalletService {
         return generatedString;
     }
 
-    public boolean depositWallet(Wallet wallet,double amount){
+    public boolean depositWallet(Wallet wallet,double amount) throws InvalidAmountException {
         if (amount>0){
             double amountBefore = wallet.getAmount();
             double amountAfter = amountBefore+amount;
@@ -65,10 +66,10 @@ public class WalletService {
             walletRepository.save(wallet);
             log.info("Deposit wallet with address {}. Amount before: {}. Amount after: {}",wallet.getAddress(),amountBefore,amountAfter);
             return true;
-        } else return false;
+        } else throw new InvalidAmountException("Сумма транзакции не может быть отрицательной");
     }
 
-    public boolean withdrawFromWallet(Wallet wallet, double amount){
+    public boolean withdrawFromWallet(Wallet wallet, double amount) throws InvalidAmountException {
         if (amount>0){
             double amountBefore = wallet.getAmount();
             double amountAfter = amountBefore-amount;
@@ -76,7 +77,7 @@ public class WalletService {
             walletRepository.save(wallet);
             log.info("Deposit wallet with address {}. Amount before: {}. Amount after: {}",wallet.getAddress(),amountBefore,amountAfter);
             return true;
-        } else return false;
+        } else throw new InvalidAmountException("Сумма транзакции не может быть отрицательной");
     }
 
 

@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 @Slf4j
 public class TransactionService {
 
-//    TODO: проверить нужны ли synchronized в программе
+
     private final WalletRepository walletRepository;
     private final BlockchainNetworkRepository blockchainNetworkRepository;
 
@@ -38,7 +38,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void makeTransaction(TransactionRequestDto transactionRequestDto, String senderUsername) throws InsufficientWalletBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException, SameClientException, IllegalSendAttemptException {
+    public void makeTransaction(TransactionRequestDto transactionRequestDto, String senderUsername) throws InsufficientWalletBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException, SameClientException, IllegalSendAttemptException, InvalidAmountException {
         System.out.println(transactionRequestDto.getWalletFromAddress());
         System.out.println(transactionRequestDto.getWalletToAddress());
         System.out.println(transactionRequestDto.getAmount());
@@ -47,8 +47,8 @@ public class TransactionService {
         String addressTo = transactionRequestDto.getWalletToAddress();
         String addressFrom = transactionRequestDto.getWalletFromAddress();
 
-        Wallet walletTo = findByAddress(addressTo);
         Wallet walletFrom = findByAddress(addressFrom);
+        Wallet walletTo = findByAddress(addressTo);
 
         if (walletTo == null){
             throw new WalletNotFoundException(addressTo);
