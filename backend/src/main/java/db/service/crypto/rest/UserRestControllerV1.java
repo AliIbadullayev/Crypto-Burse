@@ -8,6 +8,7 @@ import db.service.crypto.exception.*;
 import db.service.crypto.model.BankCard;
 import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
+import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.BankCardService;
 import db.service.crypto.service.ClientService;
 import db.service.crypto.service.TransactionService;
@@ -17,10 +18,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 @RestController
 @RequestMapping(value = "/api/v1/users/")
 public class UserRestControllerV1 {
+
+    private final JwtTokenProvider jwtTokenProvider;
 
     private final UserService userService;
 
@@ -31,7 +36,8 @@ public class UserRestControllerV1 {
     private final TransactionService transactionService;
 
     @Autowired
-    public UserRestControllerV1(UserService userService, ClientService clientService, BankCardService bankCardService, TransactionService transactionService) {
+    public UserRestControllerV1(JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService, BankCardService bankCardService, TransactionService transactionService) {
+        this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.clientService = clientService;
         this.bankCardService = bankCardService;
@@ -52,17 +58,26 @@ public class UserRestControllerV1 {
     }
 
 
-//   TODO Сделать так, чтобы имя клиента бралось из жвт токена, а не отправлялось напрямую, иначе один клиент может другому карту добавить, либо на фронте автоматом отправлять имя клиента вместе с остальной инфой
     @PostMapping(value = "addCard")
-    public ResponseEntity<String> addCard(@RequestBody AddCardRequestDto requestDto) {
+    public ResponseEntity<String> addCard(@RequestBody AddCardRequestDto requestDto, HttpServletRequest request) {
 
+        String username = null;
+
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+
+        System.out.println("Owner from jwt: " + username);
         System.out.println(requestDto.getCardNumber());
         System.out.println(requestDto.getExpireDate());
         System.out.println(requestDto.getNameOnCard());
         System.out.println(requestDto.getCvv());
-        System.out.println(requestDto.getClientLogin());
 
-        Client owner = clientService.findByUsername(requestDto.getClientLogin().trim());
+        Client owner = clientService.findByUsername(username);
 
 
         if (owner == null) return new ResponseEntity<>("Такого клиента не существует",HttpStatus.OK);
@@ -87,8 +102,21 @@ public class UserRestControllerV1 {
     }
 
     @PostMapping("depositFiat")
-    public ResponseEntity<String> depositFiat(@RequestBody FiatDepositDto fiatDepositDto){
-        Client owner = clientService.findByUsername(fiatDepositDto.getClientLogin().trim());
+    public ResponseEntity<String> depositFiat(@RequestBody FiatDepositDto fiatDepositDto, HttpServletRequest request){
+
+        String username = null;
+
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+
+
+
+        Client owner = clientService.findByUsername(username);
         if (owner == null) return new ResponseEntity<>("Такого клиента не существует",HttpStatus.OK);
 
         if (clientService.depositFiat(owner, fiatDepositDto.getAmount())) {
@@ -97,11 +125,22 @@ public class UserRestControllerV1 {
     }
 
 
-//    TODO: сделать проверку на принадлежность кошелька-отправителя пользователю, которые отправляет этот запрос. Либо добавить поле owner в transactionRequestDto, либо достать username из jwt-токена
     @PostMapping("sendMoney")
-    public ResponseEntity<String>  sendMoney(@RequestBody TransactionRequestDto transactionRequestDto){
+    public ResponseEntity<String>  sendMoney(@RequestBody TransactionRequestDto transactionRequestDto, HttpServletRequest request){
+
+        String username = null;
+
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+
+
         try {
-            transactionService.makeTransaction(transactionRequestDto);
+            transactionService.makeTransaction(transactionRequestDto, username);
             return new ResponseEntity<>("Транзакция успешно проведена", HttpStatus.OK);
         } catch (InsufficientWalletBalanceException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
@@ -109,10 +148,15 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (NotSameCryptoInWalletsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (SameClientException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (IllegalSendAttemptException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
-
-
     }
+
+
+
 
 
 

@@ -2,9 +2,7 @@ package db.service.crypto.service;
 
 
 import db.service.crypto.dto.TransactionRequestDto;
-import db.service.crypto.exception.InsufficientWalletBalanceException;
-import db.service.crypto.exception.NotSameCryptoInWalletsException;
-import db.service.crypto.exception.WalletNotFoundException;
+import db.service.crypto.exception.*;
 import db.service.crypto.model.BlockchainNetwork;
 import db.service.crypto.model.Transaction;
 import db.service.crypto.model.Wallet;
@@ -21,6 +19,8 @@ import java.sql.Timestamp;
 @Service
 @Slf4j
 public class TransactionService {
+
+//    TODO: проверить нужны ли synchronized в программе
     private final WalletRepository walletRepository;
     private final BlockchainNetworkRepository blockchainNetworkRepository;
 
@@ -38,7 +38,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void makeTransaction(TransactionRequestDto transactionRequestDto) throws InsufficientWalletBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException {
+    public void makeTransaction(TransactionRequestDto transactionRequestDto, String senderUsername) throws InsufficientWalletBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException, SameClientException, IllegalSendAttemptException {
         System.out.println(transactionRequestDto.getWalletFromAddress());
         System.out.println(transactionRequestDto.getWalletToAddress());
         System.out.println(transactionRequestDto.getAmount());
@@ -63,7 +63,7 @@ public class TransactionService {
         String blockchainNetworkName = transactionRequestDto.getBlockchainNetworkName();
         BlockchainNetwork blockchainNetwork = findByNetworkName(blockchainNetworkName);
 
-        if (checkWallets(walletTo,walletFrom,amount,blockchainNetwork.getFee())){
+        if (checkWallets(walletTo,walletFrom,amount,blockchainNetwork.getFee(),senderUsername)){
             walletService.depositWallet(walletTo, amount-blockchainNetwork.getFee());
             walletService.withdrawFromWallet(walletFrom,amount);
             Timestamp transactionTimestamp = new Timestamp(System.currentTimeMillis()+blockchainNetwork.getLeadTime());
@@ -82,7 +82,7 @@ public class TransactionService {
 
 
     }
-    private boolean checkWallets(Wallet walletTo, Wallet walletFrom, double amount, double fee) throws NotSameCryptoInWalletsException, InsufficientWalletBalanceException {
+    private boolean checkWallets(Wallet walletTo, Wallet walletFrom, double amount, double fee, String senderUsername) throws NotSameCryptoInWalletsException, InsufficientWalletBalanceException, IllegalSendAttemptException, SameClientException {
 
 
         if (!walletFrom.getCrypto_name().equals(walletTo.getCrypto_name())){
@@ -93,14 +93,20 @@ public class TransactionService {
             throw new InsufficientWalletBalanceException("Недостаточно средств на балансе кошелька отправителя!");
         }
 
+        if (!walletFrom.getClient().getUserLogin().equals(senderUsername)){
+            throw new IllegalSendAttemptException("Вы не можете отправить средства не со своего кошелька!");
+        }
+
+        if (walletFrom.getClient().getUserLogin().equals(walletTo.getClient().getUserLogin())){
+            throw new SameClientException("Вы не можете отправить средства самому себе!");
+        }
+
         return true;
     }
 
     private boolean checkBalance(Wallet walletFrom, double amount, double fee){
         return (walletFrom.getAmount() >= (amount+fee));
     }
-
-
 
 
     public Wallet findByAddress(String address){

@@ -7,7 +7,6 @@ public class AddCardRequestDto {
     private String expireDate;
     private String cvv;
 
-    private String clientLogin;
 
 
 }
