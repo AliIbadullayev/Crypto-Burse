@@ -33,8 +33,10 @@ public class UserRestControllerV1 {
 
     private final ExchangeService exchangeService;
 
+    private final NftService nftService;
+
     @Autowired
-    public UserRestControllerV1(JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService, WalletService walletService, BankCardService bankCardService, TransactionService transactionService, ExchangeService exchangeService) {
+    public UserRestControllerV1(JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService, WalletService walletService, BankCardService bankCardService, TransactionService transactionService, ExchangeService exchangeService, NftService nftService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.clientService = clientService;
@@ -42,6 +44,7 @@ public class UserRestControllerV1 {
         this.bankCardService = bankCardService;
         this.transactionService = transactionService;
         this.exchangeService = exchangeService;
+        this.nftService = nftService;
     }
 
     @GetMapping(value = "{username}")
@@ -214,6 +217,31 @@ public class UserRestControllerV1 {
         } catch (InvalidAmountException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (InsufficientBalanceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
+
+    }
+
+
+    @PostMapping("scoreNft")
+    public ResponseEntity<String> likeNft(@RequestBody ScoreNftRequestDto scoreNftRequestDto, HttpServletRequest request){
+        String username = null;
+
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+
+
+        try {
+            nftService.scoreNft(scoreNftRequestDto, username);
+            return new ResponseEntity<>("NFT успешно оценена", HttpStatus.OK);
+        } catch (NftNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (NftIsNotPlacedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
 
