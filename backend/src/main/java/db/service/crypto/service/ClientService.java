@@ -1,5 +1,7 @@
 package db.service.crypto.service;
 
+import db.service.crypto.exception.InsufficientBalanceException;
+import db.service.crypto.exception.InvalidAmountException;
 import db.service.crypto.exception.UserAlreadyExistException;
 import db.service.crypto.model.Client;
 import db.service.crypto.repository.ClientRepository;
@@ -55,6 +57,8 @@ public class ClientService {
         return result;
     }
 
+
+    //TODO Прокинуть исключение InvalidAmountException в ответ на запрос
     public boolean depositFiat(Client client,double amount){
         if (amount > 0 && amount <= 1000000) {
             client.setFiatBalance(client.getFiatBalance()+amount);
@@ -62,5 +66,22 @@ public class ClientService {
             return true;
         } else return false;
     }
+
+    public boolean withdrawFiat(Client client, double amount) throws InvalidAmountException, InsufficientBalanceException {
+        if (amount > 0){
+            if (amount<client.getFiatBalance()) throw new InsufficientBalanceException("Не достаточно средств на фиатном счёте клиента");
+            double amountBefore = client.getFiatBalance();
+            double amountAfter = amountBefore - amount;
+            client.setFiatBalance(amountAfter);
+            clientRepository.save(client);
+            log.info("Reduce fiatBalance in client with username {}. Amount before: {}. Amount after: {}",client.getUserLogin(),amountBefore,amountAfter);
+            return true;
+        } else throw new InvalidAmountException("Сумма транзакции не может быть отрицательной");
+
+    }
+
+
+
+
 
 }

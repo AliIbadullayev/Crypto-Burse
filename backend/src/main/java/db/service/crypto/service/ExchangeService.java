@@ -4,7 +4,6 @@ import db.service.crypto.dto.ExchangeRequestDto;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.Crypto;
 import db.service.crypto.model.CryptoExchange;
-import db.service.crypto.model.Transaction;
 import db.service.crypto.model.Wallet;
 import db.service.crypto.repository.CryptoRepository;
 import db.service.crypto.repository.ExchangeRepository;
@@ -36,7 +35,7 @@ public class ExchangeService {
     }
 
 
-    public void makeExchange(ExchangeRequestDto exchangeRequestDto, String ownerUsername) throws WalletNotFoundException, SameCryptoInWalletsException, InsufficientWalletBalanceException, IllegalSendAttemptException, InvalidAmountException {
+    public void makeExchange(ExchangeRequestDto exchangeRequestDto, String ownerUsername) throws WalletNotFoundException, SameCryptoInWalletsException, InsufficientBalanceException, IllegalWalletPermissionAttemptException, InvalidAmountException {
         String addressTo = exchangeRequestDto.getWalletToAddress();
         String addressFrom = exchangeRequestDto.getWalletFromAddress();
 
@@ -70,9 +69,9 @@ public class ExchangeService {
     }
 
 
-    private boolean checkWallets(Wallet walletFrom, Wallet walletTo, double amount, String ownerUsername) throws IllegalSendAttemptException, SameCryptoInWalletsException, InsufficientWalletBalanceException {
+    private boolean checkWallets(Wallet walletFrom, Wallet walletTo, double amount, String ownerUsername) throws IllegalWalletPermissionAttemptException, SameCryptoInWalletsException, InsufficientBalanceException {
         if (!walletFrom.getClient().getUserLogin().equals(ownerUsername) || !walletTo.getClient().getUserLogin().equals(ownerUsername)){
-            throw new IllegalSendAttemptException("Оба кошелька должны принадлежать вам!");
+            throw new IllegalWalletPermissionAttemptException("Оба кошелька должны принадлежать вам!");
         }
 
         if (walletFrom.getCrypto_name().equals(walletTo.getCrypto_name())){
@@ -80,7 +79,7 @@ public class ExchangeService {
         }
 
         if (!checkBalance(walletFrom,amount)) {
-            throw new InsufficientWalletBalanceException("Недостаточно средств на балансе кошелька отправителя!");
+            throw new InsufficientBalanceException("Недостаточно средств на балансе кошелька отправителя!");
         }
         return true;
     }
@@ -115,8 +114,6 @@ public class ExchangeService {
 
         log.info("IN findByCryptoName - crypto: {} found by cryptoName: {}",result,name);
         return result;
-
-
     }
 
 }

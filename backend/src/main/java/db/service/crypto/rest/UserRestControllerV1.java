@@ -25,6 +25,8 @@ public class UserRestControllerV1 {
 
     private final ClientService clientService;
 
+    private final WalletService walletService;
+
     private final BankCardService bankCardService;
 
     private final TransactionService transactionService;
@@ -32,10 +34,11 @@ public class UserRestControllerV1 {
     private final ExchangeService exchangeService;
 
     @Autowired
-    public UserRestControllerV1(JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService, BankCardService bankCardService, TransactionService transactionService, ExchangeService exchangeService) {
+    public UserRestControllerV1(JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService, WalletService walletService, BankCardService bankCardService, TransactionService transactionService, ExchangeService exchangeService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.clientService = clientService;
+        this.walletService = walletService;
         this.bankCardService = bankCardService;
         this.transactionService = transactionService;
         this.exchangeService = exchangeService;
@@ -139,7 +142,7 @@ public class UserRestControllerV1 {
         try {
             transactionService.makeTransaction(transactionRequestDto, username);
             return new ResponseEntity<>("Транзакция успешно проведена", HttpStatus.OK);
-        } catch (InsufficientWalletBalanceException e) {
+        } catch (InsufficientBalanceException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (WalletNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
@@ -147,7 +150,7 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (SameClientException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
-        } catch (IllegalSendAttemptException e) {
+        } catch (IllegalWalletPermissionAttemptException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (InvalidAmountException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
@@ -175,14 +178,44 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (SameCryptoInWalletsException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
-        } catch (InsufficientWalletBalanceException e) {
+        } catch (InsufficientBalanceException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
-        } catch (IllegalSendAttemptException e) {
+        } catch (IllegalWalletPermissionAttemptException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (InvalidAmountException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
 
+
+    }
+
+
+    @PostMapping("fiatToCrypto")
+    public ResponseEntity<String> fiatToCrypto(@RequestBody FiatToCryptoRequestDto fiatToCryptoRequestDto, HttpServletRequest request){
+        String username = null;
+
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+
+        try {
+            walletService.fiatToCrypto(fiatToCryptoRequestDto,username);
+            return new ResponseEntity<>("Обмен успешно проведён", HttpStatus.OK);
+        } catch (WalletNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (IllegalWalletPermissionAttemptException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (CryptoNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InvalidAmountException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InsufficientBalanceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
 
     }
 

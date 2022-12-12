@@ -38,7 +38,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void makeTransaction(TransactionRequestDto transactionRequestDto, String senderUsername) throws InsufficientWalletBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException, SameClientException, IllegalSendAttemptException, InvalidAmountException {
+    public void makeTransaction(TransactionRequestDto transactionRequestDto, String senderUsername) throws InsufficientBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException, SameClientException, IllegalWalletPermissionAttemptException, InvalidAmountException {
         System.out.println(transactionRequestDto.getWalletFromAddress());
         System.out.println(transactionRequestDto.getWalletToAddress());
         System.out.println(transactionRequestDto.getAmount());
@@ -82,7 +82,7 @@ public class TransactionService {
 
 
     }
-    private boolean checkWallets(Wallet walletTo, Wallet walletFrom, double amount, double fee, String senderUsername) throws NotSameCryptoInWalletsException, InsufficientWalletBalanceException, IllegalSendAttemptException, SameClientException {
+    private boolean checkWallets(Wallet walletTo, Wallet walletFrom, double amount, double fee, String senderUsername) throws NotSameCryptoInWalletsException, InsufficientBalanceException, IllegalWalletPermissionAttemptException, SameClientException {
 
 
         if (!walletFrom.getCrypto_name().equals(walletTo.getCrypto_name())){
@@ -90,11 +90,11 @@ public class TransactionService {
         }
 
         if (!checkBalance(walletFrom,amount,fee)) {
-            throw new InsufficientWalletBalanceException("Недостаточно средств на балансе кошелька отправителя!");
+            throw new InsufficientBalanceException("Недостаточно средств на балансе кошелька отправителя!");
         }
 
         if (!walletFrom.getClient().getUserLogin().equals(senderUsername)){
-            throw new IllegalSendAttemptException("Вы не можете отправить средства не со своего кошелька!");
+            throw new IllegalWalletPermissionAttemptException("Вы не можете отправить средства не со своего кошелька!");
         }
 
         if (walletFrom.getClient().getUserLogin().equals(walletTo.getClient().getUserLogin())){
