@@ -2,6 +2,7 @@ package db.service.crypto.service;
 
 
 import db.service.crypto.dto.ScoreNftRequestDto;
+import db.service.crypto.exception.AlreadyScoredException;
 import db.service.crypto.exception.NftIsNotPlacedException;
 import db.service.crypto.exception.NftNotFoundException;
 import db.service.crypto.model.NftEntity;
@@ -33,7 +34,7 @@ public class NftService {
         this.clientService = clientService;
     }
 //TODO сделать проверку, что один юзер может поставить только один лайк/дизлайк
-    public void scoreNft(ScoreNftRequestDto scoreNftRequestDto, String username) throws NftNotFoundException, NftIsNotPlacedException {
+    public void scoreNft(ScoreNftRequestDto scoreNftRequestDto, String username) throws NftNotFoundException, NftIsNotPlacedException, AlreadyScoredException {
 
         NftEntity nftEntity = nftEntityRepository.findById(scoreNftRequestDto.getNftId()).orElse(null);
 
@@ -46,7 +47,6 @@ public class NftService {
         double newPrice;
 
 
-        System.out.println("Из лайкд: "+scoreNftRequestDto.isLiked());
 
         if (!scoreNftRequestDto.isLiked()) {
             if ((currentPrice - priceChange) < minPrice) newPrice = minPrice;
@@ -55,14 +55,25 @@ public class NftService {
             newPrice = currentPrice + priceChange;
         }
 
+        NftLikes currentRecord = nftLikesRepository.findById(new NftLikesId(clientService.findByUsername(username),nftEntity)).orElse(null);
+
+        if (currentRecord != null){
+            if (currentRecord.isLiked() == scoreNftRequestDto.isLiked()){
+                throw new AlreadyScoredException("Вы не можете поставить одну и ту же оценку больше одного раза");
+            }
+        }
+
+
         nftEntity.setPrice(newPrice);
         nftEntityRepository.save(nftEntity);
+
+
 
         NftLikes nftLikes = new NftLikes();
         nftLikes.setPk(new NftLikesId(clientService.findByUsername(username),nftEntity));
         nftLikes.setLiked(scoreNftRequestDto.isLiked());
 
-        nftLikesRepository.save(nftLikes);
+
 
 
     }

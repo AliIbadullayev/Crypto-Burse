@@ -243,6 +243,8 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (NftIsNotPlacedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (AlreadyScoredException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
 
     }
