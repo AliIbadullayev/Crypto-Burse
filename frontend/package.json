@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@avto-dev/bank-card-vue-component": "^1.3.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-brands-svg-icons": "^6.2.1",
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
@@ -16,6 +17,7 @@
     "primeicons": "^6.0.1",
     "primevue": "^3.20.0",
     "vue": "^3.2.13",
+    "vue-paycard": "^0.7.0",
     "vue-router": "^4.1.6",
     "vuex": "^4.0.0"
   },

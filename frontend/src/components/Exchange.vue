@@ -45,7 +45,7 @@
           </div>
           <div class="field-2">
             <span class="p-float-label">
-              <InputNumber id="inputnumber" v-model="amountCrypto2" :maxFractionDigits="5" disabled="true" />
+              <InputNumber id="inputnumber" v-model="amountCrypto2" :maxFractionDigits="5" disabled="disabled" />
               <label for="inputnumber">Количество крипты №2 </label>
             </span>
           </div>
