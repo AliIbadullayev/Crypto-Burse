@@ -10,6 +10,7 @@ import Card from "primevue/card";
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
+
 import Button from "primevue/button";
 
 import {
@@ -31,6 +32,10 @@ import InputText from "primevue/inputtext";
 import Tooltip from "primevue/tooltip";
 import Dropdown from "primevue/dropdown";
 import Slider from "primevue/slider";
+import TabMenu from "primevue/tabmenu";
+import ScrollPanel from "primevue/scrollpanel";
+import InputMask from "primevue/inputmask";
+import Calendar from "primevue/calendar";
 
 const app = createApp(App)
 
@@ -47,6 +52,12 @@ app.component('Column', Column)
 app.component('Dialog', Dialog)
 app.component('Dropdown', Dropdown)
 app.component('Slider', Slider)
+app.component('TabMenu', TabMenu)
+app.component('ScrollPanel', ScrollPanel)
+app.component('InputMask', InputMask)
+app.component('Calendar', Calendar)
+app.directive('tooltip', Tooltip)
+
 
 
 app.component('font-awesome-icon', FontAwesomeIcon)

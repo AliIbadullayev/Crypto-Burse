@@ -1,6 +1,7 @@
 body{
     font-family: Roboto, "Helvetica Neue", sans-serif;
     background-color: #E5E5E5;
+    overflow: hidden;
 }
 
 .custom-card{

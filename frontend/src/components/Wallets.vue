@@ -6,7 +6,7 @@
         <template #content>
           <div class="wallet-table">
             <h2 class="wallet-header">Крипто-кошельки</h2>
-            <DataTable :value="wallets" v-model:selection="selectedWallet" selectionMode="single"  @rowSelect="onWalletSelect"  :scrollable="true" scrollHeight="80vh">
+            <DataTable :value="wallets" v-model:selection="selectedWallet" selectionMode="single"  @rowSelect="onWalletSelect"  :scrollable="true" scrollHeight="70vh">
               <Column field="name" header="Криптовалюта">
                 <template #body="slot">
                   <div class="wallet-name">
@@ -23,111 +23,55 @@
               </Column>
             </DataTable>
             <div class="dialog-wallet">
-              <Dialog class="dialog-wallet-main" v-model:visible="walletDialogVisible" :style="{width: '75vw'}"  :modal="true" :contentStyle="{height: '75vh', display: 'flex', 'flex-direction': 'column'}">
-                <div class="main-crypto-name" >
-                  <span>
-                    {{selectedWallet.name}}
-                  </span>
-                </div>
-                <div class="wallet-dialog-main-block">
-                  <div class="wallet-dialog-first-block">
-                    <div class="wallet-main-info">
-                      <div class="wallet-balance-address-block">
-                        <div class="wallet-balance-address-instance">
-                          <h3>Баланс: {{selectedWallet.value}} шт.</h3>
-                        </div>
-                      </div>
-                      <div class="wallet-balance-address-block">
-                        <div class="wallet-balance-address-instance">
-                          <h3>Адрес: {{selectedWallet.address }}</h3>
-                        </div>
-                      </div>
-                      <div class="form-crypto-fiat">
-                        <form >
-                          <h3>
-                            Пополнить счет
-                          </h3>
-                          <div class="inputs">
-                            <div class="field-1">
-                              <span class="p-float-label">
-                                <InputNumber id="inputnumber1" v-model="formCryptoFiat.amount" :maxFractionDigits="5"/>
-                                <label for="inputnumber1">Количество крипты</label>
-                              </span>
-                            </div>
-                            <div class="field-2">
-                              <h4>
-                                <!--                            TODO instead of 100 must be actual crypto course -->
-                                Необходимый фиат: {{formCryptoFiat.amount * 100 }}
-                              </h4>
-                            </div>
-                          </div>
-                          <div class="crypto-fiat-button">
-                            <Button label="Пополнить" icon="pi pi-check" />
-                          </div>
-                        </form>
-                      </div>
+              <Dialog class="dialog-wallet-main" :closable="false" v-model:visible="walletDialogVisible" :style="{width: '75vw'}"  :modal="true" :contentStyle="{height: '75vh', display: 'flex', 'flex-direction': 'column'}">
+                <template #header>
+                  <div class="wallet-dialog-header">
+                    <div class="header-block">
+                      <h3>
+                        {{selectedWallet.name}}
+                      </h3>
+                      <h4 style="margin-left: 2rem">
+                        {{selectedWallet.address}}
+                      </h4>
+                    </div>
+                    <div class="exit-button">
+                      <Button icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text" @click="close"/>
                     </div>
                   </div>
-                  <div class="wallet-dialog-second-block">
-                    <form class="transaction">
-                      <div class="field-1 field">
-                        <span class="p-float-label">
-                          <InputNumber id="amount" v-model="formTransaction.amount" :maxFractionDigits="5" style="width: 20vw"/>
-                          <label for="amount">Количество крипты</label>
-                        </span>
-                      </div>
-                      <div class="field-2 field">
-                        <span class="p-float-label">
-                          <InputText id="addr" type="text" v-model="formTransaction.wallet2" style="width: 20vw" />
-                          <label for="addr">Адрес получателя</label>
-                        </span>
-                      </div>
-                      <div class="field-3 field">
-                        <Dropdown  :options="blockchains" v-model="formTransaction.blockchain_network " optionLabel="name" placeholder="Сеть блокчейна" style="width: 20vw">
-                          <template #value="slotProps">
-                            <div class="country-item country-item-value" v-if="formTransaction.blockchain_network.name != null" style="width: 20vw">
-                              <div>{{slotProps.value.name}}</div>
-                            </div>
-                            <span v-else>
-                              Сеть блокчейна
-                            </span>
-                          </template>
-                          <template #option="slotProps" style="width: 20vw">
-                            <div class="country-item" style="display: flex; justify-content: space-between">
-                              <div>{{slotProps.option.name}}</div>
-                              <div >
-                                {{slotProps.option.fee}}/{{slotProps.option.lead_time}}
-                              </div>
-                            </div>
-                          </template>
-                        </Dropdown>
-                        <small v-if="formTransaction.blockchain_network.name != null" style="display: block">
-                          Комиссия - {{formTransaction.blockchain_network.fee}}%, Время перевода - {{formTransaction.blockchain_network.lead_time}} сек.
-                        </small>
-                      </div>
-                      <div class="transaction-button" style="margin-top: 1rem;">
-                        <Button label="Перевести" icon="pi pi-check" />
-                      </div>
-                    </form>
-                    <form class="stacking" >
-                      <div class="field-1 field">
-                        <span class="p-float-label">
-                          <InputNumber id="stacking-amount" v-model="formStacking.amount" :maxFractionDigits="5" style="width: 20vw"/>
-                          <label for="stacking-amount">Количество крипты</label>
-                        </span>
-                      </div>
-                      <div class="field-2 field">
-                        <span class="p-float-label">
-                          <h5>Период вложения: {{formStacking.expire_date}} {{formStacking.expire_date === 1 ? 'год': formStacking.expire_date > 1 && formStacking.expire_date <=4 ? 'года': 'лет'}} </h5>
-                          <Slider v-model="formStacking.expire_date" :step="1" :min="1" :max="5" />
-                        </span>
-                      </div>
-                      <div class="transaction-button" style="margin-top: 1rem;">
-                        <Button label="Вложить" icon="pi pi-check" />
-                      </div>
-                    </form>
+
+                </template>
+                <div class="card">
+                  <TabMenu :model="items" v-model:activeIndex="active"/>
+                  <div class="card-text" style="text-align: center; margin-top: 2rem">
+                    <h4 style="margin-left: 2rem">
+                      Доступно: {{selectedWallet.value}}
+                    </h4>
                   </div>
+                  <router-view/>
                 </div>
+<!--                <div class="main-crypto-name" >-->
+<!--                  <span>-->
+<!--                    {{selectedWallet.name}}-->
+<!--                  </span>-->
+<!--                </div>-->
+<!--                <div class="wallet-dialog-main-block">-->
+<!--                  <div class="wallet-dialog-first-block">-->
+<!--                    <div class="wallet-main-info">-->
+<!--                      <div class="wallet-balance-address-block">-->
+<!--                        <div class="wallet-balance-address-instance">-->
+<!--                          <h3>Баланс: {{selectedWallet.value}} шт.</h3>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                      <div class="wallet-balance-address-block">-->
+<!--                        <div class="wallet-balance-address-instance">-->
+<!--                          <h3>Адрес: {{selectedWallet.address }}</h3>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="wallet-dialog-second-block">-->
+<!--                  </div>-->
+<!--                </div>-->
               </Dialog>
             </div>
           </div>
@@ -139,7 +83,7 @@
         <template #content>
           <div class="wallet-table">
             <h2 class="wallet-header">NFT кошельки</h2>
-            <DataTable :value="nfts" v-model:selection="selectedNft" selectionMode="single"  @rowSelect="onNftSelect"  :scrollable="true"  responsiveLayout="scroll" scrollHeight="80vh">
+            <DataTable :value="nfts" v-model:selection="selectedNft" selectionMode="single"  @rowSelect="onNftSelect"  :scrollable="true"  responsiveLayout="scroll" scrollHeight="70vh">
               <Column field="name" header="Название">
                 <template #body="slot">
                   <div class="nft-name">
@@ -202,6 +146,30 @@ export default {
   name: "Wallets",
   data() {
     return{
+      active: 1,
+      items: [
+        {
+          label: 'Пополнение',
+          icon: 'pi pi-fw pi-home',
+          to: '/main/wallets/replenish'
+        },
+        {
+          label: 'Перевод',
+          icon: 'pi pi-fw pi-calendar',
+          to: '/main/wallets/transaction'
+        },
+        {
+          label: 'Вложение',
+          icon: 'pi pi-fw pi-pencil',
+          to: '/main/wallets/stacking'
+        },
+        {
+          label: 'История',
+          icon: 'pi pi-fw pi-file',
+          to: '/main/wallets/history'
+        }
+      ],
+
       wallets: [
         {name: 'Bitcoin', value: 2.843, address: 'jfEa134O93cL1kdma04a'},
         {name: 'ShibaCoin', value: 1000129, address: 'jfEa134O93cL1kdma04a'},
@@ -236,35 +204,11 @@ export default {
         {name: 'Siren', value: 583, rating: 53},
         {name: 'Liz', value: 5.42, rating: -12},
       ],
-      blockchains: [
-        {name: 'Bn_1', fee: 0.8, lead_time: 50},
-        {name: 'Bn_2', fee: 0.45, lead_time: 150},
-        {name: 'Shangai_Bn_1', fee: 1, lead_time: 10},
-        {name: 'German_Bn_1', fee: 0.3, lead_time: 180}
-      ],
-      formStacking: {
-        amount: null,
-        expire_date: 1
-      },
 
-      formTransaction: {
-        blockchain_network: {
-          name: null,
-          fee: null,
-          lead_time: null
-        },
-        wallet1: null,
-        wallet2: null,
-        amount: null
-      },
       selectedWallet: null,
       selectedNft: null,
       walletDialogVisible: false,
       nftDialogVisible: false,
-      formCryptoFiat:{
-        wallet: null,
-        amount: null
-      }
     }
   },
   methods:{
@@ -282,87 +226,72 @@ export default {
     },
     countPercent() {
     //  TODO realize logic of giving percent
+    },
+    close(){
+      this.$router.push('/main/wallets')
+      this.walletDialogVisible = false;
     }
   }
 }
 </script>
 
 <style scoped>
-.stacking{
-  margin-top: 30px;
-}
-.stacking .field-2{
-  margin-bottom: 20px;
-}
-
-.form-crypto-fiat{
-  margin-top: 70px;
-}
-
-.transaction .field{
-  margin-top: 1.5rem;
-}
-
-.transaction small{
-  margin-top: 0.25rem;
-}
-
-.main-crypto-name{
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-.wallet-dialog-main-block{
+.wallet-dialog-header{
   display: flex;
-  justify-content: center;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.header-block{
+  display: flex;
+  align-items: center;
+}
+
+.header-block h3,h4 {
+  margin: 0;
+}
+
+.header-block h4{
+  margin-left: 2rem
+}
+
+.card{
+  height: 80%;
 }
 
 .wallet-header{
-  text-align:center;
+text-align:center;
 }
 
 .wallet-table{
-  width: 75vh;
+width: 75vh;
 }
 
 .wallet-balance{
-  text-align: right;
+text-align: right;
 }
 
 .nft-block, .wallets-block{
-  width: 100%;
+width: 100%;
 }
 
 .wallet{
-  display:flex;
-  width: 94%;
+display:flex;
+width: 94%;
 }
 
 .wallets-block-card, .nft-block-card{
-  border-radius: 15px;
+border-radius: 15px;
 }
 
-.wallet-dialog-first-block{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
 
-.wallet-dialog-second-block{
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 
 .dialog-wallet-main::v-deep .p-dialog-content {
-  display: flex;
-  flex-direction: column;
-  /*align-items: center;!* Rectangle 1 *!*/
-  height: 100%;
+/*display: flex;*/
+/*flex-direction: column;*/
+/*!*align-items: center;!* Rectangle 1 *!*!*/
+/*height: 100%;*/
 }
-
 
 </style>

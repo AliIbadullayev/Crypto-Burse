@@ -10,6 +10,10 @@ import NftMarketplace from "@/components/NftMarketplace";
 import P2POffers from "@/components/P2POffers";
 import P2PMyTransactions from "@/components/P2PMyTransactions";
 import Tutorial from "@/components/Tutorial";
+import WalletReplenish from "@/components/WalletReplenish";
+import WalletTransaction from "@/components/WalletTransaction";
+import WalletStacking from "@/components/WalletStacking";
+import WalletHistory from "@/components/WalletHistory";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -26,7 +30,25 @@ const router = createRouter({
                 },
                 {
                     path: 'wallets',
-                    component: Wallets
+                    component: Wallets,
+                    children: [
+                        {
+                            path: 'replenish',
+                            component: WalletReplenish,
+                        },
+                        {
+                            path: 'transaction',
+                            component: WalletTransaction,
+                        },
+                        {
+                            path: 'stacking',
+                            component: WalletStacking,
+                        },
+                        {
+                            path: 'history',
+                            component: WalletHistory,
+                        }
+                    ]
                 },
                 {
                     path: 'p2p',
