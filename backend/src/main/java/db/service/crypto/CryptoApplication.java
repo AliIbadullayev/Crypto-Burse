@@ -12,6 +12,8 @@ public class CryptoApplication {
 //    TODO: сделать автозаполнение таблиц crypto и blockchain_netwrok при запуске
 //    TODO: сделать ограничения целостности в БД
 //    TODO: добавить ссылки на картинки в NFT Entity
+//    TODO: get запросы
+    //TODO: При добавлении стейкинга добавить проверку, есть ли он уже
 
     public static void main(String[] args) {
         SpringApplication.run(CryptoApplication.class, args);

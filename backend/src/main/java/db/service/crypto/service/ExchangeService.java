@@ -1,7 +1,8 @@
 package db.service.crypto.service;
 
-import db.service.crypto.dto.ExchangeRequestDto;
+import db.service.crypto.dto.ExchangeDto;
 import db.service.crypto.exception.*;
+import db.service.crypto.model.Client;
 import db.service.crypto.model.Crypto;
 import db.service.crypto.model.CryptoExchange;
 import db.service.crypto.model.Wallet;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -35,9 +38,9 @@ public class ExchangeService {
     }
 
 
-    public void makeExchange(ExchangeRequestDto exchangeRequestDto, String ownerUsername) throws WalletNotFoundException, SameCryptoInWalletsException, InsufficientBalanceException, IllegalWalletPermissionAttemptException, InvalidAmountException {
-        String addressTo = exchangeRequestDto.getWalletToAddress();
-        String addressFrom = exchangeRequestDto.getWalletFromAddress();
+    public void makeExchange(ExchangeDto exchangeDto, String ownerUsername) throws WalletNotFoundException, SameCryptoInWalletsException, InsufficientBalanceException, IllegalWalletPermissionAttemptException, InvalidAmountException {
+        String addressTo = exchangeDto.getWalletToAddress();
+        String addressFrom = exchangeDto.getWalletFromAddress();
 
         Wallet walletFrom = findByAddress(addressFrom);
         Wallet walletTo = findByAddress(addressTo);
@@ -49,7 +52,7 @@ public class ExchangeService {
             throw new WalletNotFoundException(addressFrom);
         }
 
-        double amount = exchangeRequestDto.getAmount();
+        double amount = exchangeDto.getAmount();
 
         if (checkWallets(walletFrom,walletTo,amount,ownerUsername)){
             Crypto cryptoFrom = findByCryptoName(walletFrom.getCrypto_name());
@@ -116,4 +119,16 @@ public class ExchangeService {
         return result;
     }
 
+    public List<ExchangeDto> getClientExchanges(Client client) {
+        List<CryptoExchange> cryptoExchanges = exchangeRepository.findAll();
+        List<ExchangeDto> exchangeDtos = new ArrayList<>();
+
+        for (CryptoExchange cryptoExchange : cryptoExchanges) {
+            if (cryptoExchange.getWalletFrom().getClient() == client)
+                exchangeDtos.add(ExchangeDto.fromExchange(cryptoExchange));
+        }
+
+        return exchangeDtos;
+
+    }
 }

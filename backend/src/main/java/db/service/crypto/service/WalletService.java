@@ -1,16 +1,12 @@
 package db.service.crypto.service;
 
 
-import db.service.crypto.dto.FiatToCryptoRequestDto;
+import db.service.crypto.dto.FiatToCryptoDto;
+import db.service.crypto.dto.StackingDto;
+import db.service.crypto.dto.WalletDto;
 import db.service.crypto.exception.*;
-import db.service.crypto.model.Crypto;
-import db.service.crypto.model.FiatToCrypto;
-import db.service.crypto.model.Wallet;
-import db.service.crypto.model.Client;
-import db.service.crypto.repository.ClientRepository;
-import db.service.crypto.repository.CryptoRepository;
-import db.service.crypto.repository.FiatToCryptoRepository;
-import db.service.crypto.repository.WalletRepository;
+import db.service.crypto.model.*;
+import db.service.crypto.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 @Service
 @Slf4j
 public class WalletService {
+
+    private static final double STACKING_INTEREST_RATE  = 1.2;
+
+    //2 minutes
+    private static final int STACKING_DURATION_IN_MILLISECONDS = 120000;
+
+    //half a year
+//    private static final int STACKING_DURATION_IN_MILLISECONDS = 15770000000;
 
     private final WalletRepository walletRepository;
 
@@ -34,12 +39,15 @@ public class WalletService {
 
     private final FiatToCryptoRepository fiatToCryptoRepository;
 
+    private final StackingRepository stackingRepository;
+
     @Autowired
-    public WalletService(WalletRepository walletRepository, ClientRepository clientRepository, CryptoRepository cryptoRepository, FiatToCryptoRepository fiatToCryptoRepository) {
+    public WalletService(WalletRepository walletRepository, ClientRepository clientRepository, CryptoRepository cryptoRepository, FiatToCryptoRepository fiatToCryptoRepository, StackingRepository stackingRepository) {
         this.walletRepository = walletRepository;
         this.clientRepository = clientRepository;
         this.cryptoRepository = cryptoRepository;
         this.fiatToCryptoRepository = fiatToCryptoRepository;
+        this.stackingRepository = stackingRepository;
     }
 
     static ArrayList<String> cryptoList = new ArrayList<>(
@@ -78,8 +86,8 @@ public class WalletService {
 
 
     @Transactional
-    public void fiatToCrypto(FiatToCryptoRequestDto fiatToCryptoRequestDto, String username) throws WalletNotFoundException, IllegalWalletPermissionAttemptException, CryptoNotFoundException, InvalidAmountException, InsufficientBalanceException {
-        String walletAddress = fiatToCryptoRequestDto.getWalletAddress();
+    public void fiatToCrypto(FiatToCryptoDto fiatToCryptoDto, String username) throws WalletNotFoundException, IllegalWalletPermissionAttemptException, CryptoNotFoundException, InvalidAmountException, InsufficientBalanceException {
+        String walletAddress = fiatToCryptoDto.getWalletAddress();
 
         Wallet wallet = findByAddress(walletAddress);
 
@@ -87,7 +95,7 @@ public class WalletService {
         if (!wallet.getClient().getUserLogin().equals(username)) throw new IllegalWalletPermissionAttemptException("Кошелёк должен принадлежать вам!");
 
 
-        double amount = fiatToCryptoRequestDto.getAmount();
+        double amount = fiatToCryptoDto.getAmount();
         Crypto crypto = findByCryptoName(wallet.getCrypto_name());
 
         if (crypto == null) throw new CryptoNotFoundException("Данная криптовалюта не найдена!");
@@ -106,8 +114,58 @@ public class WalletService {
         fiatToCrypto.setTimestamp(new Timestamp(System.currentTimeMillis()));
 
         fiatToCryptoRepository.save(fiatToCrypto);
+    }
+
+    @Transactional
+    public void toStake(StackingDto stackingDto, String username) throws WalletNotFoundException, IllegalWalletPermissionAttemptException, InvalidAmountException, InsufficientBalanceException, StakingIsAlreadyExistException {
+        String walletAddress = stackingDto.getWalletAddress();
+
+        Wallet wallet = findByAddress(walletAddress);
+
+        if (wallet == null) throw new WalletNotFoundException(walletAddress);
+        if (!wallet.getClient().getUserLogin().equals(username)) throw new IllegalWalletPermissionAttemptException("Кошелёк должен принадлежать вам!");
+
+        double amount = stackingDto.getAmount();
+
+        if (!checkBalance(wallet,amount)) throw new InsufficientBalanceException("Недостаточно средств на балансе кошелька!");
+
+        Stacking testStaking = stackingRepository.findById(walletAddress).orElse(null);
+
+        if (testStaking != null) throw new StakingIsAlreadyExistException("Стейкинг по этому кошельку уже существует!");
+
+        withdrawFromWallet(wallet, amount);
+        Stacking stacking = new Stacking();
+        stacking.setAmount(amount);
+        stacking.setWalletAddress(walletAddress);
+        stacking.setInterestRate(STACKING_INTEREST_RATE);
+        stacking.setExpireDate(new Timestamp(System.currentTimeMillis()+STACKING_DURATION_IN_MILLISECONDS));
+        stackingRepository.save(stacking);
+    }
+
+    @Transactional
+    public void freeStake(StackingDto stackingDto, String username) throws WalletNotFoundException, IllegalWalletPermissionAttemptException, StakeIsNotReadyYetException, StakingNotFoundException, InvalidAmountException {
+        String walletAddress = stackingDto.getWalletAddress();
+
+        Wallet wallet = findByAddress(walletAddress);
+
+        if (wallet == null) throw new WalletNotFoundException(walletAddress);
+        if (!wallet.getClient().getUserLogin().equals(username)) throw new IllegalWalletPermissionAttemptException("Кошелёк должен принадлежать вам!");
+
+        Stacking stackingToFree = stackingRepository.findById(walletAddress).orElse(null);
+
+        if (stackingToFree == null) throw new StakingNotFoundException("У вас нет активных депозитов по этому кошельку");
+
+        if (stackingToFree.getExpireDate().compareTo(new Timestamp(System.currentTimeMillis())) > 0)
+            throw new StakeIsNotReadyYetException("Депозит ещё рано выводить!");
+
+        depositWallet(wallet,stackingToFree.getAmount()*stackingToFree.getInterestRate());
+        stackingRepository.delete(stackingToFree);
 
 
+    }
+
+    private boolean checkBalance(Wallet wallet, double amount){
+        return (wallet.getAmount() >= amount);
     }
 
     public boolean depositWallet(Wallet wallet,double amount) throws InvalidAmountException {
@@ -158,15 +216,6 @@ public class WalletService {
         log.info("IN findByCryptoName - crypto: {} found by cryptoName: {}",result,name);
         return result;
     }
-//
-//    //TODO Прокинуть исключение InvalidAmountException в ответ на запрос
-//    public boolean depositFiat(Client client,double amount){
-//        if (amount > 0 && amount <= 1000000) {
-//            client.setFiatBalance(client.getFiatBalance()+amount);
-//            clientRepository.save(client);
-//            return true;
-//        } else return false;
-//    }
 
     public boolean withdrawFiat(String username, double amount) throws InvalidAmountException, InsufficientBalanceException {
 
@@ -186,4 +235,22 @@ public class WalletService {
 
     }
 
+    public List<WalletDto> getAllClientWallets(Client client){
+        List<Wallet> wallets = walletRepository.findAll();
+        List<WalletDto> walletDtos = new ArrayList<>();
+        for (Wallet wallet : wallets) {
+            if (wallet.getClient() == client) walletDtos.add(WalletDto.fromWallet(wallet));
+        }
+        return walletDtos;
+    }
+
+
+    public List<FiatToCryptoDto> getClientFiatToCryptos(Client client) {
+        List<FiatToCrypto> fiatToCryptos = fiatToCryptoRepository.findAll();
+        List<FiatToCryptoDto> fiatToCryptoDtos = new ArrayList<>();
+        for (FiatToCrypto fiatToCrypto : fiatToCryptos) {
+            if (fiatToCrypto.getWallet().getClient() == client) fiatToCryptoDtos.add(FiatToCryptoDto.fromFiatToCrypto(fiatToCrypto));
+        }
+        return fiatToCryptoDtos;
+    }
 }

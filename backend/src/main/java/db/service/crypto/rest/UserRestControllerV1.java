@@ -62,7 +62,7 @@ public class UserRestControllerV1 {
 
 
     @PostMapping(value = "addCard")
-    public ResponseEntity<String> addCard(@RequestBody AddCardRequestDto requestDto, HttpServletRequest request) {
+    public ResponseEntity<String> addCard(@RequestBody BankCardDto requestDto, HttpServletRequest request) {
 
         String username = null;
 
@@ -129,7 +129,7 @@ public class UserRestControllerV1 {
 
 
     @PostMapping("sendCrypto")
-    public ResponseEntity<String>  sendMoney(@RequestBody TransactionRequestDto transactionRequestDto, HttpServletRequest request){
+    public ResponseEntity<String>  sendMoney(@RequestBody TransactionDto transactionDto, HttpServletRequest request){
 
         String username = null;
 
@@ -143,7 +143,7 @@ public class UserRestControllerV1 {
 
 
         try {
-            transactionService.makeTransaction(transactionRequestDto, username);
+            transactionService.makeTransaction(transactionDto, username);
             return new ResponseEntity<>("Транзакция успешно проведена", HttpStatus.OK);
         } catch (InsufficientBalanceException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
@@ -162,7 +162,7 @@ public class UserRestControllerV1 {
 
 
     @PostMapping("exchangeCrypto")
-    public ResponseEntity<String> exchangeCrypto(@RequestBody ExchangeRequestDto exchangeRequestDto, HttpServletRequest request){
+    public ResponseEntity<String> exchangeCrypto(@RequestBody ExchangeDto exchangeDto, HttpServletRequest request){
         String username = null;
 
         String token = jwtTokenProvider.resolveToken(request);
@@ -175,7 +175,7 @@ public class UserRestControllerV1 {
 
 
         try {
-            exchangeService.makeExchange(exchangeRequestDto,username);
+            exchangeService.makeExchange(exchangeDto,username);
             return new ResponseEntity<>("Обмен успешно проведён", HttpStatus.OK);
         } catch (WalletNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
@@ -194,7 +194,7 @@ public class UserRestControllerV1 {
 
 
     @PostMapping("fiatToCrypto")
-    public ResponseEntity<String> fiatToCrypto(@RequestBody FiatToCryptoRequestDto fiatToCryptoRequestDto, HttpServletRequest request){
+    public ResponseEntity<String> fiatToCrypto(@RequestBody FiatToCryptoDto fiatToCryptoDto, HttpServletRequest request){
         String username = null;
 
         String token = jwtTokenProvider.resolveToken(request);
@@ -206,7 +206,7 @@ public class UserRestControllerV1 {
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
 
         try {
-            walletService.fiatToCrypto(fiatToCryptoRequestDto,username);
+            walletService.fiatToCrypto(fiatToCryptoDto,username);
             return new ResponseEntity<>("Обмен успешно проведён", HttpStatus.OK);
         } catch (WalletNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
@@ -246,8 +246,189 @@ public class UserRestControllerV1 {
         } catch (AlreadyScoredException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
+    }
+
+    @PostMapping("toStake")
+    public ResponseEntity<?> toStake(@RequestBody StackingDto stackingDto, HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        try {
+            walletService.toStake(stackingDto,username);
+            return new ResponseEntity<>("Криптовалюта успешно помещена в стейкинг!", HttpStatus.OK);
+        } catch (WalletNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (IllegalWalletPermissionAttemptException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InvalidAmountException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InsufficientBalanceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (StakingIsAlreadyExistException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("freeStake")
+    public ResponseEntity<?> freeStake(@RequestBody StackingDto stackingDto, HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        try {
+            walletService.freeStake(stackingDto,username);
+            return new ResponseEntity<>("Стейкинг успешно вернул вам дивиденды!", HttpStatus.OK);
+        } catch (WalletNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (IllegalWalletPermissionAttemptException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (StakeIsNotReadyYetException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (StakingNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InvalidAmountException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
 
     }
+
+
+    @GetMapping("getClientInfo")
+    public ResponseEntity<?> getCurrentClientInfo(HttpServletRequest request){
+        String username = null;
+
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+
+        Client client = clientService.findByUsername(username);
+
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        ClientInfoDto result = ClientInfoDto.fromUser(client);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("getAllClientWallets")
+    public ResponseEntity<?> getAllClentWallets(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(walletService.getAllClientWallets(client), HttpStatus.OK);
+
+    }
+
+    @GetMapping("getAllClientBankCards")
+    public ResponseEntity<?> getAllClientBankCards(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(bankCardService.getAllClientCards(client), HttpStatus.OK);
+    }
+
+    @GetMapping("getAllClientNfts")
+    public ResponseEntity<?> getAllClientNfts(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(nftService.getAllClientNfts(username), HttpStatus.OK);
+    }
+
+    @GetMapping("getAllNfts")
+    public ResponseEntity<?> getAllNfts(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(nftService.getAllNfts(), HttpStatus.OK);
+    }
+
+    @GetMapping("getClientTransactions")
+    public ResponseEntity<?> getClientTransactions(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(transactionService.getClientTransactions(client), HttpStatus.OK);
+    }
+
+    @GetMapping("getClientExchanges")
+    public ResponseEntity<?> getClientExchanges(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(exchangeService.getClientExchanges(client), HttpStatus.OK);
+    }
+
+    @GetMapping("getClientFiatToCryptos")
+    public ResponseEntity<?> getClientFiatToCryptos(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(walletService.getClientFiatToCryptos(client), HttpStatus.OK);
+    }
+
+
+
+
+
+
 
 
 

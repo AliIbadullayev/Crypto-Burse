@@ -1,17 +1,20 @@
 package db.service.crypto.service;
 
 
+import db.service.crypto.dto.NftDto;
 import db.service.crypto.dto.ScoreNftRequestDto;
+import db.service.crypto.dto.WalletDto;
 import db.service.crypto.exception.AlreadyScoredException;
 import db.service.crypto.exception.NftIsNotPlacedException;
 import db.service.crypto.exception.NftNotFoundException;
-import db.service.crypto.model.NftEntity;
-import db.service.crypto.model.NftLikes;
-import db.service.crypto.model.NftLikesId;
+import db.service.crypto.model.*;
 import db.service.crypto.repository.NftEntityRepository;
 import db.service.crypto.repository.NftLikesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class NftService {
@@ -73,13 +76,36 @@ public class NftService {
         nftLikes.setPk(new NftLikesId(clientService.findByUsername(username),nftEntity));
         nftLikes.setLiked(scoreNftRequestDto.isLiked());
 
-
-
-
     }
 
 
+    public List<NftDto> getAllClientNfts(String clientLogin){
+        List<NftDto> allNftDtos = getAllNfts();
+        List<NftDto> result = new ArrayList<>();
+        for (NftDto nftDto : allNftDtos) {
+            if (nftDto.getOwner().equals(clientLogin)) result.add(nftDto);
+        }
+        return result;
+    }
 
 
+    public List<NftDto> getAllNfts(){
+        List<NftEntity> nfts = nftEntityRepository.findAll();
+        List<NftDto> nftDtos = new ArrayList<>();
 
+        for (NftEntity nft : nfts) {
+            long likes = 0;
+            long dislikes = 0;
+            List<NftLikes> nftLikesRecords;
+            nftLikesRecords = nftLikesRepository.findByPk_NftEntity(nft);
+
+            for (NftLikes nftLikesRecord : nftLikesRecords) {
+                if (nftLikesRecord.isLiked()) likes++;
+                else dislikes++;
+            }
+            nftDtos.add(NftDto.fromNft(nft,likes,dislikes));
+        }
+
+        return nftDtos;
+    }
 }

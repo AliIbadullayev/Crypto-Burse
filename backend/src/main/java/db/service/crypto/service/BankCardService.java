@@ -1,10 +1,14 @@
 package db.service.crypto.service;
 
+import db.service.crypto.dto.BankCardDto;
+import db.service.crypto.dto.WalletDto;
 import db.service.crypto.exception.CardAlreadyExistException;
 import db.service.crypto.exception.IncorrectCardDataException;
 import db.service.crypto.exception.UserAlreadyExistException;
 import db.service.crypto.model.BankCard;
+import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
+import db.service.crypto.model.Wallet;
 import db.service.crypto.repository.BankCardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +16,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -107,4 +113,14 @@ public class BankCardService {
         log.info("IN findByCardName - card: {} found by cardNumber: {}",result,cardNumber);
         return result;
     }
+
+    public List<BankCardDto> getAllClientCards(Client client){
+        List<BankCard> cards = bankCardRepository.findAll();
+        List<BankCardDto> bankCardDtos = new ArrayList<>();
+        for (BankCard card : cards) {
+            if (card.getClient() == client) bankCardDtos.add(BankCardDto.fromCard(card));
+        }
+        return bankCardDtos;
+    }
+
 }

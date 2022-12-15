@@ -1,9 +1,10 @@
 package db.service.crypto.service;
 
 
-import db.service.crypto.dto.TransactionRequestDto;
+import db.service.crypto.dto.TransactionDto;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.BlockchainNetwork;
+import db.service.crypto.model.Client;
 import db.service.crypto.model.Transaction;
 import db.service.crypto.model.Wallet;
 import db.service.crypto.repository.BlockchainNetworkRepository;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -38,14 +41,14 @@ public class TransactionService {
     }
 
     @Transactional
-    public void makeTransaction(TransactionRequestDto transactionRequestDto, String senderUsername) throws InsufficientBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException, SameClientException, IllegalWalletPermissionAttemptException, InvalidAmountException {
-        System.out.println(transactionRequestDto.getWalletFromAddress());
-        System.out.println(transactionRequestDto.getWalletToAddress());
-        System.out.println(transactionRequestDto.getAmount());
-        System.out.println(transactionRequestDto.getBlockchainNetworkName());
+    public void makeTransaction(TransactionDto transactionDto, String senderUsername) throws InsufficientBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException, SameClientException, IllegalWalletPermissionAttemptException, InvalidAmountException {
+        System.out.println(transactionDto.getWalletFromAddress());
+        System.out.println(transactionDto.getWalletToAddress());
+        System.out.println(transactionDto.getAmount());
+        System.out.println(transactionDto.getBlockchainNetworkName());
 
-        String addressTo = transactionRequestDto.getWalletToAddress();
-        String addressFrom = transactionRequestDto.getWalletFromAddress();
+        String addressTo = transactionDto.getWalletToAddress();
+        String addressFrom = transactionDto.getWalletFromAddress();
 
         Wallet walletFrom = findByAddress(addressFrom);
         Wallet walletTo = findByAddress(addressTo);
@@ -59,8 +62,8 @@ public class TransactionService {
 
 
 
-        double amount = transactionRequestDto.getAmount();
-        String blockchainNetworkName = transactionRequestDto.getBlockchainNetworkName();
+        double amount = transactionDto.getAmount();
+        String blockchainNetworkName = transactionDto.getBlockchainNetworkName();
         BlockchainNetwork blockchainNetwork = findByNetworkName(blockchainNetworkName);
 
         if (checkWallets(walletTo,walletFrom,amount,blockchainNetwork.getFee(),senderUsername)){
@@ -137,4 +140,16 @@ public class TransactionService {
     }
 
 
+    public List<TransactionDto> getClientTransactions(Client client) {
+        List<Transaction> transactions = transactionRepository.findAll();
+        List<TransactionDto> transactionDtos = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            if (transaction.getWalletFrom().getClient() == client)
+                transactionDtos.add(TransactionDto.fromTransaction(transaction));
+        }
+
+        return transactionDtos;
+
+    }
 }

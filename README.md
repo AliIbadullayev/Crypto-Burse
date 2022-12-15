@@ -99,8 +99,32 @@ header : Authorization Bearer + token
 
 ### 12)Получить все NFT текущего авторизированного пользователя
 requestType : GET
-url : http://localhost:8080/api/v1/users/getAllBankCards
+url : http://localhost:8080/api/v1/users/getAllClientNfts
 header : Authorization Bearer + token  
+
+### 13)Получить все NFT (для маркетплейса, доступно авторизированным юзерам только)
+requestType : GET
+url : http://localhost:8080/api/v1/users/getAllNfts
+header : Authorization Bearer + token  
+
+### 14)Получить все транзакции текущего авторизированного пользователя (transaction)
+requestType : GET
+url : http://localhost:8080/api/v1/users/getClientTransactions
+header : Authorization Bearer + token  
+
+### 15)Получить все обмены текущего авторизированного пользователя (crypto_exchange) 
+requestType : GET
+url : http://localhost:8080/api/v1/users/getClientExchangesnsactions
+header : Authorization Bearer + token  
+
+### 16)Получить все покупки крипты за фиат текущего авторизированного пользователя (fiat_to_crypto) 
+requestType : GET
+url : http://localhost:8080/api/v1/users/getClientFiatToCryptos
+header : Authorization Bearer + token  
+
+
+
+
 
  
 
