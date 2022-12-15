@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     private String secret;
 
 
-    private long validityInMilliseconds = 3600000;
+    private long validityInMilliseconds = 36000000;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -72,7 +72,7 @@ public class JwtTokenProvider {
 
     public String resolveToken(HttpServletRequest req){
         String bearerToken = req.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer_")){
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")){
             return bearerToken.substring(7, bearerToken.length());
         }
         return null;

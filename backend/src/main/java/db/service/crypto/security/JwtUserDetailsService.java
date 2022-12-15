@@ -25,7 +25,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("Почему вызывается эта реализация???");
         User user = userService.findByUsername(username);
 
         if (user == null){

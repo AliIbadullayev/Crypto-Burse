@@ -10,10 +10,10 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @Column(name="username")
+    @Column
     private String username;
 
-    @Column(name="password")
+    @Column
     private String password;
 
     @Enumerated(EnumType.STRING)

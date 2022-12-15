@@ -1,9 +1,12 @@
 package db.service.crypto.rest;
 
 import db.service.crypto.dto.AuthenticationRequestDto;
+import db.service.crypto.dto.RegistrationRequestDto;
 import db.service.crypto.exception.UserAlreadyExistException;
+import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
+import db.service.crypto.service.ClientService;
 import db.service.crypto.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,18 +32,20 @@ public class AuthenticationRestControllerV1 {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final UserService userService;
+    private final ClientService clientService;
 
     @Autowired
-    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService) {
+    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
+        this.clientService = clientService;
     }
 
     @PostMapping("login")
     public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
-            String username = requestDto.getUsername();
+            String username = requestDto.getUsername().trim();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
             User user = userService.findByUsername(username);
 
@@ -61,14 +66,20 @@ public class AuthenticationRestControllerV1 {
     }
 
     @PostMapping("register")
-    public ResponseEntity<String> register(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity<String> register(@RequestBody RegistrationRequestDto requestDto) {
         try {
 
             User userToAdd = new User();
-            userToAdd.setUsername(requestDto.getUsername());
-            userToAdd.setPassword(requestDto.getPassword());
+            Client clientToAdd = new Client();
+
+            userToAdd.setUsername(requestDto.getUsername().trim());
+            userToAdd.setPassword(requestDto.getPassword().trim());
+            clientToAdd.setUserLogin(requestDto.getUsername().trim());
+            clientToAdd.setName(requestDto.getName().trim());
+            clientToAdd.setSurname(requestDto.getSurname().trim());
 
             userService.register(userToAdd);
+            clientService.createClient(clientToAdd);
 
             return ResponseEntity.ok("Пользователь успешно зарегистрирован");
         } catch (AuthenticationException e) {

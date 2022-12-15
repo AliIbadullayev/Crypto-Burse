@@ -16,7 +16,7 @@ import WalletStacking from "@/components/WalletStacking";
 import WalletHistory from "@/components/WalletHistory";
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes: [
         { path: '/main', component: Main,
             children: [
