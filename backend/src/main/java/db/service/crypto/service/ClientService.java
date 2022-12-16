@@ -36,8 +36,6 @@ public class ClientService {
         Client registeredClient = clientRepository.save(client);
         walletService.createWalletsForUser(client);
 
-
-
         log.info("IN register - user {} successfully registred", registeredClient);
 
         return registeredClient;

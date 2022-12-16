@@ -63,7 +63,7 @@ public class WalletService {
         for (int i = 0; i < cryptoList.size(); i++) {
             Wallet wallet = new Wallet();
             wallet.setAddress(generateId());
-            wallet.setCrypto_name(cryptoList.get(i));
+            wallet.setCryptoName(cryptoList.get(i));
             wallet.setClient(client);
             walletRepository.save(wallet);
         }
@@ -96,7 +96,7 @@ public class WalletService {
 
 
         double amount = fiatToCryptoDto.getAmount();
-        Crypto crypto = findByCryptoName(wallet.getCrypto_name());
+        Crypto crypto = findByCryptoName(wallet.getCryptoName());
 
         if (crypto == null) throw new CryptoNotFoundException("Данная криптовалюта не найдена!");
 
@@ -179,10 +179,11 @@ public class WalletService {
         } else throw new InvalidAmountException("Сумма транзакции не может быть отрицательной");
     }
 
-    public boolean withdrawFromWallet(Wallet wallet, double amount) throws InvalidAmountException {
+    public boolean withdrawFromWallet(Wallet wallet, double amount) throws InvalidAmountException, InsufficientBalanceException {
         if (amount>0){
             double amountBefore = wallet.getAmount();
             double amountAfter = amountBefore-amount;
+            if (amountAfter < 0) throw new InsufficientBalanceException("На балансе кошелька недостаточно средств");
             wallet.setAmount(amountAfter);
             walletRepository.save(wallet);
             log.info("Withdraw wallet with address {}. Amount before: {}. Amount after: {}",wallet.getAddress(),amountBefore,amountAfter);
@@ -223,7 +224,6 @@ public class WalletService {
 
 
         if (amount > 0){
-            System.out.println("Client balance: "+client.getFiatBalance());
             if (client.getFiatBalance()<amount) throw new InsufficientBalanceException("Не достаточно средств на фиатном счёте клиента");
             double amountBefore = client.getFiatBalance();
             double amountAfter = amountBefore - amount;
@@ -233,6 +233,20 @@ public class WalletService {
             return true;
         } else throw new InvalidAmountException("Сумма транзакции не может быть отрицательной");
 
+    }
+
+    public boolean depositFiat(String username,double amount) throws InvalidAmountException {
+
+        Client client = clientRepository.findByUserLogin(username);
+
+        if (amount > 0 && amount <= 1000000000) {
+            double amountBefore = client.getFiatBalance();
+            double amountAfter = amountBefore + amount;
+            client.setFiatBalance(amountAfter);
+            clientRepository.save(client);
+            log.info("Add fiatBalance in client with username {}. Amount before: {}. Amount after: {}",client.getUserLogin(),amountBefore,amountAfter);
+            return true;
+        } else throw new InvalidAmountException("Некорректная сумма пополнения");
     }
 
     public List<WalletDto> getAllClientWallets(Client client){

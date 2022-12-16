@@ -17,7 +17,7 @@ public class WalletDto {
     public static WalletDto fromWallet(Wallet wallet){
         WalletDto walletDto = new WalletDto();
         walletDto.setAddress(wallet.getAddress());
-        walletDto.setCrypto_name(wallet.getCrypto_name());
+        walletDto.setCrypto_name(wallet.getCryptoName());
         walletDto.setAmount(wallet.getAmount());
         return walletDto;
     }

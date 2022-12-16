@@ -41,12 +41,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void makeTransaction(TransactionDto transactionDto, String senderUsername) throws InsufficientBalanceException, WalletNotFoundException, NotSameCryptoInWalletsException, SameClientException, IllegalWalletPermissionAttemptException, InvalidAmountException {
-        System.out.println(transactionDto.getWalletFromAddress());
-        System.out.println(transactionDto.getWalletToAddress());
-        System.out.println(transactionDto.getAmount());
-        System.out.println(transactionDto.getBlockchainNetworkName());
-
+    public void makeTransaction(TransactionDto transactionDto, String senderUsername) throws InsufficientBalanceException, WalletNotFoundException, NotSameCryptoException, SameClientException, IllegalWalletPermissionAttemptException, InvalidAmountException {
         String addressTo = transactionDto.getWalletToAddress();
         String addressFrom = transactionDto.getWalletFromAddress();
 
@@ -85,11 +80,11 @@ public class TransactionService {
 
 
     }
-    private boolean checkWallets(Wallet walletTo, Wallet walletFrom, double amount, double fee, String senderUsername) throws NotSameCryptoInWalletsException, InsufficientBalanceException, IllegalWalletPermissionAttemptException, SameClientException {
+    private boolean checkWallets(Wallet walletTo, Wallet walletFrom, double amount, double fee, String senderUsername) throws NotSameCryptoException, InsufficientBalanceException, IllegalWalletPermissionAttemptException, SameClientException {
 
 
-        if (!walletFrom.getCrypto_name().equals(walletTo.getCrypto_name())){
-            throw new NotSameCryptoInWalletsException("Кошельки соответствуют разным криптовалютам!");
+        if (!walletFrom.getCryptoName().equals(walletTo.getCryptoName())){
+            throw new NotSameCryptoException("Кошельки соответствуют разным криптовалютам!");
         }
 
         if (!checkBalance(walletFrom,amount,fee)) {

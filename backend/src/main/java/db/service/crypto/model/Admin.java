@@ -10,8 +10,8 @@ import javax.persistence.*;
 public class Admin {
 
     @Id
-    @Column
-    private String user_login;
+    @Column(name="user_login")
+    private String userLogin;
 
 
     @OneToOne

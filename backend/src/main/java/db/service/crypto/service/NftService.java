@@ -75,7 +75,7 @@ public class NftService {
         NftLikes nftLikes = new NftLikes();
         nftLikes.setPk(new NftLikesId(clientService.findByUsername(username),nftEntity));
         nftLikes.setLiked(scoreNftRequestDto.isLiked());
-
+        nftLikesRepository.save(nftLikes);
     }
 
 
