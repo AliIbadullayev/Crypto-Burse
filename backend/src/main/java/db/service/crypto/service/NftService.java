@@ -36,8 +36,9 @@ public class NftService {
         this.nftLikesRepository = nftLikesRepository;
         this.clientService = clientService;
     }
-//TODO сделать проверку, что один юзер может поставить только один лайк/дизлайк
-    public void scoreNft(ScoreNftRequestDto scoreNftRequestDto, String username) throws NftNotFoundException, NftIsNotPlacedException, AlreadyScoredException {
+
+
+    public NftDto scoreNft(ScoreNftRequestDto scoreNftRequestDto, String username) throws NftNotFoundException, NftIsNotPlacedException, AlreadyScoredException {
 
         NftEntity nftEntity = nftEntityRepository.findById(scoreNftRequestDto.getNftId()).orElse(null);
 
@@ -48,8 +49,6 @@ public class NftService {
 
         double currentPrice = nftEntity.getPrice();
         double newPrice;
-
-
 
         if (!scoreNftRequestDto.isLiked()) {
             if ((currentPrice - priceChange) < minPrice) newPrice = minPrice;
@@ -70,12 +69,12 @@ public class NftService {
         nftEntity.setPrice(newPrice);
         nftEntityRepository.save(nftEntity);
 
-
-
         NftLikes nftLikes = new NftLikes();
         nftLikes.setPk(new NftLikesId(clientService.findByUsername(username),nftEntity));
         nftLikes.setLiked(scoreNftRequestDto.isLiked());
         nftLikesRepository.save(nftLikes);
+
+        return NftDto.fromNft(nftEntity,getScores(nftEntity)[0],getScores(nftEntity)[1]);
     }
 
 
@@ -89,23 +88,35 @@ public class NftService {
     }
 
 
+
     public List<NftDto> getAllNfts(){
         List<NftEntity> nfts = nftEntityRepository.findAll();
         List<NftDto> nftDtos = new ArrayList<>();
 
         for (NftEntity nft : nfts) {
-            long likes = 0;
-            long dislikes = 0;
-            List<NftLikes> nftLikesRecords;
-            nftLikesRecords = nftLikesRepository.findByPk_NftEntity(nft);
-
-            for (NftLikes nftLikesRecord : nftLikesRecords) {
-                if (nftLikesRecord.isLiked()) likes++;
-                else dislikes++;
+            long[] scores;
+            if (nft.isPlaced()) {
+                scores = getScores(nft);
+                nftDtos.add(NftDto.fromNft(nft, scores[0], scores[1]));
             }
-            nftDtos.add(NftDto.fromNft(nft,likes,dislikes));
         }
 
         return nftDtos;
     }
+
+    public long[] getScores(NftEntity nft){
+        long[] scores = new long[2];
+        //likes  == scores[0]
+        //dislikes == scores[1]
+        List<NftLikes> nftLikesRecords;
+        nftLikesRecords = nftLikesRepository.findByPk_NftEntity(nft);
+
+        for (NftLikes nftLikesRecord : nftLikesRecords) {
+            if (nftLikesRecord.isLiked()) scores[0]++;
+            else scores[1]++;
+        }
+
+        return scores;
+    }
+
 }

@@ -1,13 +1,15 @@
 package db.service.crypto.service;
 
-import db.service.crypto.exception.InsufficientBalanceException;
-import db.service.crypto.exception.InvalidAmountException;
 import db.service.crypto.exception.UserAlreadyExistException;
 import db.service.crypto.model.Client;
+import db.service.crypto.model.Crypto;
 import db.service.crypto.repository.ClientRepository;
+import db.service.crypto.repository.CryptoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -18,10 +20,13 @@ public class ClientService {
 
     private final WalletService walletService;
 
+    private final CryptoRepository cryptoRepository;
+
     @Autowired
-    public ClientService(ClientRepository clientRepository, WalletService walletService) {
+    public ClientService(ClientRepository clientRepository, WalletService walletService, CryptoRepository cryptoRepository) {
         this.clientRepository = clientRepository;
         this.walletService = walletService;
+        this.cryptoRepository = cryptoRepository;
     }
 
 
@@ -56,27 +61,11 @@ public class ClientService {
     }
 
 
-    //TODO Прокинуть исключение InvalidAmountException в ответ на запрос
-    public boolean depositFiat(Client client,double amount){
-        if (amount > 0 && amount <= 1000000) {
-            client.setFiatBalance(client.getFiatBalance()+amount);
-            clientRepository.save(client);
-            return true;
-        } else return false;
+    public List<Crypto> getAllCryptos(){
+        return cryptoRepository.findAll();
     }
 
-    public boolean withdrawFiat(Client client, double amount) throws InvalidAmountException, InsufficientBalanceException {
-        if (amount > 0){
-            if (amount<client.getFiatBalance()) throw new InsufficientBalanceException("Не достаточно средств на фиатном счёте клиента");
-            double amountBefore = client.getFiatBalance();
-            double amountAfter = amountBefore - amount;
-            client.setFiatBalance(amountAfter);
-            clientRepository.save(client);
-            log.info("Reduce fiatBalance in client with username {}. Amount before: {}. Amount after: {}",client.getUserLogin(),amountBefore,amountAfter);
-            return true;
-        } else throw new InvalidAmountException("Сумма транзакции не может быть отрицательной");
 
-    }
 
 
 

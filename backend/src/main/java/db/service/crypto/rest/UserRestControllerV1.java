@@ -110,25 +110,24 @@ public class UserRestControllerV1 {
 
     @PostMapping("depositFiat")
     public ResponseEntity<String> depositFiat(@RequestBody FiatDepositDto fiatDepositDto, HttpServletRequest request){
-
         String username = null;
-
         String token = jwtTokenProvider.resolveToken(request);
         if (token != null){
             username = jwtTokenProvider.getUsername(token);
-
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
-
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
 
 
+        try {
+            walletService.depositFiat(username,fiatDepositDto.getAmount());
+            return new ResponseEntity<>("Транзакция успешно проведена", HttpStatus.OK);
 
-        Client owner = clientService.findByUsername(username);
-        if (owner == null) return new ResponseEntity<>("Такого клиента не существует",HttpStatus.OK);
+        } catch (InvalidAmountException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
 
-        if (clientService.depositFiat(owner, fiatDepositDto.getAmount())) {
-            return new ResponseEntity<>("Фиатный баланс успешно пополнен", HttpStatus.OK);
-        } else return new ResponseEntity<>("Некорректная сумма при пополнении баланса", HttpStatus.OK);
+        }
     }
 
 
@@ -228,7 +227,7 @@ public class UserRestControllerV1 {
 
 
     @PostMapping("scoreNft")
-    public ResponseEntity<String> likeNft(@RequestBody ScoreNftRequestDto scoreNftRequestDto, HttpServletRequest request){
+    public ResponseEntity<?> likeNft(@RequestBody ScoreNftRequestDto scoreNftRequestDto, HttpServletRequest request){
         String username = null;
 
         String token = jwtTokenProvider.resolveToken(request);
@@ -241,8 +240,8 @@ public class UserRestControllerV1 {
 
 
         try {
-            nftService.scoreNft(scoreNftRequestDto, username);
-            return new ResponseEntity<>("NFT успешно оценена", HttpStatus.OK);
+            NftDto nftDto = nftService.scoreNft(scoreNftRequestDto, username);
+            return new ResponseEntity<>(nftDto, HttpStatus.OK);
         } catch (NftNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (NftIsNotPlacedException e) {
@@ -253,7 +252,7 @@ public class UserRestControllerV1 {
     }
 
     @PostMapping("toStake")
-    public ResponseEntity<?> toStake(@RequestBody StackingDto stackingDto, HttpServletRequest request){
+    public ResponseEntity<?> toStake(@RequestBody StackingRequestDto stackingRequestDto, HttpServletRequest request){
         String username = null;
         String token = jwtTokenProvider.resolveToken(request);
         if (token != null){
@@ -264,8 +263,8 @@ public class UserRestControllerV1 {
         if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
 
         try {
-            walletService.toStake(stackingDto,username);
-            return new ResponseEntity<>("Криптовалюта успешно помещена в стейкинг!", HttpStatus.OK);
+            StackingDto stackingDto = walletService.toStake(stackingRequestDto,username);
+            return new ResponseEntity<>(stackingDto, HttpStatus.OK);
         } catch (WalletNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (IllegalWalletPermissionAttemptException e) {
@@ -275,6 +274,8 @@ public class UserRestControllerV1 {
         } catch (InsufficientBalanceException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (StakingIsAlreadyExistException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (IncorrectStakingDurationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
     }
@@ -362,6 +363,21 @@ public class UserRestControllerV1 {
         } catch (SameClientException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
+    }
+
+    @GetMapping("getCryptos")
+    public ResponseEntity<?> getCryptos(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(clientService.getAllCryptos(), HttpStatus.OK);
+
     }
 
     @GetMapping("getAllOffers")
@@ -520,16 +536,27 @@ public class UserRestControllerV1 {
     }
 
 
+    @GetMapping("getStackingByWallet")
+    public ResponseEntity<?> getStackingByWallet(@RequestBody StackingRequestDto stackingRequestDto, HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
 
 
+        try {
+            StackingDto stackingDto = walletService.getWalletStaking(stackingRequestDto.getWalletAddress());
+            return new ResponseEntity<>(stackingDto,HttpStatus.OK);
+        } catch (NoSuchWalletException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (StakingNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
 
-
-
-
-
-
-
-
-
+    }
 
 }

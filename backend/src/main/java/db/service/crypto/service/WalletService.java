@@ -3,6 +3,7 @@ package db.service.crypto.service;
 
 import db.service.crypto.dto.FiatToCryptoDto;
 import db.service.crypto.dto.StackingDto;
+import db.service.crypto.dto.StackingRequestDto;
 import db.service.crypto.dto.WalletDto;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.*;
@@ -117,17 +118,26 @@ public class WalletService {
     }
 
     @Transactional
-    public void toStake(StackingDto stackingDto, String username) throws WalletNotFoundException, IllegalWalletPermissionAttemptException, InvalidAmountException, InsufficientBalanceException, StakingIsAlreadyExistException {
-        String walletAddress = stackingDto.getWalletAddress();
+    public StackingDto toStake(StackingRequestDto stackingRequestDto, String username) throws WalletNotFoundException, IllegalWalletPermissionAttemptException, InvalidAmountException, InsufficientBalanceException, StakingIsAlreadyExistException, IncorrectStakingDurationException {
+        String walletAddress = stackingRequestDto.getWalletAddress();
 
         Wallet wallet = findByAddress(walletAddress);
 
         if (wallet == null) throw new WalletNotFoundException(walletAddress);
         if (!wallet.getClient().getUserLogin().equals(username)) throw new IllegalWalletPermissionAttemptException("Кошелёк должен принадлежать вам!");
 
-        double amount = stackingDto.getAmount();
+        double amount = stackingRequestDto.getAmount();
 
         if (!checkBalance(wallet,amount)) throw new InsufficientBalanceException("Недостаточно средств на балансе кошелька!");
+
+        int years = stackingRequestDto.getYears();
+        long yearsInMilliseconds;
+
+        if (years == 1 || years == 2 || years == 3 || years == 4 || years == 5){
+            yearsInMilliseconds = (long) years * 365 * 24 * 60 * 60 * 1000;
+        } else throw new IncorrectStakingDurationException("Некорректно указан период хранения");
+
+
 
         Stacking testStaking = stackingRepository.findById(walletAddress).orElse(null);
 
@@ -138,8 +148,9 @@ public class WalletService {
         stacking.setAmount(amount);
         stacking.setWalletAddress(walletAddress);
         stacking.setInterestRate(STACKING_INTEREST_RATE);
-        stacking.setExpireDate(new Timestamp(System.currentTimeMillis()+STACKING_DURATION_IN_MILLISECONDS));
+        stacking.setExpireDate(new Timestamp(System.currentTimeMillis()+yearsInMilliseconds));
         stackingRepository.save(stacking);
+        return StackingDto.fromStacking(stacking);
     }
 
     @Transactional
@@ -266,5 +277,13 @@ public class WalletService {
             if (fiatToCrypto.getWallet().getClient() == client) fiatToCryptoDtos.add(FiatToCryptoDto.fromFiatToCrypto(fiatToCrypto));
         }
         return fiatToCryptoDtos;
+    }
+
+    public StackingDto getWalletStaking(String walletAddress) throws NoSuchWalletException, StakingNotFoundException {
+        Wallet wallet = walletRepository.findByAddress(walletAddress);
+        if (wallet == null) throw new NoSuchWalletException("Кошелёк с таким адресом не найден!");
+        Stacking stacking = stackingRepository.findById(walletAddress).orElse(null);
+        if (stacking != null) return StackingDto.fromStacking(stacking);
+        else throw new StakingNotFoundException("По такому адресу не найден депозит");
     }
 }

@@ -7,6 +7,8 @@ import javax.crypto.MacSpi;
 
 @Data
 public class NftDto {
+
+    private Long id;
     private String name;
 
     private double price;
@@ -22,6 +24,7 @@ public class NftDto {
 
     public static NftDto fromNft(NftEntity nftEntity,long likes, long dislikes){
         NftDto nftDto = new NftDto();
+        nftDto.setId(nftEntity.getId());
         nftDto.setName(nftEntity.getName());
         nftDto.setPrice(nftEntity.getPrice());
         nftDto.setPlaced(nftEntity.isPlaced());
