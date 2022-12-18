@@ -20,7 +20,7 @@ export default {
   data(){
     return{
       nfts: [
-        {name: 'Rosey', price: 15.732, rating: 0, placed: true, likes: 121, dislikes: 21, img: 'https://picsum.photos/360/528/?random'},
+        {name: 'Rosey', price: 15.732, rating: 0, placed: true, likes: 121, dislikes: 21, img: 'https://static.1000.menu/img/content-v2/a8/37/39991/kompot-iz-feixoa-na-zimu_1571764837_1_max.jpg'},
         {name: 'Yves', price: 127, rating: 12, placed: true, likes: 121, dislikes: 21, img: 'https://picsum.photos/400/528/?random'},
         {name: 'Sophia', price: 829.3, rating: 142, placed: false, likes: 121, dislikes: 21, img: 'https://picsum.photos/400/528/?random'},
         {name: 'Siren', price: 583, rating: 53, placed: true, likes: 121, dislikes: 21, img: 'https://picsum.photos/400/528/?random'},

@@ -146,7 +146,7 @@ export default {
   name: "Wallets",
   data() {
     return{
-      active: 1,
+      active: 0,
       items: [
         {
           label: 'Пополнение',

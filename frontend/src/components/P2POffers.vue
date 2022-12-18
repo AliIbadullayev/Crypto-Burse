@@ -1,6 +1,6 @@
 <template>
   <div class="p2p-offers">
-    Here is p2p-offers
+    Hello
   </div>
 </template>
 
