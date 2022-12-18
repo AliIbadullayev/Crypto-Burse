@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 
 @Data
 public class StackingDto {
-
     private String walletAddress;
 
     private double interestRate;

@@ -14,6 +14,8 @@ public class CryptoApplication {
 //    TODO: добавить ссылки на картинки в NFT Entity
 //    TODO: get запросы
     //TODO: При добавлении стейкинга добавить проверку, есть ли он уже
+    //TODO: добавить инвалидный токен исключение в ответ на запрос, чтобы не кидало 500 интернал сервер ерор
+
 
     public static void main(String[] args) {
         SpringApplication.run(CryptoApplication.class, args);

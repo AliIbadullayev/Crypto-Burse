@@ -55,8 +55,8 @@ public class ExchangeService {
         double amount = exchangeDto.getAmount();
 
         if (checkWallets(walletFrom,walletTo,amount,ownerUsername)){
-            Crypto cryptoFrom = findByCryptoName(walletFrom.getCrypto_name());
-            Crypto cryptoTo = findByCryptoName(walletTo.getCrypto_name());
+            Crypto cryptoFrom = findByCryptoName(walletFrom.getCryptoName());
+            Crypto cryptoTo = findByCryptoName(walletTo.getCryptoName());
             double amountInFiat = amount * cryptoFrom.getExchange_rate();
             double cryptoToAmount = amountInFiat / cryptoTo.getExchange_rate();
             walletService.withdrawFromWallet(walletFrom,amount);
@@ -77,7 +77,7 @@ public class ExchangeService {
             throw new IllegalWalletPermissionAttemptException("Оба кошелька должны принадлежать вам!");
         }
 
-        if (walletFrom.getCrypto_name().equals(walletTo.getCrypto_name())){
+        if (walletFrom.getCryptoName().equals(walletTo.getCryptoName())){
             throw new SameCryptoInWalletsException("Кошельки соответствуют одной криптовалюте!");
         }
 

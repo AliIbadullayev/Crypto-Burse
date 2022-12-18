@@ -58,6 +58,7 @@ public class AuthenticationRestControllerV1 {
             Map<Object, Object> response = new HashMap<>();
             response.put("username", username);
             response.put("token", token);
+            response.put("role", user.getRole());
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {

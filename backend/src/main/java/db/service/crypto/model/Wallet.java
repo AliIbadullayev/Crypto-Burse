@@ -17,7 +17,7 @@ public class Wallet {
     private double amount;
 
     @Column
-    private String crypto_name;
+    private String cryptoName;
 
 
 
