@@ -4,7 +4,6 @@ import db.service.crypto.dto.*;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.BankCard;
 import db.service.crypto.model.Client;
-import db.service.crypto.model.P2PTransaction;
 import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.*;
@@ -244,7 +243,7 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>(nftDto, HttpStatus.OK);
         } catch (NftNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
-        } catch (NftIsNotPlacedException e) {
+        } catch (NftPlacingException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (AlreadyScoredException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
@@ -361,6 +360,57 @@ public class UserRestControllerV1 {
         } catch (InsufficientBalanceException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         } catch (SameClientException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("buyNft")
+    public ResponseEntity<?> buyNft(@RequestBody NftDto nftDto, HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        try {
+            nftDto = nftService.buyNft(nftDto, client);
+            return new ResponseEntity<>(nftDto, HttpStatus.OK);
+        } catch (NftPlacingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (NftNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (NftOwnerException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InvalidAmountException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (InsufficientBalanceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("sellNft")
+    public ResponseEntity<?> sellNft(@RequestBody NftDto nftDto, HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+
+        try {
+            nftDto = nftService.sellNft(nftDto,client);
+            return new ResponseEntity<>(nftDto, HttpStatus.OK);
+        } catch (NftPlacingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (NftOwnerException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+        } catch (NftNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
     }

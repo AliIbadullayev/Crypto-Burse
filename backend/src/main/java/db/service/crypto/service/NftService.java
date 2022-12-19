@@ -3,10 +3,7 @@ package db.service.crypto.service;
 
 import db.service.crypto.dto.NftDto;
 import db.service.crypto.dto.ScoreNftRequestDto;
-import db.service.crypto.dto.WalletDto;
-import db.service.crypto.exception.AlreadyScoredException;
-import db.service.crypto.exception.NftIsNotPlacedException;
-import db.service.crypto.exception.NftNotFoundException;
+import db.service.crypto.exception.*;
 import db.service.crypto.model.*;
 import db.service.crypto.repository.NftEntityRepository;
 import db.service.crypto.repository.NftLikesRepository;
@@ -23,6 +20,8 @@ public class NftService {
     private final NftEntityRepository nftEntityRepository;
     private final NftLikesRepository nftLikesRepository;
 
+    private final WalletService walletService;
+
     private final ClientService clientService;
 
 
@@ -31,21 +30,22 @@ public class NftService {
 
 
     @Autowired
-    public NftService(NftEntityRepository nftEntityRepository, NftLikesRepository nftLikesRepository, ClientService clientService) {
+    public NftService(NftEntityRepository nftEntityRepository, NftLikesRepository nftLikesRepository, WalletService walletService, ClientService clientService) {
         this.nftEntityRepository = nftEntityRepository;
         this.nftLikesRepository = nftLikesRepository;
+        this.walletService = walletService;
         this.clientService = clientService;
     }
 
 
-    public NftDto scoreNft(ScoreNftRequestDto scoreNftRequestDto, String username) throws NftNotFoundException, NftIsNotPlacedException, AlreadyScoredException {
+    public NftDto scoreNft(ScoreNftRequestDto scoreNftRequestDto, String username) throws NftNotFoundException, NftPlacingException, AlreadyScoredException {
 
         NftEntity nftEntity = nftEntityRepository.findById(scoreNftRequestDto.getNftId()).orElse(null);
 
         if (nftEntity == null) throw new NftNotFoundException("Вы пытаетесь оценить несуществующую NFT");
 
 
-        if (!nftEntity.isPlaced()) throw new NftIsNotPlacedException("Данная NFT не размещена на маркетплейсе");
+        if (!nftEntity.isPlaced()) throw new NftPlacingException("Данная NFT не размещена на маркетплейсе");
 
         double currentPrice = nftEntity.getPrice();
         double newPrice;
@@ -122,4 +122,38 @@ public class NftService {
         return scores;
     }
 
+    public NftDto buyNft(NftDto nftDto, Client client) throws NftPlacingException, NftNotFoundException, NftOwnerException, InvalidAmountException, InsufficientBalanceException {
+        NftEntity nftEntity = nftEntityRepository.findById(nftDto.getId()).orElse(null);
+
+
+        if (nftEntity == null) throw new NftNotFoundException("Нет NFT с таким ID!");
+
+        if (!nftEntity.isPlaced()) throw new NftPlacingException("Вы не можете купить неразмещённую NFT");
+
+        if (nftEntity.getClient() == client) throw new NftOwnerException("NFT уже принадлежит вам!");
+
+
+        walletService.withdrawFiat(client.getUserLogin(),nftEntity.getPrice());
+        nftEntity.setClient(client);
+        nftEntity.setPlaced(false);
+        nftEntityRepository.save(nftEntity);
+
+        return NftDto.fromNft(nftEntity,getScores(nftEntity)[0],getScores(nftEntity)[1]);
+    }
+
+    public NftDto sellNft(NftDto nftDto, Client client) throws NftPlacingException, NftOwnerException, NftNotFoundException {
+        NftEntity nftEntity = nftEntityRepository.findById(nftDto.getId()).orElse(null);
+
+        if (nftEntity == null) throw new NftNotFoundException("Нет NFT с таким ID!");
+
+        if (nftEntity.isPlaced()) throw new NftPlacingException("NFT уже размещена на продажу");
+
+        if (nftEntity.getClient() != client) throw new NftOwnerException("NFT не принадлежит вам!");
+
+        nftEntity.setPlaced(true);
+
+        nftEntityRepository.save(nftEntity);
+
+        return NftDto.fromNft(nftEntity,getScores(nftEntity)[0],getScores(nftEntity)[1]);
+    }
 }
