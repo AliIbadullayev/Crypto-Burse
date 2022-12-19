@@ -13,6 +13,8 @@ public class NftDto {
 
     private double price;
 
+    private String url;
+
     private boolean placed;
 
     private long likes;
@@ -29,6 +31,7 @@ public class NftDto {
         nftDto.setPrice(nftEntity.getPrice());
         nftDto.setPlaced(nftEntity.isPlaced());
         nftDto.setOwner(nftEntity.getClient().getUserLogin());
+        nftDto.setUrl(nftEntity.getUrl());
         nftDto.setLikes(likes);
         nftDto.setDislikes(dislikes);
         return nftDto;
