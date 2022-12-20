@@ -21,6 +21,8 @@ public class NftEntity {
 
     private boolean placed;
 
+    private String url;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client")
     private Client client;
