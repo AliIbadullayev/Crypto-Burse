@@ -50,7 +50,7 @@
             </span>
           </div>
           <div class="exchange-button">
-            <Button label="Обменять" icon="pi pi-check" />
+            <Button label="Обменять" icon="pi pi-check" @click="onExchange" />
           </div>
         </template>
       </Card>
@@ -84,7 +84,7 @@ export default {
     }
   },
   methods: {
-    onClickNew($event){
+    onExchange($event){
       this.exchangeForm.wallet1 = this.exchangeForm.wallet1.name
       alert(JSON.stringify((this.exchangeForm)))
     }

@@ -171,8 +171,6 @@ public class WalletService {
 
         depositWallet(wallet,stackingToFree.getAmount()*stackingToFree.getInterestRate());
         stackingRepository.delete(stackingToFree);
-
-
     }
 
     private boolean checkBalance(Wallet wallet, double amount){

@@ -14,7 +14,7 @@ import 'primeicons/primeicons.css';
 import Button from "primevue/button";
 
 import {
-    faArrowDown,
+    faArrowDown, faCirclePlus,
     faCircleQuestion, faDollarSign,
     faRightFromBracket,
     faRotate,
@@ -36,10 +36,12 @@ import TabMenu from "primevue/tabmenu";
 import ScrollPanel from "primevue/scrollpanel";
 import InputMask from "primevue/inputmask";
 import Calendar from "primevue/calendar";
+import axios from "axios";
+import Badge from "primevue/badge";
 
 const app = createApp(App)
 
-library.add(faUserSecret, faUser, faUsers, faRotate, faStore, faCircleQuestion, faRightFromBracket, faDollarSign, faArrowDown)
+library.add(faUserSecret, faUser, faUsers, faRotate, faStore, faCircleQuestion, faRightFromBracket, faDollarSign, faArrowDown, faCirclePlus)
 app.use(PrimeVue).use(router)
 
 app.component('Card', Card)
@@ -56,9 +58,15 @@ app.component('TabMenu', TabMenu)
 app.component('ScrollPanel', ScrollPanel)
 app.component('InputMask', InputMask)
 app.component('Calendar', Calendar)
+app.component('Badge', Badge)
 app.directive('tooltip', Tooltip)
 
+// axios.defaults.baseURL = 'http://localhost:8080/api/v1';
+axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YXNzaWxpeSIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzE1MTU0OTcsImV4cCI6MTY3MTU1MTQ5N30.5cQga0cIKVuyXpMXR5QQZ6qtinvNvlj5BRHKhAoTCLY'
+axios.defaults.headers.common['Access-Control-Allow-Origin']= '*'
+axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
 
+axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token'
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 

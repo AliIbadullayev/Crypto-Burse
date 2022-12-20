@@ -87,7 +87,7 @@ public class UserRestControllerV1 {
         Client owner = clientService.findByUsername(username);
 
 
-        if (owner == null) return new ResponseEntity<>("Такого клиента не существует",HttpStatus.OK);
+        if (owner == null) return new ResponseEntity<>("Такого клиента не существует",HttpStatus.BAD_REQUEST);
 
 
         BankCard bankCardToAdd = new BankCard();
@@ -102,9 +102,9 @@ public class UserRestControllerV1 {
             bankCardService.addCard(bankCardToAdd);
             return new ResponseEntity<>("Карта успешно добавлена",HttpStatus.OK);
         } catch (CardAlreadyExistException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IncorrectCardDataException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -117,7 +117,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
 
         try {
@@ -125,7 +125,7 @@ public class UserRestControllerV1 {
             return new ResponseEntity<>("Транзакция успешно проведена", HttpStatus.OK);
 
         } catch (InvalidAmountException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
         }
     }
@@ -149,17 +149,17 @@ public class UserRestControllerV1 {
             transactionService.makeTransaction(transactionDto, username);
             return new ResponseEntity<>("Транзакция успешно проведена", HttpStatus.OK);
         } catch (InsufficientBalanceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (WalletNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (NotSameCryptoException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (SameClientException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalWalletPermissionAttemptException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InvalidAmountException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -181,15 +181,15 @@ public class UserRestControllerV1 {
             exchangeService.makeExchange(exchangeDto,username);
             return new ResponseEntity<>("Обмен успешно проведён", HttpStatus.OK);
         } catch (WalletNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (SameCryptoInWalletsException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InsufficientBalanceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalWalletPermissionAttemptException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InvalidAmountException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
 
@@ -212,15 +212,15 @@ public class UserRestControllerV1 {
             walletService.fiatToCrypto(fiatToCryptoDto,username);
             return new ResponseEntity<>("Обмен успешно проведён", HttpStatus.OK);
         } catch (WalletNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalWalletPermissionAttemptException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (CryptoNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InvalidAmountException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InsufficientBalanceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -243,11 +243,11 @@ public class UserRestControllerV1 {
             NftDto nftDto = nftService.scoreNft(scoreNftRequestDto, username);
             return new ResponseEntity<>(nftDto, HttpStatus.OK);
         } catch (NftNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (NftIsNotPlacedException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (AlreadyScoredException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -260,23 +260,23 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         try {
             StackingDto stackingDto = walletService.toStake(stackingRequestDto,username);
             return new ResponseEntity<>(stackingDto, HttpStatus.OK);
         } catch (WalletNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalWalletPermissionAttemptException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InvalidAmountException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InsufficientBalanceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (StakingIsAlreadyExistException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IncorrectStakingDurationException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -289,21 +289,21 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         try {
             walletService.freeStake(stackingDto,username);
             return new ResponseEntity<>("Стейкинг успешно вернул вам дивиденды!", HttpStatus.OK);
         } catch (WalletNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalWalletPermissionAttemptException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (StakeIsNotReadyYetException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (StakingNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InvalidAmountException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -316,25 +316,25 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         try {
             p2pDto = p2pService.postOffer(p2pDto,username);
             return new ResponseEntity<>(p2pDto, HttpStatus.OK);
         } catch (WalletNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (IllegalWalletPermissionAttemptException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (CryptoNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InvalidAmountException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InvalidOperationTypeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (NotSameCryptoException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InsufficientBalanceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -347,21 +347,21 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         try {
             p2pDto = p2pService.respondToOffer(p2pDto,client);
             return new ResponseEntity<>(p2pDto, HttpStatus.OK);
         } catch (NoSuchP2POfferException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (NoSuchWalletException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InvalidAmountException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (InsufficientBalanceException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (SameClientException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -374,7 +374,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(clientService.getAllCryptos(), HttpStatus.OK);
 
@@ -389,10 +389,10 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
 
-        return new ResponseEntity<>(p2pService.getAllOffers(), HttpStatus.OK);
+        return new ResponseEntity<>(p2pService.getAllOffers(username), HttpStatus.OK);
     }
 
     @GetMapping("getAllMyP2P")
@@ -404,7 +404,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
 
         return new ResponseEntity<>(p2pService.getAllClientP2P(client), HttpStatus.OK);
@@ -427,7 +427,7 @@ public class UserRestControllerV1 {
 
         Client client = clientService.findByUsername(username);
 
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         ClientInfoDto result = ClientInfoDto.fromUser(client);
 
@@ -443,7 +443,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(walletService.getAllClientWallets(client), HttpStatus.OK);
 
@@ -458,7 +458,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(bankCardService.getAllClientCards(client), HttpStatus.OK);
     }
@@ -472,7 +472,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(nftService.getAllClientNfts(username), HttpStatus.OK);
     }
@@ -486,7 +486,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(nftService.getAllNfts(), HttpStatus.OK);
     }
@@ -502,7 +502,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(transactionService.getClientTransactions(client), HttpStatus.OK);
     }
@@ -516,7 +516,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(exchangeService.getClientExchanges(client), HttpStatus.OK);
     }
@@ -530,7 +530,7 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(walletService.getClientFiatToCryptos(client), HttpStatus.OK);
     }
@@ -545,16 +545,16 @@ public class UserRestControllerV1 {
         } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
         if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
 
         try {
             StackingDto stackingDto = walletService.getWalletStaking(stackingRequestDto.getWalletAddress());
             return new ResponseEntity<>(stackingDto,HttpStatus.OK);
         } catch (NoSuchWalletException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (StakingNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
     }

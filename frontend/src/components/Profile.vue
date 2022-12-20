@@ -63,7 +63,7 @@
   <div class="bank-card-block">
     <Card class="custom-card bank-card">
       <template #content>
-        <div class="card-fields">
+        <form class="card-fields">
           <div class="field ">
             <label for="number">Номер карты</label>
             <InputMask id="number" mask="9999 9999 9999 9999" v-model="card.cardNumber" placeholder="1234 5678 8765 4321"/>
@@ -77,10 +77,10 @@
             <Calendar inputId="monthpicker" v-model="card.cardDate" view="month" dateFormat="mm/y" placeholder="9/24"/>
           </div>
           <div class="field ">
-            <label for="cvv">Номер карты</label>
+            <label for="cvv">Номер арты</label>
             <InputNumber id="cvv" mode="decimal" :useGrouping="false" v-model="card.cardCvv" :min="0" :max="9999" placeholder="1234"/>
           </div>
-        </div>
+        </form>
       </template>
     </Card>
   </div>

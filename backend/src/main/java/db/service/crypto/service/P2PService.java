@@ -136,12 +136,13 @@ public class P2PService {
         return result;
     }
 
-    public List<P2PDto> getAllOffers(){
+    public List<P2PDto> getAllOffers(String username){
         List<P2PTransaction> p2pTransactions= p2pRepository.findAll();
         List<P2PDto> p2pDtos = new ArrayList<>();
 
         for (P2PTransaction p2pTransaction : p2pTransactions) {
-            if (p2pTransaction.getP2pTransactionStatus().equals(P2PTransactionStatus.PARTNER_WAITING))
+            String p2pTransactionUsername = p2pTransaction.getWalletOne().getClient().getUserLogin();
+            if (p2pTransaction.getP2pTransactionStatus().equals(P2PTransactionStatus.PARTNER_WAITING) && !username.equals(p2pTransactionUsername))
                 p2pDtos.add(P2PDto.fromP2PTransaction(p2pTransaction));
         }
 
