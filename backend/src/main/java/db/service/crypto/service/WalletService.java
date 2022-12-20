@@ -10,6 +10,8 @@ import db.service.crypto.model.*;
 import db.service.crypto.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,20 +53,26 @@ public class WalletService {
         this.stackingRepository = stackingRepository;
     }
 
-    static ArrayList<String> cryptoList = new ArrayList<>(
-            Arrays.asList("Bitcoin",
-                    "Ethereum",
-                    "Litecoin",
-                    "Tether",
-                    "Shibacoin"));
 
+    @EventListener(ApplicationReadyEvent.class)
+    public void initializeCryptos(){
+        List<Crypto> cryptos = new ArrayList<>();
+        cryptos.add(new Crypto("Bitcoin",31286.7));
+        cryptos.add(new Crypto("Ethereum",12034.75));
+        cryptos.add(new Crypto("Litecoin",280.9));
+        cryptos.add(new Crypto("Tether",1.01));
+        cryptos.add(new Crypto("Shibacoin",0.000009927));
+        cryptoRepository.saveAll(cryptos);
+    }
 
     public void createWalletsForUser(Client client){
+        List<Crypto> cryptoList;
+        cryptoList = cryptoRepository.findAll();
 
         for (int i = 0; i < cryptoList.size(); i++) {
             Wallet wallet = new Wallet();
             wallet.setAddress(generateId());
-            wallet.setCryptoName(cryptoList.get(i));
+            wallet.setCryptoName(cryptoList.get(i).getName());
             wallet.setClient(client);
             walletRepository.save(wallet);
         }

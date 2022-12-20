@@ -396,22 +396,48 @@ public class UserRestControllerV1 {
         String token = jwtTokenProvider.resolveToken(request);
         if (token != null){
             username = jwtTokenProvider.getUsername(token);
-        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
-        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.BAD_REQUEST);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.BAD_REQUEST);
         Client client = clientService.findByUsername(username);
-        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
 
         try {
             nftDto = nftService.sellNft(nftDto,client);
             return new ResponseEntity<>(nftDto, HttpStatus.OK);
         } catch (NftPlacingException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (NftOwnerException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (NftNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("returnNft")
+    public ResponseEntity<?> returnNft(@RequestBody NftDto nftDto, HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.BAD_REQUEST);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.BAD_REQUEST);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
+
+
+        try {
+            nftDto = nftService.returnNft(nftDto,client);
+            return new ResponseEntity<>(nftDto, HttpStatus.OK);
+        } catch (NftNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NftPlacingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NftOwnerException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
     @GetMapping("getCryptos")
@@ -435,8 +461,8 @@ public class UserRestControllerV1 {
         String token = jwtTokenProvider.resolveToken(request);
         if (token != null){
             username = jwtTokenProvider.getUsername(token);
-        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
-        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.BAD_REQUEST);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.BAD_REQUEST);
         Client client = clientService.findByUsername(username);
         if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
@@ -450,8 +476,8 @@ public class UserRestControllerV1 {
         String token = jwtTokenProvider.resolveToken(request);
         if (token != null){
             username = jwtTokenProvider.getUsername(token);
-        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
-        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.BAD_REQUEST);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.BAD_REQUEST);
         Client client = clientService.findByUsername(username);
         if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 

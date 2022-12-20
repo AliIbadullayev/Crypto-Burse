@@ -156,4 +156,21 @@ public class NftService {
 
         return NftDto.fromNft(nftEntity,getScores(nftEntity)[0],getScores(nftEntity)[1]);
     }
+
+    public NftDto returnNft(NftDto nftDto, Client client) throws NftNotFoundException, NftPlacingException, NftOwnerException {
+        NftEntity nftEntity = nftEntityRepository.findById(nftDto.getId()).orElse(null);
+
+
+        if (nftEntity == null) throw new NftNotFoundException("Нет NFT с таким ID!");
+
+        if (!nftEntity.isPlaced()) throw new NftPlacingException("NFT итак не размещена!");
+
+        if (nftEntity.getClient() != client) throw new NftOwnerException("NFT не принадлежит вам!");
+
+        nftEntity.setPlaced(false);
+
+        nftEntityRepository.save(nftEntity);
+
+        return NftDto.fromNft(nftEntity,getScores(nftEntity)[0],getScores(nftEntity)[1]);
+    }
 }

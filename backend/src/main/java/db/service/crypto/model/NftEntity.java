@@ -1,6 +1,7 @@
 package db.service.crypto.model;
 
 
+import com.sun.istack.NotNull;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class NftEntity {
 
     @Column(name = "nft_name")
     private String name;
+
     private double price;
 
     private boolean placed;

@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Data
 public class Wallet {
     @Id
-
     private String address;
 
     @Column

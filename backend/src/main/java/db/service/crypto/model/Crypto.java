@@ -11,6 +11,12 @@ import javax.persistence.Table;
 @Data
 public class Crypto {
 
+
+    public Crypto(String name, double exchange_rate) {
+        this.name = name;
+        this.exchange_rate = exchange_rate;
+    }
+
     @Id
     @Column
     private String name;
@@ -18,4 +24,7 @@ public class Crypto {
     @Column
     private double exchange_rate;
 
+    public Crypto() {
+
+    }
 }

@@ -189,8 +189,17 @@ public class P2PService {
 
         for (P2PTransaction p2PTransaction : p2PTransactions) {
 
-            if (p2PTransaction.getWalletOne().getClient() == client || (p2PTransaction.getWalletTwo() != null &&(p2PTransaction.getWalletTwo().getClient() == client)))
+
+            if (p2PTransaction.getWalletOne().getClient() == client){
                 p2PDtos.add(P2PDto.fromP2PTransaction(p2PTransaction));
+
+            } else if (p2PTransaction.getWalletTwo() != null &&(p2PTransaction.getWalletTwo().getClient() == client)){
+                OperationType operationType = p2PTransaction.getOperationType();
+                if (operationType.equals(OperationType.BUY_CRYPTO)) operationType = OperationType.SELL_CRYPTO;
+                else operationType = OperationType.BUY_CRYPTO;
+                p2PTransaction.setOperationType(operationType);
+                p2PDtos.add(P2PDto.fromP2PTransaction(p2PTransaction));
+            }
         }
 
         return p2PDtos;
