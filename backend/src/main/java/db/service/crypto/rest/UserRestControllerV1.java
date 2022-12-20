@@ -2,10 +2,7 @@ package db.service.crypto.rest;
 
 import db.service.crypto.dto.*;
 import db.service.crypto.exception.*;
-import db.service.crypto.model.BankCard;
-import db.service.crypto.model.Client;
-import db.service.crypto.model.P2PTransaction;
-import db.service.crypto.model.User;
+import db.service.crypto.model.*;
 import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 
 @RestController
@@ -243,10 +241,10 @@ public class UserRestControllerV1 {
             NftDto nftDto = nftService.scoreNft(scoreNftRequestDto, username);
             return new ResponseEntity<>(nftDto, HttpStatus.OK);
         } catch (NftNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
-        } catch (NftIsNotPlacedException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (AlreadyScoredException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (NftPlacingException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -610,4 +608,18 @@ public class UserRestControllerV1 {
 
     }
 
+    @GetMapping("getCryptoExchangeRates")
+    public ResponseEntity<?> getCryptoExchangesRate(HttpServletRequest request){
+        String username;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
+
+        List<Crypto> cryptoList = exchangeService.getCryptosExchangeRates();
+        return new ResponseEntity<>(cryptoList ,HttpStatus.OK);
+    }
 }

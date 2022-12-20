@@ -38,6 +38,7 @@ import InputMask from "primevue/inputmask";
 import Calendar from "primevue/calendar";
 import axios from "axios";
 import Badge from "primevue/badge";
+import Password from "primevue/password";
 
 const app = createApp(App)
 
@@ -59,10 +60,11 @@ app.component('ScrollPanel', ScrollPanel)
 app.component('InputMask', InputMask)
 app.component('Calendar', Calendar)
 app.component('Badge', Badge)
+app.component('Password', Password)
 app.directive('tooltip', Tooltip)
 
 // axios.defaults.baseURL = 'http://localhost:8080/api/v1';
-axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YXNzaWxpeSIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzE1MTU0OTcsImV4cCI6MTY3MTU1MTQ5N30.5cQga0cIKVuyXpMXR5QQZ6qtinvNvlj5BRHKhAoTCLY'
+axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcxNTUxNjk0LCJleHAiOjE2NzE1ODc2OTR9.u6mRd_h7xanVMGMZGpV7_HTYWAV5Pv0plMfiJpQ0KiQ'
 axios.defaults.headers.common['Access-Control-Allow-Origin']= '*'
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
 

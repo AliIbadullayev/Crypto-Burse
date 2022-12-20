@@ -83,6 +83,11 @@
         <template #content>
           <div class="wallet-table">
             <h2 class="wallet-header">NFT кошельки</h2>
+<!--            <div class="add-button">-->
+<!--              <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="openAddBankCard">-->
+<!--                <font-awesome-icon icon="fa-solid fa-circle-plus" size="3x" style="color: #183153"/>-->
+<!--              </Button>-->
+<!--            </div>-->
             <DataTable :value="nfts" v-model:selection="selectedNft" selectionMode="single"  @rowSelect="onNftSelect"  :scrollable="true"  responsiveLayout="scroll" scrollHeight="70vh">
               <Column field="name" header="Название">
                 <template #body="slot">
@@ -137,6 +142,45 @@
         </template>
       </Card>
     </div>
+<!--  <div class="dialog-bank-card">-->
+<!--    <Dialog class="dialog-bank-card-main" :closable="false" v-model:visible="this.bankCardDialogVisible" :style="{width: '75vw'}"  :modal="true" :contentStyle="{height: '75vh'}">-->
+<!--      <template #header>-->
+<!--        <div class="bank-card-dialog-header">-->
+<!--          <div class="header-block">-->
+<!--            <h3>-->
+<!--              Добавление банковской карты-->
+<!--            </h3>-->
+<!--          </div>-->
+<!--          <div class="exit-button">-->
+<!--            <Button icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text" @click="close"/>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </template>-->
+<!--      <div class="card">-->
+<!--        <form class="card-fields">-->
+<!--          <div class="field ">-->
+<!--            <label for="number">Номер карты</label>-->
+<!--            <InputMask id="number" mask="9999999999999999" v-model="card.cardNumber" placeholder="1234 5678 8765 4321"/>-->
+<!--          </div>-->
+<!--          <div class="field ">-->
+<!--            <label for="name">Имя и фамилия владельца карты</label>-->
+<!--            <InputText id="name" v-model="card.nameOnCard" placeholder="Иван Иванов" type="text" />-->
+<!--          </div>-->
+<!--          <div class="field ">-->
+<!--            <label for="monthpicker">Month Picker</label>-->
+<!--            <Calendar inputId="monthpicker" v-model="card.expireDate" view="month" dateFormat="mm/y" placeholder="9/24"/>-->
+<!--          </div>-->
+<!--          <div class="field ">-->
+<!--            <label for="cvv">СVV</label>-->
+<!--            <InputNumber id="cvv" mode="decimal" :useGrouping="false" v-model="card.cvv" :min="100" :max="999" placeholder="123"/>-->
+<!--          </div>-->
+<!--          <div class="bank-card-button">-->
+<!--            <Button label="Разместить предложение" icon="pi pi-check" @click="addBankCard"/>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </Dialog>-->
+<!--  </div>-->
 </div>
 
 </template>
@@ -283,15 +327,6 @@ width: 94%;
 
 .wallets-block-card, .nft-block-card{
 border-radius: 15px;
-}
-
-
-
-.dialog-wallet-main::v-deep .p-dialog-content {
-/*display: flex;*/
-/*flex-direction: column;*/
-/*!*align-items: center;!* Rectangle 1 *!*!*/
-/*height: 100%;*/
 }
 
 </style>

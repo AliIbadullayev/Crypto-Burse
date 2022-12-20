@@ -157,7 +157,7 @@ export default {
     postP2PTransaction(){
       axios.post('/api/v1/users/postOffer', this.formP2PTransaction)
           .then(() => {
-
+            this.p2pTransactionDialogVisible = false;
           })
           .catch((err)=>{
             alert(err.response.data)

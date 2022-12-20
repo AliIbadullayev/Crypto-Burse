@@ -5,11 +5,11 @@
         <template #content>
           <div class="crypto-one">
             <h3>Криптовалюта №1</h3>
-            <Listbox v-model="exchangeForm.wallet1" :options="cryptos" :filter="true" optionLabel="name" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="Search">
+            <Listbox v-model="wallet1" :options="wallets" :filter="true" optionLabel="crypto_name" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="Search" @change="changeWallet1">
               <template #option="slotProps">
                 <div class="crypto-item">
-                  <div>{{slotProps.option.name}}</div>
-                  <div>{{slotProps.option.value}}</div>
+                  <div>{{slotProps.option.crypto_name}}</div>
+                  <div>{{slotProps.option.amount.toFixed(5)}}</div>
                 </div>
               </template>
             </Listbox>
@@ -19,11 +19,11 @@
           </div>
           <div class="crypto-two">
             <h3>Криптовалюта №2</h3>
-            <Listbox v-model="exchangeForm.wallet2" :options="cryptos" :filter="true"  optionLabel="name" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="Search">
+            <Listbox v-model="wallet2" :options="wallets" :filter="true"  optionLabel="crypto_name" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="Search" @change="changeWallet2">
               <template #option="slotProps">
                 <div class="crypto-item">
-                  <div>{{slotProps.option.name}}</div>
-                  <div>{{slotProps.option.value}}</div>
+                  <div>{{slotProps.option.crypto_name}}</div>
+                  <div>{{slotProps.option.amount.toFixed(5)}}</div>
                 </div>
               </template>
             </Listbox>
@@ -36,7 +36,7 @@
         <template #content>
           <div class="field-1">
             <span class="p-float-label">
-              <InputNumber id="inputcrypto1" v-model="exchangeForm.amount" :maxFractionDigits="5" />
+              <InputNumber id="inputcrypto1" v-model="exchangeForm.amount" :maxFractionDigits="5"  />
               <label for="inputcrypto1">Количество крипты №1 </label>
             </span>
           </div>
@@ -44,10 +44,11 @@
             <font-awesome-icon icon="fa-solid fa-arrow-down" size="2x" style="color: #183153"/>
           </div>
           <div class="field-2">
-            <span class="p-float-label">
-              <InputNumber id="inputnumber" v-model="amountCrypto2" :maxFractionDigits="5" disabled="disabled" />
-              <label for="inputnumber">Количество крипты №2 </label>
-            </span>
+<!--            <span class="p-float-label">-->
+<!--              <InputNumber id="inputnumber" v-model="onAmountInput" :maxFractionDigits="5" disabled="disabled" />-->
+              <small style="display: block">Количество крипты №2 </small>
+<!--            </span>-->
+            {{wallet1 != null && wallet2 != null? (exchangeForm.amount*getExchange(wallet1.crypto_name)/getExchange(wallet2.crypto_name)).toFixed(5): 0}}
           </div>
           <div class="exchange-button">
             <Button label="Обменять" icon="pi pi-check" @click="onExchange" />
@@ -60,34 +61,62 @@
 
 <script>
 import Nav from "@/components/Nav";
+import axios from "axios";
 export default {
   name: "Exchange",
   components: {Nav},
   data(){
     return{
       exchangeForm:{
-        wallet1: null,
-        wallet2: null,
-        amount: null
+        "walletToAddress": null,
+        "walletFromAddress": null,
+        "amount": null
       },
 
       amountCrypto1: 6.23,
       amountCrypto2: 1.98232,
 
-      cryptos: [
-        {name: 'Bitcoin', value: 2.843},
-        {name: 'ShibaCoin', value: 1000129},
-        {name: 'Ethereum', value: 10.383},
-        {name: 'DentCoin', value: 1002},
-        {name: 'LiteCoin', value: 0.837},
-      ],
+      wallets: [],
+      exchangeRates: [],
+      wallet1: null,
+      wallet2: null,
     }
   },
   methods: {
-    onExchange($event){
-      this.exchangeForm.wallet1 = this.exchangeForm.wallet1.name
-      alert(JSON.stringify((this.exchangeForm)))
+    onExchange(){
+      axios.post('/api/v1/users/exchangeCrypto', this.exchangeForm)
+          .then(() => {
+            this.fetchWalletsAndExchanges()
+          })
+          .catch((err)=>{
+            alert(err.response.data)
+          })
+    },
+    async fetchWalletsAndExchanges(){
+      const walletsResponse = await axios.get('/api/v1/users/getAllClientWallets')
+      const exchangeRates = await axios.get('/api/v1/users/getCryptoExchangeRates')
+      this.wallets = walletsResponse.data
+      this.exchange = exchangeRates.data
+    },
+    changeWallet1(){
+      this.exchangeForm.walletFromAddress = this.wallet1.address
+    },
+    changeWallet2(){
+      this.exchangeForm.walletToAddress = this.wallet2.address
+    },
+    onAmountInput(){
+      alert(this.exchangeForm.amount/this.getExchange(this.wallet1.crypto_name)*this.getExchange(this.wallet2.crypto_name))
+       this.amountCrypto2 = this.exchangeForm.amount/this.getExchange(this.wallet1.crypto_name)*this.getExchange(this.wallet2.crypto_name)
+
+      // this.exchangeRates[this.wallets.findIndex(x => x.crypto_name === this.wallet1.crypto_name)].exchange_rate
+      // alert(this.exchange.find(x => x.name === crypto_name).exchange_rate)
+    },
+    getExchange(crypto_name){
+      return this.exchange.find(x => x.name === crypto_name).exchange_rate
     }
+  },
+  mounted(){
+    this.fetchWalletsAndExchanges();
   }
 }
 </script>

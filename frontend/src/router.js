@@ -14,6 +14,8 @@ import WalletReplenish from "@/components/WalletReplenish";
 import WalletTransaction from "@/components/WalletTransaction";
 import WalletStacking from "@/components/WalletStacking";
 import WalletHistory from "@/components/WalletHistory";
+import SignIn from "@/components/SignIn";
+import SignUp from "@/components/SignUp";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -74,7 +76,18 @@ const router = createRouter({
                 }
             ],
         },
-        { path: '/login', component: Login},
+        { path: '/login', component: Login, children:
+            [
+                {
+                    path: 'signIn',
+                    component: SignIn,
+                },
+                {
+                    path: 'signUp',
+                    component: SignUp,
+                }
+            ]
+        },
         {
             path: "/:catchAll(.*)",
             redirect: '/login',

@@ -1,5 +1,6 @@
 package db.service.crypto.service;
 
+import db.service.crypto.dto.CryptoDto;
 import db.service.crypto.dto.ExchangeDto;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.Client;
@@ -130,5 +131,9 @@ public class ExchangeService {
 
         return exchangeDtos;
 
+    }
+
+    public List<Crypto> getCryptosExchangeRates(){
+        return cryptoRepository.findAll();
     }
 }
