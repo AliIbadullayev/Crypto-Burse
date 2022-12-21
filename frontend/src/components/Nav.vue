@@ -3,7 +3,7 @@
 
     <template #content>
       <div class="nav-block">
-        <div class="first-group">
+        <div v-if="role" class="first-group">
 <!--          <Button icon="pi pi-user" class="p-button-rounded p-button-info" />-->
 <!--          <button class="plus-button"  routerLink="/add-target" routerLinkActive="active-link" mat-fab>-->
 <!--            <span class="material-icons">add</span>-->
@@ -12,7 +12,7 @@
             <font-awesome-icon icon="fa-solid fa-user" size="2x" style="color: #183153"/>
           </Button>
         </div>
-        <div class="second-group">
+        <div v-if="role" class="second-group">
           <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/wallets')">
             <font-awesome-icon icon="fa-solid fa-dollar-sign" size="2x" style="color: #183153"/>
           </Button>
@@ -25,13 +25,21 @@
           <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/nft-marketplace')">
             <font-awesome-icon icon="fa-solid fa-store" size="2x" style="color: #183153"/>
           </Button>
-
+        </div>
+        <div v-if="!role" class="first-group">
+          <!--          <Button icon="pi pi-user" class="p-button-rounded p-button-info" />-->
+          <!--          <button class="plus-button"  routerLink="/add-target" routerLinkActive="active-link" mat-fab>-->
+          <!--            <span class="material-icons">add</span>-->
+          <!--          </button>-->
+          <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" >
+            <font-awesome-icon icon="fa-solid fa-users" size="2x" style="color: #183153"/>
+          </Button>
         </div>
         <div class="third-group">
-          <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/tutorial')">
-            <font-awesome-icon icon="fa-solid fa-circle-question" size="2x" style="color: #183153"/>
-          </Button>
-          <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px">
+<!--          <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/tutorial')">-->
+<!--            <font-awesome-icon icon="fa-solid fa-circle-question" size="2x" style="color: #183153"/>-->
+<!--          </Button>-->
+          <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="logout">
             <font-awesome-icon icon="fa-solid fa-right-from-bracket" size="2x" style="color: #183153"/>
           </Button>
         </div>
@@ -42,12 +50,33 @@
 
 <script>
 import Card from "primevue/card";
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
     Card
   },
-  name: "Nav"
+  name: "Nav",
+  data(){
+    return{
+      role: null,
+    }
+  },
+  methods: {
+    logout(){
+      localStorage.removeItem('token')
+      localStorage.removeItem('role')
+      this.$store.dispatch('user', null)
+      this.$router.push('/login/signIn')
+      console.log(this.user)
+    }
+  },
+  computed:{
+    ...mapGetters(['user'])
+  },
+  mounted() {
+    this.role = localStorage.getItem('role') === "ROLE_CLIENT"
+  }
 }
 </script>
 

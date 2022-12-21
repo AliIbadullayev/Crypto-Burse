@@ -39,11 +39,12 @@ import Calendar from "primevue/calendar";
 import axios from "axios";
 import Badge from "primevue/badge";
 import Password from "primevue/password";
+import store from "@/store";
 
 const app = createApp(App)
 
 library.add(faUserSecret, faUser, faUsers, faRotate, faStore, faCircleQuestion, faRightFromBracket, faDollarSign, faArrowDown, faCirclePlus)
-app.use(PrimeVue).use(router)
+app.use(PrimeVue).use(router).use(store)
 
 app.component('Card', Card)
 app.component('Button', Button)
@@ -64,7 +65,7 @@ app.component('Password', Password)
 app.directive('tooltip', Tooltip)
 
 // axios.defaults.baseURL = 'http://localhost:8080/api/v1';
-axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcxNTUxNjk0LCJleHAiOjE2NzE1ODc2OTR9.u6mRd_h7xanVMGMZGpV7_HTYWAV5Pv0plMfiJpQ0KiQ'
+axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcxNTk5NTM5LCJleHAiOjE2NzE2MzU1Mzl9.I3BIiltcpGyl79KK6S9k3JQrric-uNBBJoE_md4WPQI'
 axios.defaults.headers.common['Access-Control-Allow-Origin']= '*'
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
 

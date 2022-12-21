@@ -16,6 +16,7 @@ import WalletStacking from "@/components/WalletStacking";
 import WalletHistory from "@/components/WalletHistory";
 import SignIn from "@/components/SignIn";
 import SignUp from "@/components/SignUp";
+import Admin from "@/components/Admin";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -73,6 +74,10 @@ const router = createRouter({
                 {
                     path: 'tutorial',
                     component: Tutorial,
+                },
+                {
+                    path: 'admin',
+                    component: Admin,
                 }
             ],
         },
@@ -95,5 +100,18 @@ const router = createRouter({
 
     ]
 })
+
+// router.beforeEach((to, from, next) => {
+//     // redirect to login page if not logged in and trying to access a restricted page
+//     const publicPages = ['/login/signin'];
+//     const authRequired = !publicPages.includes(to.path);
+//     const loggedIn = localStorage.getItem('user');
+//
+//     if (authRequired && !loggedIn) {
+//         return next('/login/signin');
+//     }
+//
+//     next();
+// })
 
 export default router

@@ -2,47 +2,48 @@
   <Card class="entity-card">
     <template #header>
       <div class="image-block">
-        <img :src="nft.img"/>
+        <img :src="nft.url"/>
       </div>
     </template>
     <template #title>
       <div class="title-block">
         <div class="nft-name">
-          {{nft.name}}
+          {{ nft.name }}
         </div>
-        <div class="rating" >
-          #{{nft.rating}}
+        <div class="owner">
+          #{{ nft.owner }}
         </div>
       </div>
     </template>
     <template #subtitle>
       <div class="price">
-        ${{nft.price}}
+        ${{ nft.price }}
       </div>
     </template>
-    <template #content >
+    <template #content>
       <div class="block">
         <div class="like-dislike">
           <div class="like">
             <div class="button">
-              <Button icon="pi pi-thumbs-up" class="p-button p-button-rounded p-button-success p-button-text" />
+              <Button icon="pi pi-thumbs-up" class="p-button p-button-rounded p-button-success p-button-text" @click="scoreNft(nft, true)"/>
             </div>
             <div class="text">
-              {{nft.likes}}
+              {{ nft.likes }}
             </div>
           </div>
           <div class="dislike">
             <div class="button">
-              <Button icon="pi pi-thumbs-down" class="p-button p-button-rounded p-button-danger p-button-text" />
+              <Button icon="pi pi-thumbs-down" class="p-button p-button-rounded p-button-danger p-button-text" @click="scoreNft(nft, false)"/>
             </div>
             <div class="text">
-              {{nft.dislikes}}
+              {{ nft.dislikes }}
             </div>
           </div>
         </div>
         <div class="foot-block">
           <div class="buy-button">
-            <Button label="Купить" :class="nft.placed===true? 'p-button-success': 'p-button-secondary'" :disabled="nft.placed!==true" style="width: 100%"/>
+            <Button label="Купить" :class="nft.placed===true? 'p-button-success': 'p-button-secondary'"
+                    @click="buyNft(nft)" style="width: 100%"/>
           </div>
         </div>
       </div>
@@ -51,60 +52,91 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "NftEntity",
-  data(){
-    return{
+  data() {
+    return {}
+  },
+  methods: {
+    buyNft(nft) {
+      const toSend = {id: nft.id}
+      axios.post('/api/v1/users/buyNft', toSend)
+        .then(() => {
+          this.nft = null
+        })
+        .catch((err) => {
+          alert(err.response.data)
+        })
+    },
 
+    async scoreNft(nft, like){
+      let toSend
+      if (like === true){
+        toSend = {
+          nftId: nft.id,
+          isLiked: true
+        }
+      }else {
+        toSend = {
+          nftId: nft.id,
+          isLiked: false
+        }
+      }
+      const nftResp = await axios.post('/api/v1/users/scoreNft', toSend)
+      this.nft.likes  = nftResp.data.likes
+      this.nft.dislikes = nftResp.data.dislikes
     }
   },
-  props:{
+  props: {
     nft: Object
   }
 }
 </script>
 
 <style scoped>
-.entity-card{
+.entity-card {
   width: 22.5%;
   height: 400px;
   margin: 1.25%;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.4);
 }
-.image-block{
+
+.image-block {
   height: 50%;
   text-align: center;
 }
 
-.image-block img{
+.image-block img {
   width: 200px;
   height: 200px;
   object-fit: contain;
 }
 
-.like-dislike{
+.like-dislike {
   display: flex;
   justify-content: space-around;
   margin-bottom: 1rem;
 }
 
-.like, .dislike{
+.like, .dislike {
   display: flex;
   align-items: center;
 }
 
-.rating{
+.owner {
   margin-left: 1rem;
   font-size: 1.25rem;
   font-weight: 500;
 }
 
-.title-block{
+.title-block {
   display: flex;
   align-items: baseline;
 }
 
-.entity-card::v-deep .p-card-content{
+.entity-card::v-deep .p-card-content {
   padding: 0;
 }
 

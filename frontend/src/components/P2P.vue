@@ -149,7 +149,6 @@ export default {
     changeWallet(){
       this.formP2PTransaction.cryptoName = this.walletOne.crypto_name
       this.formP2PTransaction.walletOneAddress = this.walletOne.address
-      alert(JSON.stringify(this.formP2PTransaction))
     },
     changeType(){
       this.formP2PTransaction.operationType = this.selectedType.value

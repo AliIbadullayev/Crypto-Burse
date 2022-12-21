@@ -166,21 +166,21 @@ export default {
     addBankCard(){
       this.card.expireDate = moment(String(this.card.expireDate)).format('MM/YY')
       axios.post('/api/v1/users/addCard', this.card)
-          .then(() => {
-            this.bankCardDialogVisible = false;
-          })
-          .catch((err)=>{
-            alert(err.response.data)
-          })
+        .then(() => {
+          this.bankCardDialogVisible = false;
+        })
+        .catch((err)=>{
+          alert(err.response.data)
+        })
     },
     replenishFiat(){
       axios.post('/api/v1/users/depositFiat', this.replenishForm)
-          .then(() => {
-            this.getProfileInfo()
-          })
-          .catch((err)=>{
-            alert(err.response.data)
-          })
+        .then(() => {
+          this.getProfileInfo()
+        })
+        .catch((err)=>{
+          alert(err.response.data)
+        })
     }
   },
   mounted() {

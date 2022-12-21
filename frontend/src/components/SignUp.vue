@@ -22,7 +22,7 @@
       </div>
       <div class="field">
             <span class="p-float-label">
-              <InputNumber id="password" v-model="signupForm.password" :maxFractionDigits="5" style="width: 30vw"/>
+              <Password id="password" v-model="signupForm.password" style="width: 30vw"/>
               <label for="password">Пароль</label>
             </span>
       </div>
@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "SignUp",
   data(){
@@ -44,6 +46,17 @@ export default {
         username: null,
         password: null
       }
+    }
+  },
+  methods:{
+    signUp(){
+      axios.post('/api/v1/auth/register', this.signupForm)
+          .then(() => {
+            this.$router.push('/login/signIn')
+          })
+          .catch((err)=>{
+            alert(err.message)
+          })
     }
   }
 }
@@ -60,5 +73,9 @@ export default {
 
   .signup-form{
     margin-top: 2rem;
+  }
+
+  .p-password::v-deep input {
+    width: 30vw
   }
 </style>
