@@ -62,7 +62,7 @@ public class AuthenticationRestControllerV1 {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -83,10 +83,8 @@ public class AuthenticationRestControllerV1 {
             clientService.createClient(clientToAdd);
 
             return ResponseEntity.ok("Пользователь успешно зарегистрирован");
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
-        } catch (UserAlreadyExistException e) {
-            return ResponseEntity.ok().body(e.getMessage());
+        } catch (AuthenticationException | UserAlreadyExistException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

@@ -23,6 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import Carousel from "primevue/carousel";
 import Card from "primevue/card";
 import Listbox from "primevue/listbox";
 import InputNumber from "primevue/inputnumber";
@@ -39,13 +40,15 @@ import InputMask from "primevue/inputmask";
 import Calendar from "primevue/calendar";
 import Badge from "primevue/badge";
 import Password from "primevue/password";
-import store from "@/store";
 
+
+import store from "@/store";
 const app = createApp(App)
 
 library.add(faUserSecret, faUser, faUsers, faRotate, faStore, faCircleQuestion, faRightFromBracket, faDollarSign, faArrowDown, faCirclePlus)
 app.use(PrimeVue).use(router).use(store)
 
+app.component('Carousel', Carousel)
 app.component('Card', Card)
 app.component('Button', Button)
 app.component('Listbox', Listbox)
@@ -62,9 +65,10 @@ app.component('InputMask', InputMask)
 app.component('Calendar', Calendar)
 app.component('Badge', Badge)
 app.component('Password', Password)
-app.directive('tooltip', Tooltip)
-
 app.component('font-awesome-icon', FontAwesomeIcon)
+
+
+app.directive('tooltip', Tooltip)
 
 app.mount('#app')
 

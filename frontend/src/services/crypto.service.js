@@ -13,6 +13,9 @@ class CryptoService{
     replenishFiat(replenishForm) {
         return axios.post('/api/v1/users/depositFiat', replenishForm, {headers: authHeader()})
     }
+    getBankCards(){
+        return axios.get('/api/v1/users/getAllClientBankCards', {headers: authHeader()})
+    }
 
 }
 

@@ -50,12 +50,12 @@ export default {
   },
   methods:{
     signUp(){
-      axios.post('/api/v1/auth/register', this.signupForm)
+      this.$store.dispatch('register', this.signupForm)
           .then(() => {
             this.$router.push('/login/signIn')
           })
           .catch((err)=>{
-            alert(err.message)
+            alert(err.response.data)
           })
     }
   }

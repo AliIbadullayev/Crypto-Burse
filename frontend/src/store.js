@@ -1,5 +1,7 @@
 import  AuthService  from './services/auth.service'
+import  CryptoService  from './services/crypto.service'
 import { createStore } from 'vuex'
+
 const user = JSON.parse(localStorage.getItem('user'));
 const initialState = user
     ? { status: { loggedIn: true }, user }
@@ -26,9 +28,21 @@ const auth = createStore({
             commit('logout');
         },
         register({ commit }, user) {
-            return AuthService.register(user).then(
+            return AuthService.signUp(user).then(
                 response => {
                     commit('registerSuccess');
+                    return Promise.resolve(response.data);
+                },
+                error => {
+                    commit('registerFailure');
+                    return Promise.reject(error);
+                }
+            );
+        },
+        checkIsLoggedIn({commit}) {
+            return CryptoService.getProfileInfo().then(
+                response => {
+                    commit('loginSuccess', response)
                     return Promise.resolve(response.data);
                 },
                 error => {

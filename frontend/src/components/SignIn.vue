@@ -21,8 +21,6 @@
 </template>
 
 <script>
-import axios from "axios";
-import {mapState} from "vuex";
 
 export default {
   name: "SignIn",
@@ -39,36 +37,15 @@ export default {
     loggedIn() {
       return this.$store.state.status.loggedIn;
     }
-    // ...mapState(['initialState'])
   },
-  // created() {
-  //   if (this.loggedIn) {
-  //     this.$router.push('/main/profile');
-  //   }
-  // },
   methods:{
-    //  async signIn(){
-    //   const response =  await axios.post('/api/v1/auth/login', this.signinForm)
-    //   this.user = response.data
-    //   localStorage.setItem('jwt', this.user.token)
-    //   localStorage.setItem('role', this.user.role)
-    //   // this.$store.dispatch('user', this.user)
-    //   if (this.user.role === "ROLE_CLIENT")
-    //     this.$router.push('/main/profile')
-    //   else
-    //     this.$router.push('/main/admin')
-    // }
-
     signIn(){
       this.$store.dispatch('login', this.signinForm).then(
           () => {
             this.$router.push('/main/profile');
-          },
-          error => {
-            this.message =
-                (error.response && error.response.data) ||
-                error.message ||
-                error.toString();
+          })
+          .catch((err)=>{
+            alert(err.response.data)
           }
       );
     }

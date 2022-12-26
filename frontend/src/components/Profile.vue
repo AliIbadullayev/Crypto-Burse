@@ -67,18 +67,34 @@
         <span class="header">
           Банковские карты
         </span>
+
+
+        </template>
+        <template #content>
+<!--          <template v-for="bankCard in bankCards">-->
+<!--            <BankCard :card="bankCard"/>-->
+<!--          </template>-->
+          <div class="cards-block" v-if="hasCards">
+            <Carousel :value="bankCards" :numVisible="1" :numScroll="1" class="bank-card-carousel">
+              <template #item="slotProps">
+                <BankCard :card="slotProps.data"/>
+                <!--              {{alert(JSON.stringify(slotProps))}}-->
+              </template>
+            </Carousel>
+          </div>
+
+
+
           <div class="add-button">
             <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px"
                     @click="openAddBankCard">
               <font-awesome-icon icon="fa-solid fa-circle-plus" size="3x" style="color: #183153"/>
             </Button>
           </div>
-        </template>
-        <template #content>
           <form class="replenish-form">
             <div class="field">
           <span class="p-float-label">
-            <InputNumber id="inputnumber2" v-model="replenishForm.amount" :maxFractionDigits="5" style="width: 30vw"/>
+            <InputNumber id="inputnumber2" v-model="replenishForm.amount" :maxFractionDigits="5" style="width: 30vw" placeholder=""/>
             <label for="inputnumber2">Количество фиата</label>
           </span>
             </div>
@@ -137,9 +153,11 @@
 
 <script>
 import CryptoService from '@/services/crypto.service';
+import BankCard from "@/components/BankCard";
 
 export default {
   name: "Profile",
+  components: {BankCard},
   data() {
     return {
       card: {
@@ -152,14 +170,45 @@ export default {
       bankCardDialogVisible: false,
       replenishForm: {
         amount: null
-      }
+      },
+      bankCards: null,
+      responsiveOptions: [
+        {
+          breakpoint: '1024px',
+          numVisible: 3,
+          numScroll: 3
+        },
+        {
+          breakpoint: '600px',
+          numVisible: 2,
+          numScroll: 2
+        },
+        {
+          breakpoint: '480px',
+          numVisible: 1,
+          numScroll: 1
+        }
+      ],
+      hasCards: false,
     }
   },
   methods: {
     getProfileInfo() {
-      CryptoService.getProfileInfo().then(
+      this.$store.dispatch('checkIsLoggedIn').then(
           (resp) => {
-            this.profile = resp.data
+            this.profile = resp
+          },
+          () => {
+            this.$router.push('/login/signIn')
+          }
+      )
+    },
+    getBankCards(){
+      CryptoService.getBankCards().then(
+          (resp) => {
+            this.bankCards = resp.data
+            this.hasCards = Array.isArray(this.bankCards) && this.bankCards.length
+            alert(JSON.stringify(this.bankCards))
           }
       )
     },
@@ -167,6 +216,7 @@ export default {
       CryptoService.addBankCard(this.card)
           .then(() => {
                 this.bankCardDialogVisible = false;
+                this.getBankCards()
               },
               (err) => {
                 alert(err.response.data)
@@ -190,14 +240,27 @@ export default {
   },
   mounted() {
     this.getProfileInfo()
+    this.getBankCards()
   }
 }
 </script>
 
 <style scoped>
+.bank-card-carousel::v-deep .p-carousel-items-container {
+  width: 30vw;
+}
+
+
 .replenish-form {
   margin-top: 1rem;
 }
+
+.replenish-form .field{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 
 .replenish-form > div {
   margin-bottom: 1.5rem;
@@ -304,7 +367,7 @@ export default {
 
 .add-button {
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 0;
 }
 
 .card {
