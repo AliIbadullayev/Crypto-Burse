@@ -1,10 +1,7 @@
 package db.service.crypto.service;
 
 
-import db.service.crypto.dto.FiatToCryptoDto;
-import db.service.crypto.dto.StackingDto;
-import db.service.crypto.dto.StackingRequestDto;
-import db.service.crypto.dto.WalletDto;
+import db.service.crypto.dto.*;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.*;
 import db.service.crypto.repository.*;
@@ -264,6 +261,11 @@ public class WalletService {
             log.info("Add fiatBalance in client with username {}. Amount before: {}. Amount after: {}",client.getUserLogin(),amountBefore,amountAfter);
             return true;
         } else throw new InvalidAmountException("Некорректная сумма пополнения");
+    }
+
+    public WalletDto getClientWallet (String walletAddress){
+        Wallet wallet = walletRepository.findByAddress(walletAddress);
+        return WalletDto.fromWallet(wallet);
     }
 
     public List<WalletDto> getAllClientWallets(Client client){

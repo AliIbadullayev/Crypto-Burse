@@ -10,14 +10,14 @@
               <Column field="name" header="Криптовалюта">
                 <template #body="slot">
                   <div class="wallet-name">
-                    {{slot.data.name}}
+                    {{ slot.data.crypto_name }}
                   </div>
                 </template>
               </Column>
               <Column field="value" header="Баланс">
                 <template #body="slot">
                   <div class="wallet-balance">
-                    {{slot.data.value}}
+                    {{getFloatToFixed(slot.data.amount, 5)}}
                   </div>
                 </template>
               </Column>
@@ -28,7 +28,7 @@
                   <div class="wallet-dialog-header">
                     <div class="header-block">
                       <h3>
-                        {{selectedWallet.name}}
+                        {{selectedWallet.crypto_name}}
                       </h3>
                       <h4 style="margin-left: 2rem">
                         {{selectedWallet.address}}
@@ -44,34 +44,14 @@
                   <TabMenu :model="items" v-model:activeIndex="active"/>
                   <div class="card-text" style="text-align: center; margin-top: 2rem">
                     <h4 style="margin-left: 2rem">
-                      Доступно: {{selectedWallet.value}}
+                      Доступно: {{getFloatToFixed(selectedWallet.amount,5)}}
+                    </h4>
+                    <h4 style="margin-left: 2rem">
+                      Доступно фиата: {{getFloatToFixed(profile.fiatBalance, 5)}}
                     </h4>
                   </div>
-                  <router-view/>
+                  <router-view :wallet="selectedWallet" :exchange-rate="getExchange(exchangeRates, selectedWallet.crypto_name)" @changed="onChange"/>
                 </div>
-<!--                <div class="main-crypto-name" >-->
-<!--                  <span>-->
-<!--                    {{selectedWallet.name}}-->
-<!--                  </span>-->
-<!--                </div>-->
-<!--                <div class="wallet-dialog-main-block">-->
-<!--                  <div class="wallet-dialog-first-block">-->
-<!--                    <div class="wallet-main-info">-->
-<!--                      <div class="wallet-balance-address-block">-->
-<!--                        <div class="wallet-balance-address-instance">-->
-<!--                          <h3>Баланс: {{selectedWallet.value}} шт.</h3>-->
-<!--                        </div>-->
-<!--                      </div>-->
-<!--                      <div class="wallet-balance-address-block">-->
-<!--                        <div class="wallet-balance-address-instance">-->
-<!--                          <h3>Адрес: {{selectedWallet.address }}</h3>-->
-<!--                        </div>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                  <div class="wallet-dialog-second-block">-->
-<!--                  </div>-->
-<!--                </div>-->
               </Dialog>
             </div>
           </div>
@@ -83,11 +63,6 @@
         <template #content>
           <div class="wallet-table">
             <h2 class="wallet-header">NFT кошельки</h2>
-<!--            <div class="add-button">-->
-<!--              <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="openAddBankCard">-->
-<!--                <font-awesome-icon icon="fa-solid fa-circle-plus" size="3x" style="color: #183153"/>-->
-<!--              </Button>-->
-<!--            </div>-->
             <DataTable :value="nfts" v-model:selection="selectedNft" selectionMode="single"  @rowSelect="onNftSelect"  :scrollable="true"  responsiveLayout="scroll" scrollHeight="70vh">
               <Column field="name" header="Название">
                 <template #body="slot">
@@ -134,7 +109,6 @@
                   </div>
                 </div>
                 <div class="nft-dialog-second-block">
-
                 </div>
               </Dialog>
             </div>
@@ -142,50 +116,13 @@
         </template>
       </Card>
     </div>
-<!--  <div class="dialog-bank-card">-->
-<!--    <Dialog class="dialog-bank-card-main" :closable="false" v-model:visible="this.bankCardDialogVisible" :style="{width: '75vw'}"  :modal="true" :contentStyle="{height: '75vh'}">-->
-<!--      <template #header>-->
-<!--        <div class="bank-card-dialog-header">-->
-<!--          <div class="header-block">-->
-<!--            <h3>-->
-<!--              Добавление банковской карты-->
-<!--            </h3>-->
-<!--          </div>-->
-<!--          <div class="exit-button">-->
-<!--            <Button icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text" @click="close"/>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </template>-->
-<!--      <div class="card">-->
-<!--        <form class="card-fields">-->
-<!--          <div class="field ">-->
-<!--            <label for="number">Номер карты</label>-->
-<!--            <InputMask id="number" mask="9999999999999999" v-model="card.cardNumber" placeholder="1234 5678 8765 4321"/>-->
-<!--          </div>-->
-<!--          <div class="field ">-->
-<!--            <label for="name">Имя и фамилия владельца карты</label>-->
-<!--            <InputText id="name" v-model="card.nameOnCard" placeholder="Иван Иванов" type="text" />-->
-<!--          </div>-->
-<!--          <div class="field ">-->
-<!--            <label for="monthpicker">Month Picker</label>-->
-<!--            <Calendar inputId="monthpicker" v-model="card.expireDate" view="month" dateFormat="mm/y" placeholder="9/24"/>-->
-<!--          </div>-->
-<!--          <div class="field ">-->
-<!--            <label for="cvv">СVV</label>-->
-<!--            <InputNumber id="cvv" mode="decimal" :useGrouping="false" v-model="card.cvv" :min="100" :max="999" placeholder="123"/>-->
-<!--          </div>-->
-<!--          <div class="bank-card-button">-->
-<!--            <Button label="Разместить предложение" icon="pi pi-check" @click="addBankCard"/>-->
-<!--          </div>-->
-<!--        </form>-->
-<!--      </div>-->
-<!--    </Dialog>-->
-<!--  </div>-->
 </div>
 
 </template>
 
 <script>
+import CryptoService from "@/services/crypto.service";
+
 export default {
   name: "Wallets",
   data() {
@@ -213,50 +150,55 @@ export default {
         }
       ],
 
-      wallets: [
-        {name: 'Bitcoin', value: 2.843, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'ShibaCoin', value: 1000129, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Ethereum', value: 10.383, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'DentCoin', value: 1002, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'LiteCoin', value: 0.837, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Bitcoin', value: 2.843, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'ShibaCoin', value: 1000129, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Ethereum', value: 10.383, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'DentCoin', value: 1002, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'LiteCoin', value: 0.837, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Bitcoin', value: 2.843, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'ShibaCoin', value: 1000129, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Ethereum', value: 10.383, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'DentCoin', value: 1002, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'LiteCoin', value: 0.837, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Bitcoin', value: 2.843, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'ShibaCoin', value: 1000129, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Ethereum', value: 10.383, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'DentCoin', value: 1002, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'LiteCoin', value: 0.837, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Bitcoin', value: 2.843, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'ShibaCoin', value: 1000129, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'Ethereum', value: 10.383, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'DentCoin', value: 1002, address: 'jfEa134O93cL1kdma04a'},
-        {name: 'LiteCoin', value: 0.837, address: 'jfEa134O93cL1kdma04a'},
-      ],
-      nfts: [
-        {name: 'Rosey', value: 15.732, rating: 0},
-        {name: 'Yves', value: 127, rating: 12},
-        {name: 'Sophia', value: 829.3, rating: 142},
-        {name: 'Siren', value: 583, rating: 53},
-        {name: 'Liz', value: 5.42, rating: -12},
-      ],
+      wallets: null,
+      nfts: null,
+      profile: null,
 
       selectedWallet: null,
       selectedNft: null,
       walletDialogVisible: false,
       nftDialogVisible: false,
+      exchangeRates: null,
     }
   },
   methods:{
+    fetchWalletsAndExchangeRates(){
+      CryptoService.getWallets().then(
+          r => {
+            this.wallets = r.data
+          }
+      )
+      CryptoService.getExchangeRates().then(
+          r => {
+            this.exchangeRates = r.data
+          }
+      )
+    },
+    fetchProfile(){
+      CryptoService.getProfileInfo().then(
+          r => {
+            this.profile = r.data
+          }
+      )
+    },
+    fetchSelectedWallet(){
+      CryptoService.getClientWallet({address: this.selectedWallet.address}).then(
+          r => {
+            this.selectedWallet = r.data
+          }
+      )
+    },
     onWalletSelect(){
+      this.$router.push('/main/wallets/replenish')
       this.walletDialogVisible = true;
+    },
+    onChange(value){
+      if (value === true) {
+        this.fetchProfile()
+        this.fetchSelectedWallet()
+      }else {
+        console.log('nothing was changed!')
+      }
     },
     onWalletClose() {
       this.walletDialogVisible = false;
@@ -273,7 +215,12 @@ export default {
     close(){
       this.$router.push('/main/wallets')
       this.walletDialogVisible = false;
-    }
+    },
+
+  },
+  mounted() {
+    this.fetchWalletsAndExchangeRates()
+    this.fetchProfile()
   }
 }
 </script>

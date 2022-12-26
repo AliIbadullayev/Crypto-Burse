@@ -26,14 +26,6 @@
                 {{ profile.name }} {{ profile.surname }}
               </span>
               </div>
-              <!--            <div class="main-info-email">-->
-              <!--              <span class="info-title">-->
-              <!--                Email-->
-              <!--              </span>-->
-              <!--              <span class="info-content">-->
-              <!--                ali.ibadullayev.02@gmail.com-->
-              <!--              </span>-->
-              <!--            </div>-->
               <div class="main-info-fiat">
               <span class="info-title">
                 Фиатный баланс
@@ -42,16 +34,6 @@
                 $ {{ profile.fiatBalance }}
               </span>
               </div>
-              <!--            <div class="main-info-all-amount">-->
-              <!--              <span class="info-title">-->
-              <!--                Общий баланс-->
-              <!--              </span>-->
-              <!--              <span class="info-content">-->
-              <!--                $ 123 456.789-->
-              <!--              </span>-->
-              <!--            </div>-->
-
-
             </div>
             <div class="img">
               <font-awesome-icon icon="fa-solid fa-user" size="10x" style="color: #183153"/>

@@ -9,7 +9,7 @@
               <template #option="slotProps">
                 <div class="crypto-item">
                   <div>{{slotProps.option.crypto_name}}</div>
-                  <div>{{slotProps.option.amount.toFixed(5)}}</div>
+                  <div>{{parseFloat(slotProps.option.amount.toFixed(5))}}</div>
                 </div>
               </template>
             </Listbox>
@@ -23,7 +23,7 @@
               <template #option="slotProps">
                 <div class="crypto-item">
                   <div>{{slotProps.option.crypto_name}}</div>
-                  <div>{{slotProps.option.amount.toFixed(5)}}</div>
+                  <div>{{parseFloat(slotProps.option.amount.toFixed(5))}}</div>
                 </div>
               </template>
             </Listbox>
@@ -44,11 +44,8 @@
             <font-awesome-icon icon="fa-solid fa-arrow-down" size="2x" style="color: #183153"/>
           </div>
           <div class="field-2">
-<!--            <span class="p-float-label">-->
-<!--              <InputNumber id="inputnumber" v-model="onAmountInput" :maxFractionDigits="5" disabled="disabled" />-->
               <small style="display: block">Количество крипты №2 </small>
-<!--            </span>-->
-            {{wallet1 != null && wallet2 != null? (exchangeForm.amount*getExchange(wallet1.crypto_name)/getExchange(wallet2.crypto_name)).toFixed(5): 0}}
+            {{ onAmountInput() }}
           </div>
           <div class="exchange-button">
             <Button label="Обменять" icon="pi pi-check" @click="onExchange" />
@@ -60,6 +57,7 @@
 </template>
 
 <script>
+import CryptoService from '@/services/crypto.service'
 import Nav from "@/components/Nav";
 import axios from "axios";
 export default {
@@ -84,7 +82,7 @@ export default {
   },
   methods: {
     onExchange(){
-      axios.post('/api/v1/users/exchangeCrypto', this.exchangeForm)
+      CryptoService.exchangeCryptos(this.exchangeForm)
           .then(() => {
             this.fetchWalletsAndExchanges()
           })
@@ -92,11 +90,17 @@ export default {
             alert(err.response.data)
           })
     },
-    async fetchWalletsAndExchanges(){
-      const walletsResponse = await axios.get('/api/v1/users/getAllClientWallets')
-      const exchangeRates = await axios.get('/api/v1/users/getCryptoExchangeRates')
-      this.wallets = walletsResponse.data
-      this.exchange = exchangeRates.data
+    fetchWalletsAndExchanges(){
+      CryptoService.getWallets().then(
+          r => {
+            this.wallets = r.data
+          }
+      )
+      CryptoService.getExchangeRates().then(
+          r => {
+            this.exchangeRates = r.data
+          }
+      )
     },
     changeWallet1(){
       this.exchangeForm.walletFromAddress = this.wallet1.address
@@ -105,15 +109,8 @@ export default {
       this.exchangeForm.walletToAddress = this.wallet2.address
     },
     onAmountInput(){
-      alert(this.exchangeForm.amount/this.getExchange(this.wallet1.crypto_name)*this.getExchange(this.wallet2.crypto_name))
-       this.amountCrypto2 = this.exchangeForm.amount/this.getExchange(this.wallet1.crypto_name)*this.getExchange(this.wallet2.crypto_name)
-
-      // this.exchangeRates[this.wallets.findIndex(x => x.crypto_name === this.wallet1.crypto_name)].exchange_rate
-      // alert(this.exchange.find(x => x.name === crypto_name).exchange_rate)
+      return this.wallet1 != null && this.wallet2 != null? parseFloat((this.exchangeForm.amount*this.getExchange(this.wallet1.crypto_name)/this.getExchange(this.wallet2.crypto_name)).toFixed(5)): 0
     },
-    getExchange(crypto_name){
-      return this.exchange.find(x => x.name === crypto_name).exchange_rate
-    }
   },
   mounted(){
     this.fetchWalletsAndExchanges();

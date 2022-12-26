@@ -63,6 +63,9 @@ export default {
         amount: null
       }
     }
+  },
+  props:{
+    wallet: Object,
   }
 }
 </script>

@@ -5,32 +5,50 @@
         <div class="field-1">
           <span class="p-float-label">
             <InputNumber id="inputnumber1" v-model="formCryptoFiat.amount" :maxFractionDigits="5" style="width: 30vw"/>
-            <label for="inputnumber1">Количество крипты</label>
+            <label for="inputnumber1">Количество фиата</label>
           </span>
         </div>
       </div>
       <h4>
         <!-- TODO instead of 100 must be actual crypto course -->
-        Необходимый фиат: {{formCryptoFiat.amount * 100 }}
+        Составляет в данной криптовалюте: {{getFloatToFixed(formCryptoFiat.amount / exchangeRate, 5)}}
       </h4>
       <div class="crypto-fiat-button">
-        <Button label="Пополнить" icon="pi pi-check" />
+        <Button label="Пополнить" icon="pi pi-check" @click="replenishCrypto()" />
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import CryptoService from '@/services/crypto.service'
+
 export default {
   name: "WalletReplenish",
   data(){
     return {
-
       formCryptoFiat:{
-        wallet: null,
+        walletAddress: this.wallet.address,
         amount: null
       }
     }
+  },
+  props:{
+    wallet: Object,
+    exchangeRate: Number
+  },
+  methods:{
+    replenishCrypto(){
+      CryptoService.replenishCrypto(this.formCryptoFiat).then(
+          (r) => {
+            this.$emit('changed', true)
+          },
+          (err) => {
+            this.$emit('changed', false)
+            alert(err.response.data)
+          }
+      )
+    },
 
   }
 }

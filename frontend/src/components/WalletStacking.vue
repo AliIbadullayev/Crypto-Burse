@@ -28,6 +28,9 @@ export default {
         expire_date: 1
       }
     }
+  },
+  props:{
+    wallet: Object
   }
 }
 </script>

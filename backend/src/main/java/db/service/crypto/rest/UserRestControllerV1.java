@@ -128,6 +128,20 @@ public class UserRestControllerV1 {
         }
     }
 
+    @GetMapping("getClientWallet")
+    public ResponseEntity<?> getClientWallet(@RequestParam(name="address") String walletAddress, HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(walletService.getClientWallet(walletAddress), HttpStatus.OK);
+
+    }
+
 
     @PostMapping("sendCrypto")
     public ResponseEntity<String>  sendMoney(@RequestBody TransactionDto transactionDto, HttpServletRequest request){
@@ -452,6 +466,21 @@ public class UserRestControllerV1 {
         if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
 
         return new ResponseEntity<>(clientService.getAllCryptos(), HttpStatus.OK);
+
+    }
+
+    @GetMapping("getBlockchainNetworks")
+    public ResponseEntity<?> getBlockchainNetworks(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Client client = clientService.findByUsername(username);
+        if (client == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(transactionService.getBlockchainNetworks(), HttpStatus.OK);
 
     }
 

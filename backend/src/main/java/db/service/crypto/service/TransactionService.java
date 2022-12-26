@@ -147,4 +147,8 @@ public class TransactionService {
         return transactionDtos;
 
     }
+
+    public List<BlockchainNetwork> getBlockchainNetworks() {
+        return blockchainNetworkRepository.findAll();
+    }
 }

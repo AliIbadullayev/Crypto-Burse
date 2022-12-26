@@ -7,14 +7,6 @@ class AuthService{
                 if (resp.data.token != null) localStorage.setItem('user', JSON.stringify(resp.data))
                 return resp.data
             })
-        // this.user = response.data
-        // localStorage.setItem('jwt', this.user.token)
-        // localStorage.setItem('role', this.user.role)
-        // // this.$store.dispatch('user', this.user)
-        // if (this.user.role === "ROLE_CLIENT")
-        //     this.$router.push('/main/profile')
-        // else
-        //     this.$router.push('/main/admin')
     }
 
     logout(){

@@ -43,6 +43,7 @@ import Password from "primevue/password";
 
 
 import store from "@/store";
+import {Mixin} from "@/mixin";
 const app = createApp(App)
 
 library.add(faUserSecret, faUser, faUsers, faRotate, faStore, faCircleQuestion, faRightFromBracket, faDollarSign, faArrowDown, faCirclePlus)
@@ -69,6 +70,6 @@ app.component('font-awesome-icon', FontAwesomeIcon)
 
 
 app.directive('tooltip', Tooltip)
-
+app.mixin(Mixin)
 app.mount('#app')
 
