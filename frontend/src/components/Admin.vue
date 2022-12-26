@@ -1,14 +1,15 @@
 <template>
-  {{ user.role }}
+  {{ role }}
 </template>
 
 <script>
-import {mapGetters} from "vuex";
 
 export default {
   name: "Admin",
   computed:{
-    ...mapGetters(['user'])
+    role(){
+      return this.$store.state.user.role
+    }
   }
 }
 </script>

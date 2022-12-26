@@ -3,7 +3,7 @@
 
     <template #content>
       <div class="nav-block">
-        <div v-if="role" class="first-group">
+        <div v-if="isClient" class="first-group">
 <!--          <Button icon="pi pi-user" class="p-button-rounded p-button-info" />-->
 <!--          <button class="plus-button"  routerLink="/add-target" routerLinkActive="active-link" mat-fab>-->
 <!--            <span class="material-icons">add</span>-->
@@ -12,7 +12,7 @@
             <font-awesome-icon icon="fa-solid fa-user" size="2x" style="color: #183153"/>
           </Button>
         </div>
-        <div v-if="role" class="second-group">
+        <div v-if="isClient" class="second-group">
           <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/wallets')">
             <font-awesome-icon icon="fa-solid fa-dollar-sign" size="2x" style="color: #183153"/>
           </Button>
@@ -26,7 +26,7 @@
             <font-awesome-icon icon="fa-solid fa-store" size="2x" style="color: #183153"/>
           </Button>
         </div>
-        <div v-if="!role" class="first-group">
+        <div v-if="!isClient" class="first-group">
           <!--          <Button icon="pi pi-user" class="p-button-rounded p-button-info" />-->
           <!--          <button class="plus-button"  routerLink="/add-target" routerLinkActive="active-link" mat-fab>-->
           <!--            <span class="material-icons">add</span>-->
@@ -59,23 +59,23 @@ export default {
   name: "Nav",
   data(){
     return{
-      role: null,
+      isClient: null,
     }
   },
   methods: {
     logout(){
-      localStorage.removeItem('token')
-      localStorage.removeItem('role')
-      this.$store.dispatch('user', null)
+      this.$store.dispatch('logout')
       this.$router.push('/login/signIn')
-      console.log(this.user)
     }
   },
   computed:{
-    ...mapGetters(['user'])
+
   },
   mounted() {
-    this.role = localStorage.getItem('role') === "ROLE_CLIENT"
+    this.isClient = this.$store.state.user.role === "ROLE_CLIENT"
+    if (!this.isClient) {
+      this.$router.push('/main/admin')
+    }
   }
 }
 </script>

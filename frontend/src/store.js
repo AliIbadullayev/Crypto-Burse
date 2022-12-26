@@ -1,32 +1,63 @@
-
+import  AuthService  from './services/auth.service'
 import { createStore } from 'vuex'
-import router from "@/router";
+const user = JSON.parse(localStorage.getItem('user'));
+const initialState = user
+    ? { status: { loggedIn: true }, user }
+    : { status: { loggedIn: false }, user: null };
 
-// Create a new store instance.
-const store = createStore({
-    state: {
-        user: {
-            role: "",
-            token: "",
-            username: ""
-        }
-    },
-    getters: {
-        user: (state => {
-            return state.user;
-        })
-    },
+const auth = createStore({
+    namespaced: true,
+    state: initialState,
     actions: {
-        user(context, user){
-            context.commit('user', user)
+        login({ commit }, user) {
+            return AuthService.signIn(user).then(
+                user => {
+                    commit('loginSuccess', user);
+                    return Promise.resolve(user);
+                },
+                error => {
+                    commit('loginFailure');
+                    return Promise.reject(error);
+                }
+            );
+        },
+        logout({ commit }) {
+            AuthService.logout();
+            commit('logout');
+        },
+        register({ commit }, user) {
+            return AuthService.register(user).then(
+                response => {
+                    commit('registerSuccess');
+                    return Promise.resolve(response.data);
+                },
+                error => {
+                    commit('registerFailure');
+                    return Promise.reject(error);
+                }
+            );
         }
     },
     mutations: {
-        user(state, user){
+        loginSuccess(state, user) {
+            state.status.loggedIn = true;
             state.user = user;
+        },
+        loginFailure(state) {
+            state.status.loggedIn = false;
+            state.user = null;
+        },
+        logout(state) {
+            state.status.loggedIn = false;
+            state.user = null;
+        },
+        registerSuccess(state) {
+            state.status.loggedIn = false;
+        },
+        registerFailure(state) {
+            state.status.loggedIn = false;
         }
-    },
+    }
+});
 
-})
-
-export default store
+export default auth

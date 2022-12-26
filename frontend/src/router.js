@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import {createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 import Profile from "@/components/Profile";
 import Main from "@/components/Main";
 import Exchange from "@/components/Exchange";
@@ -17,9 +16,11 @@ import WalletHistory from "@/components/WalletHistory";
 import SignIn from "@/components/SignIn";
 import SignUp from "@/components/SignUp";
 import Admin from "@/components/Admin";
+import store from "@/store";
+import NotFound from "@/components/NotFound";
 
 const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes: [
         { path: '/main', component: Main,
             children: [
@@ -93,25 +94,22 @@ const router = createRouter({
                 }
             ]
         },
-        {
-            path: "/:catchAll(.*)",
-            redirect: '/login',
-        }
-
+        { path: '/notfound', component: NotFound}
     ]
 })
 
-// router.beforeEach((to, from, next) => {
-//     // redirect to login page if not logged in and trying to access a restricted page
-//     const publicPages = ['/login/signin'];
-//     const authRequired = !publicPages.includes(to.path);
-//     const loggedIn = localStorage.getItem('user');
-//
-//     if (authRequired && !loggedIn) {
-//         return next('/login/signin');
-//     }
-//
-//     next();
-// })
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/login/signIn', '/login/signUp'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = store.state.status.loggedIn;
 
+    // trying to access a restricted page + not logged in
+    // redirect to login page
+
+    if (authRequired && !loggedIn) {
+        next('/login/signIn');
+    } else {
+        next();
+    }
+});
 export default router

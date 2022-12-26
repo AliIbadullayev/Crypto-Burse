@@ -31,6 +31,11 @@ export default {
         }
       ],
     }
+  },
+  created() {
+    if (this.$store.state.status.loggedIn) {
+      this.$router.push('/main/profile');
+    }
   }
 }
 </script>
