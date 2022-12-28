@@ -4,7 +4,7 @@
       <template #content>
         <ScrollPanel class="market-scroll-panel" style="width: 100%; height: 90vh">
           <template v-for="item in nfts">
-            <NftEntity :nft="item"/>
+            <NftEntity :nft="item" @changed="onChanged"/>
           </template>
         </ScrollPanel>
       </template>
@@ -15,6 +15,7 @@
 <script>
 import NftEntity from "@/components/NftEntity";
 import axios from "axios";
+import CryptoService from "@/services/crypto.service";
 export default {
   name: "NftMarketplace",
   components: {NftEntity},
@@ -24,11 +25,19 @@ export default {
     }
   },
   methods:{
-    async fetchAllNfts(){
-      const nftsResponse = await axios.get('/api/v1/users/getAllNfts')
-      this.nfts = nftsResponse.data
+    fetchAllNfts(){
+      CryptoService.getAllNfts()
+          .then((r) => {
+            this.nfts = r.data
+          })
+    },
+    onChanged(value){
+      if (value === true) {
+        this.fetchAllNfts()
+      }else {
+        console.log('nothing was changed!')
+      }
     }
-
   },
   mounted() {
     this.fetchAllNfts()

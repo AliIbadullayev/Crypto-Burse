@@ -142,11 +142,6 @@ export default {
           label: 'Вложение',
           icon: 'pi pi-fw pi-pencil',
           to: '/main/wallets/stacking'
-        },
-        {
-          label: 'История',
-          icon: 'pi pi-fw pi-file',
-          to: '/main/wallets/history'
         }
       ],
 

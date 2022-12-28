@@ -16,7 +16,7 @@
           <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/wallets')">
             <font-awesome-icon icon="fa-solid fa-dollar-sign" size="2x" style="color: #183153"/>
           </Button>
-          <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/p2p')">
+          <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/p2p/offers')">
             <font-awesome-icon icon="fa-solid fa-users" size="2x" style="color: #183153"/>
           </Button>
           <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/exchange')">
@@ -25,6 +25,10 @@
           <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/nft-marketplace')">
             <font-awesome-icon icon="fa-solid fa-store" size="2x" style="color: #183153"/>
           </Button>
+          <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="$router.push('/main/history/transactions')">
+            <font-awesome-icon icon="fa-solid fa-clock-rotate-left" size="2x" style="color: #183153"/>
+          </Button>
+
         </div>
         <div v-if="!isClient" class="first-group">
           <!--          <Button icon="pi pi-user" class="p-button-rounded p-button-info" />-->

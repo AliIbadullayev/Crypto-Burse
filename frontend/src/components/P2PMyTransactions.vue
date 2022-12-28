@@ -26,6 +26,7 @@
 
 <script>
 import axios from "axios";
+import CryptoService from "@/services/crypto.service";
 
 export default {
   name: "P2PMyTransactions",
@@ -35,9 +36,11 @@ export default {
     }
   },
   methods: {
-    async fetchMyP2P() {
-      const response = await axios.get('/api/v1/users/getAllMyP2P')
-      this.myTransactions = response.data
+    fetchMyP2P() {
+      CryptoService.getAllMyP2P()
+          .then((r) => {
+            this.myTransactions = r.data
+          })
     },
     getStatus(p2pTransactionStatus){
       switch (p2pTransactionStatus){

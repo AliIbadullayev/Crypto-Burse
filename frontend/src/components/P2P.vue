@@ -90,6 +90,7 @@
 
 <script>
 import axios from "axios";
+import CryptoService from "@/services/crypto.service";
 
 export default {
   name: "P2P",
@@ -136,12 +137,18 @@ export default {
     }
   },
   methods: {
-    async openP2PAdd(){
+    openP2PAdd(){
       this.p2pTransactionDialogVisible = true;
-      const userResponse = await axios.get('/api/v1/users/getClientInfo')
-      const walletsResponse = await axios.get('/api/v1/users/getAllClientWallets')
-      this.userData = userResponse.data
-      this.wallets = walletsResponse.data
+      CryptoService.getWallets().then(
+          r => {
+            this.wallets = r.data
+          }
+      )
+      CryptoService.getProfileInfo().then(
+          r => {
+            this.userData = r.data
+          }
+      )
     },
     close(){
       this.p2pTransactionDialogVisible = false;
@@ -154,7 +161,7 @@ export default {
       this.formP2PTransaction.operationType = this.selectedType.value
     },
     postP2PTransaction(){
-      axios.post('/api/v1/users/postOffer', this.formP2PTransaction)
+      CryptoService.postOffer(this.formP2PTransaction)
           .then(() => {
             this.p2pTransactionDialogVisible = false;
           })

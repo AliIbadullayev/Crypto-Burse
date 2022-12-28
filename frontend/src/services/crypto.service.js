@@ -33,7 +33,7 @@ class CryptoService{
         return axios.post('/api/v1/users/sendCrypto', sendCryptoForm, {headers: authHeader()})
     }
     getStaking(wallet){
-        return axios.get('/api/v1/users/getStackingByWallet',  {headers: authHeader(), data: wallet})
+        return axios.get('/api/v1/users/getStackingByWallet',  {headers: authHeader(), params: wallet})
     }
     toStake(stakeForm){
         return axios.post('/api/v1/users/toStake', stakeForm, {headers: authHeader()})
@@ -44,7 +44,39 @@ class CryptoService{
     getClientWallet(wallet){
         return axios.get('/api/v1/users/getClientWallet',  {headers: authHeader(), params: wallet})
     }
-
+    getBlockchainNetworks(){
+        return axios.get('/api/v1/users/getBlockchainNetworks',  {headers: authHeader()})
+    }
+    getClientTransactions(){
+        return axios.get('/api/v1/users/getClientTransactions',  {headers: authHeader()})
+    }
+    getClientExchanges(){
+        return axios.get('/api/v1/users/getClientExchanges',  {headers: authHeader()})
+    }
+    getClientFiatToCryptos(){
+        return axios.get('/api/v1/users/getClientFiatToCryptos',  {headers: authHeader()})
+    }
+    postOffer(formP2PTransaction){
+        return axios.post('/api/v1/users/postOffer', formP2PTransaction,  {headers: authHeader()})
+    }
+    respondToOffer(toSend){
+        return axios.post('/api/v1/users/respondToOffer', toSend, {headers: authHeader()})
+    }
+    getAllOffers(){
+        return axios.get('/api/v1/users/getAllOffers', {headers: authHeader()})
+    }
+    getAllMyP2P(){
+        return axios.get('/api/v1/users/getAllMyP2P', {headers: authHeader()})
+    }
+    buyNft(toSend){
+        return axios.post('/api/v1/users/buyNft', toSend, {headers: authHeader()})
+    }
+    scoreNft(toSend){
+        return axios.post('/api/v1/users/scoreNft', toSend, {headers: authHeader()})
+    }
+    getAllNfts(){
+        return axios.get('/api/v1/users/getAllNfts', {headers: authHeader()})
+    }
 }
 
 export default new CryptoService()

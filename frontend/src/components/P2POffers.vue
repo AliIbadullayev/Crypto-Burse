@@ -31,6 +31,7 @@
 <script>
 import { defineComponent } from 'vue'
 import axios from 'axios'
+import CryptoService from "@/services/crypto.service";
 
 
 export default ({
@@ -41,13 +42,14 @@ export default ({
     }
   },
   methods: {
-    async fetchP2POffers() {
-      const response = await axios.get('/api/v1/users/getAllOffers')
-      this.p2pOffers = response.data
+    fetchP2POffers() {
+      CryptoService.getAllOffers()
+          .then((r) => {
+            this.p2pOffers = r.data
+          })
     },
     respondToOffer(data){
-      const toSend = {id : data.id }
-      axios.post('/api/v1/users/respondToOffer', toSend)
+      CryptoService.respondToOffer({id : data.id })
           .then(() => {
             this.p2pOffers.splice(this.p2pOffers.findIndex(x => x.id === data.id), 1 )
           })

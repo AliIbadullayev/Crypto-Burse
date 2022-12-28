@@ -13,7 +13,7 @@ import Button from "primevue/button";
 
 import {
     faArrowDown, faCirclePlus,
-    faCircleQuestion, faDollarSign,
+    faCircleQuestion, faClockRotateLeft, faDollarSign,
     faRightFromBracket,
     faRotate,
     faStore,
@@ -46,7 +46,7 @@ import store from "@/store";
 import {Mixin} from "@/mixin";
 const app = createApp(App)
 
-library.add(faUserSecret, faUser, faUsers, faRotate, faStore, faCircleQuestion, faRightFromBracket, faDollarSign, faArrowDown, faCirclePlus)
+library.add(faUserSecret, faUser, faUsers, faRotate, faStore, faCircleQuestion, faRightFromBracket, faDollarSign, faArrowDown, faCirclePlus, faClockRotateLeft)
 app.use(PrimeVue).use(router).use(store)
 
 app.component('Carousel', Carousel)

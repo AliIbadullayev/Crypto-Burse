@@ -42,7 +42,10 @@ export default {
     signIn(){
       this.$store.dispatch('login', this.signinForm).then(
           () => {
-            this.$router.push('/main/profile');
+            if ( this.$store.state.user.role === "ROLE_ADMIN")
+              this.$router.push('/main/admin');
+            else
+              this.$router.push('/main/profile');
           })
           .catch((err)=>{
             alert(err.response.data)

@@ -18,6 +18,9 @@ import SignUp from "@/components/SignUp";
 import Admin from "@/components/Admin";
 import store from "@/store";
 import NotFound from "@/components/NotFound";
+import WalletHistoryReplenishments from "@/components/WalletHistoryReplenishments";
+import WalletHistoryTransactions from "@/components/WalletHistoryTransactions";
+import WalletHistoryExchanges from "@/components/WalletHistoryExchanges";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -31,6 +34,24 @@ const router = createRouter({
                 {
                     path: 'exchange',
                     component: Exchange,
+                },
+                {
+                    path: 'history',
+                    component: WalletHistory,
+                    children: [
+                        {
+                            path: 'replenishments',
+                            component: WalletHistoryReplenishments,
+                        },
+                        {
+                            path: 'transactions',
+                            component: WalletHistoryTransactions,
+                        },
+                        {
+                            path: 'exchanges',
+                            component: WalletHistoryExchanges,
+                        }
+                    ]
                 },
                 {
                     path: 'wallets',
@@ -47,10 +68,6 @@ const router = createRouter({
                         {
                             path: 'stacking',
                             component: WalletStacking,
-                        },
-                        {
-                            path: 'history',
-                            component: WalletHistory,
                         }
                     ]
                 },

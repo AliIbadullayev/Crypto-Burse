@@ -53,6 +53,7 @@
 
 <script>
 import axios from "axios";
+import CryptoService from "@/services/crypto.service";
 
 export default {
   name: "NftEntity",
@@ -62,16 +63,17 @@ export default {
   methods: {
     buyNft(nft) {
       const toSend = {id: nft.id}
-      axios.post('/api/v1/users/buyNft', toSend)
-        .then(() => {
-          this.nft = null
-        })
-        .catch((err) => {
-          alert(err.response.data)
-        })
+      CryptoService.buyNft(toSend)
+          .then(() => {
+            this.$emit('changed', true)
+          })
+          .catch((err) => {
+            this.$emit('changed', false)
+            alert(err.response.data)
+          })
     },
 
-    async scoreNft(nft, like){
+    scoreNft(nft, like){
       let toSend
       if (like === true){
         toSend = {
@@ -84,13 +86,18 @@ export default {
           isLiked: false
         }
       }
-      const nftResp = await axios.post('/api/v1/users/scoreNft', toSend)
-      this.nft.likes  = nftResp.data.likes
-      this.nft.dislikes = nftResp.data.dislikes
+      CryptoService.scoreNft(toSend)
+          .then((r) => {
+            this.$emit('changed', true)
+          })
+          .catch((err)=>{
+            this.$emit('changed', false)
+            alert(err.response.data)
+          })
     }
   },
   props: {
-    nft: Object
+    nft: null
   }
 }
 </script>

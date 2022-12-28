@@ -641,7 +641,7 @@ public class UserRestControllerV1 {
 
 
     @GetMapping("getStackingByWallet")
-    public ResponseEntity<?> getStackingByWallet(@RequestBody StackingRequestDto stackingRequestDto, HttpServletRequest request){
+    public ResponseEntity<?> getStackingByWallet(@RequestParam(name = "walletAddress") String wallet, HttpServletRequest request){
         String username = null;
         String token = jwtTokenProvider.resolveToken(request);
         if (token != null){
@@ -653,11 +653,9 @@ public class UserRestControllerV1 {
 
 
         try {
-            StackingDto stackingDto = walletService.getWalletStaking(stackingRequestDto.getWalletAddress());
+            StackingDto stackingDto = walletService.getWalletStaking(wallet);
             return new ResponseEntity<>(stackingDto,HttpStatus.OK);
-        } catch (NoSuchWalletException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (StakingNotFoundException e) {
+        } catch (NoSuchWalletException | StakingNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 

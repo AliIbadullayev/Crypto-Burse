@@ -109,7 +109,7 @@ export default {
       this.exchangeForm.walletToAddress = this.wallet2.address
     },
     onAmountInput(){
-      return this.wallet1 != null && this.wallet2 != null? parseFloat((this.exchangeForm.amount*this.getExchange(this.wallet1.crypto_name)/this.getExchange(this.wallet2.crypto_name)).toFixed(5)): 0
+      return this.wallet1 != null && this.wallet2 != null? parseFloat((this.exchangeForm.amount*this.getExchange(this.exchangeRates, this.wallet1.crypto_name)/this.getExchange(this.exchangeRates, this.wallet2.crypto_name)).toFixed(5)): 0
     },
   },
   mounted(){

@@ -97,7 +97,6 @@ public class NftService {
             long[] scores;
             if (nft.isPlaced()) {
                 scores = getScores(nft);
-                NftDto nftDto = NftDto.fromNft(nft,scores[0],scores[1]);
                 nftDtos.add(NftDto.fromNft(nft, scores[0], scores[1]));
             }
         }
