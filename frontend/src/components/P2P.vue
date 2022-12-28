@@ -1,7 +1,10 @@
 <template>
+  <Toast/>
   <div class="p2p">
     <Card class="custom-card p2p-card">
       <template #content>
+
+        <h2 class="p2p-header">P2P - транзакции </h2>
         <div class="add-button">
           <Button icon="pi " class="p-button-rounded p-button-info p-button-text" style="width:50px; height:50px" @click="openP2PAdd">
             <font-awesome-icon icon="fa-solid fa-circle-plus" size="3x" style="color: #183153"/>
@@ -164,9 +167,10 @@ export default {
       CryptoService.postOffer(this.formP2PTransaction)
           .then(() => {
             this.p2pTransactionDialogVisible = false;
+            this.$toast.add({severity:'success', summary: 'P2P-размещение', detail: "Успешно размещен!", life: 3000});
           })
           .catch((err)=>{
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'P2P-размещение', detail: err.response.data, life: 3000});
           })
     }
   }
@@ -174,6 +178,11 @@ export default {
 </script>
 
 <style scoped>
+.p2p-header{
+  text-align: center;
+  margin: 0 0 1rem;
+}
+
 .p2p-card {
   border-radius: 15px;
 }

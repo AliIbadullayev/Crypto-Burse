@@ -1,4 +1,5 @@
 <template>
+  <Toast/>
 <div class="login">
 
   <Card class="custom-card login-card">

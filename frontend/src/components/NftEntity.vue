@@ -66,10 +66,11 @@ export default {
       CryptoService.buyNft(toSend)
           .then(() => {
             this.$emit('changed', true)
+            this.$toast.add({severity:'success', summary: 'NFT-маркетплейс', detail: "Успешно куплен!", life: 3000});
           })
           .catch((err) => {
             this.$emit('changed', false)
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'NFT-маркетплейс', detail: err.response.data, life: 3000});
           })
     },
 
@@ -89,10 +90,11 @@ export default {
       CryptoService.scoreNft(toSend)
           .then((r) => {
             this.$emit('changed', true)
+            this.$toast.add({severity:'success', summary: 'NFT-маркетплейс', detail: "Успешно оценен!", life: 3000});
           })
           .catch((err)=>{
             this.$emit('changed', false)
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'NFT-маркетплейс', detail: err.response.data, life: 3000});
           })
     }
   },

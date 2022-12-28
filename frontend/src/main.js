@@ -40,14 +40,17 @@ import InputMask from "primevue/inputmask";
 import Calendar from "primevue/calendar";
 import Badge from "primevue/badge";
 import Password from "primevue/password";
-
+import ToggleButton from "primevue/togglebutton";
+import ToastService from 'primevue/toastservice';
+import Toast from 'primevue/toast';
 
 import store from "@/store";
 import {Mixin} from "@/mixin";
+
 const app = createApp(App)
 
 library.add(faUserSecret, faUser, faUsers, faRotate, faStore, faCircleQuestion, faRightFromBracket, faDollarSign, faArrowDown, faCirclePlus, faClockRotateLeft)
-app.use(PrimeVue).use(router).use(store)
+app.use(PrimeVue).use(router).use(store).use(ToastService);
 
 app.component('Carousel', Carousel)
 app.component('Card', Card)
@@ -66,8 +69,9 @@ app.component('InputMask', InputMask)
 app.component('Calendar', Calendar)
 app.component('Badge', Badge)
 app.component('Password', Password)
+app.component('ToggleButton', ToggleButton)
 app.component('font-awesome-icon', FontAwesomeIcon)
-
+app.component('Toast', Toast)
 
 app.directive('tooltip', Tooltip)
 app.mixin(Mixin)

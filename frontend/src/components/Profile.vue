@@ -8,6 +8,7 @@
         </span>
         </template>
         <template #content>
+          <Toast/>
           <div class="main-info-img">
             <div class="main-info">
               <div class="main-info-login">
@@ -181,6 +182,7 @@ export default {
             this.profile = resp
           },
           () => {
+            this.$toast.add({severity:'error', summary: 'Личный кабинет', detail: err.response.data, life: 3000});
             this.$router.push('/login/signIn')
           }
       )
@@ -190,27 +192,28 @@ export default {
           (resp) => {
             this.bankCards = resp.data
             this.hasCards = Array.isArray(this.bankCards) && this.bankCards.length
-            alert(JSON.stringify(this.bankCards))
           }
       )
     },
     addBankCard() {
       CryptoService.addBankCard(this.card)
           .then(() => {
+                this.$toast.add({severity:'success', summary: 'Банковская карта', detail: "Успешно добавлена!", life: 3000});
                 this.bankCardDialogVisible = false;
                 this.getBankCards()
               },
               (err) => {
-                alert(err.response.data)
+                this.$toast.add({severity:'error', summary: 'Банковская карта', detail: err.response.data, life: 3000});
               })
     },
     replenishFiat() {
       CryptoService.replenishFiat(this.replenishForm)
           .then(() => {
                 this.getProfileInfo()
+                this.$toast.add({severity:'success', summary: 'Личный счет', detail: "Успешно пополнен!", life: 3000});
               },
               (err) => {
-                alert(err.response.data)
+                this.$toast.add({severity:'error', summary: 'Личный счет', detail: err.response.data, life: 3000});
               })
     },
     openAddBankCard() {

@@ -26,7 +26,9 @@ export const Mixin = {
             }else {
                 return ""
             }
+        },
+        sleep(time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
         }
-
     }
 };

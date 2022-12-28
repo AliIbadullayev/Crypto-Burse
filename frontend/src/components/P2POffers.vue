@@ -1,7 +1,8 @@
 <template>
+  <Toast/>
   <div class="p2p-offers">
     <div class="card">
-      <DataTable :value="p2pOffers" responsiveLayout="scroll">
+      <DataTable :value="p2pOffers" style="height: 65vh" responsiveLayout="scroll" scrollable="true" scrollHeight="flex">
         <Column field="id" header="Id" :sortable="true"></Column>
         <Column field="walletOneAddress" header="Seller" :sortable="true"></Column>
         <Column field="cryptoName" header="Crypto" :sortable="true"></Column>
@@ -52,9 +53,10 @@ export default ({
       CryptoService.respondToOffer({id : data.id })
           .then(() => {
             this.p2pOffers.splice(this.p2pOffers.findIndex(x => x.id === data.id), 1 )
+            this.$toast.add({severity:'success', summary: 'P2P-оффер', detail: "Успешно проведен!\nОжидайте ответа администратора!", life: 3000});
           })
           .catch((err)=>{
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'P2P-оффер', detail: err.response.data, life: 3000});
           })
     }
   },

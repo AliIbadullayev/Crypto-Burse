@@ -1,4 +1,5 @@
 <template>
+
   <form v-if="!hasStaking" class="stacking" >
     <div class="field-1 field">
       <span class="p-float-label">
@@ -57,10 +58,11 @@ export default {
             this.$emit('changed', true)
             this.hasStaking = true
             this.getStaking()
+            this.$toast.add({severity:'success', summary: 'Стейкинг', detail: 'Успешно создан стейкинг!', life: 3000});
           },
           (err) => {
             this.$emit('changed', false)
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'Стейкинг', detail: err.response.data, life: 3000});
           }
       )
     },
@@ -69,11 +71,12 @@ export default {
           (r) => {
             this.hasStaking = true
             this.staking = r.data
+            this.$toast.add({severity:'success', summary: 'Стейкинг', detail: 'Имеется стейкинг!', life: 3000});
           },
           //TODO make this as warning
           (err) => {
             this.hasStaking = false
-            alert(err.response.data)
+            this.$toast.add({severity:'warn', summary: 'Стейкинг', detail: err.response.data, life: 3000});
           }
       )
     },
@@ -81,10 +84,11 @@ export default {
       CryptoService.freeStake({"walletAddress":this.formStaking.walletAddress}).then(
           (r) => {
             this.hasStaking = false
+            this.$toast.add({severity:'success', summary: 'Стейкинг', detail: 'Успешно освобождена!', life: 3000});
           },
           //TODO make this as warning
           (err) => {
-            alert(err.response.data)
+            this.$toast.add({severity:'warn', summary: 'Стейкинг', detail: err.response.data, life: 3000});
           }
       )
     },

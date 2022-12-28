@@ -77,6 +77,22 @@ class CryptoService{
     getAllNfts(){
         return axios.get('/api/v1/users/getAllNfts', {headers: authHeader()})
     }
+    getAllClientNfts(){
+        return axios.get('/api/v1/users/getAllClientNfts', {headers: authHeader()})
+    }
+    sellNft(toSend){
+        return axios.post('/api/v1/users/sellNft', toSend, {headers: authHeader()})
+    }
+    returnNft(toSend){
+        return axios.post('/api/v1/users/returnNft', toSend, {headers: authHeader()})
+    }
+    getAllTransactionsToCheck(){
+        return axios.get('/api/v1/admin/getAllTransactionsToCheck', {headers: authHeader()})
+    }
+    makeDecision(formP2P){
+        return axios.post('/api/v1/admin/makeDecision', formP2P,  {headers: authHeader()})
+    }
+
 }
 
 export default new CryptoService()

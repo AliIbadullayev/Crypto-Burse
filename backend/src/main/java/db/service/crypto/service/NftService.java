@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NftService {
@@ -79,10 +80,14 @@ public class NftService {
 
 
     public List<NftDto> getAllClientNfts(String clientLogin){
-        List<NftDto> allNftDtos = getAllNfts();
+        List<NftEntity> nfts = nftEntityRepository.findAll().stream()
+                .filter( a-> a.getClient().getUserLogin().equals(clientLogin))
+                .collect(Collectors.toList());
+
         List<NftDto> result = new ArrayList<>();
-        for (NftDto nftDto : allNftDtos) {
-            if (nftDto.getOwner().equals(clientLogin)) result.add(nftDto);
+        for (NftEntity nft : nfts) {
+            long[] scores = getScores(nft);
+            result.add(NftDto.fromNft(nft, scores[0], scores[1]));
         }
         return result;
     }
@@ -100,9 +105,6 @@ public class NftService {
                 nftDtos.add(NftDto.fromNft(nft, scores[0], scores[1]));
             }
         }
-
-
-
         return nftDtos;
     }
 

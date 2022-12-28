@@ -1,4 +1,5 @@
 <template>
+  <Toast/>
   <div class="market">
     <Card class="market-block-card">
       <template #content>

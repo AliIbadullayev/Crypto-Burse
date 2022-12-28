@@ -71,10 +71,11 @@ export default {
       CryptoService.sendCrypto(this.formTransaction).then(
           (r) => {
             this.$emit('changed', true)
+            this.$toast.add({severity:'success', summary: 'Отправка', detail: 'Успешно отправлено!', life: 3000});
           },
           (err) => {
             this.$emit('changed', false)
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'Отправка', detail: err.response.data, life: 3000});
           }
       )
     }

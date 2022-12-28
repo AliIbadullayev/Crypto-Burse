@@ -1,11 +1,12 @@
 <template>
+  <Toast/>
   <div class="exchange">
     <div class="select-block">
       <Card class="select-block-card">
         <template #content>
           <div class="crypto-one">
             <h3>Криптовалюта №1</h3>
-            <Listbox v-model="wallet1" :options="wallets" :filter="true" optionLabel="crypto_name" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="Search" @change="changeWallet1">
+            <Listbox v-model="wallet1" :options="wallets" :filter="true" optionLabel="crypto_name" listStyle="max-height:25vh" style="width:15rem" filterPlaceholder="Search" @change="changeWallet1">
               <template #option="slotProps">
                 <div class="crypto-item">
                   <div>{{slotProps.option.crypto_name}}</div>
@@ -19,7 +20,7 @@
           </div>
           <div class="crypto-two">
             <h3>Криптовалюта №2</h3>
-            <Listbox v-model="wallet2" :options="wallets" :filter="true"  optionLabel="crypto_name" listStyle="max-height:250px" style="width:15rem" filterPlaceholder="Search" @change="changeWallet2">
+            <Listbox v-model="wallet2" :options="wallets" :filter="true"  optionLabel="crypto_name" listStyle="max-height:25vh" style="width:15rem" filterPlaceholder="Search" @change="changeWallet2">
               <template #option="slotProps">
                 <div class="crypto-item">
                   <div>{{slotProps.option.crypto_name}}</div>
@@ -44,7 +45,6 @@
             <font-awesome-icon icon="fa-solid fa-arrow-down" size="2x" style="color: #183153"/>
           </div>
           <div class="field-2">
-              <small style="display: block">Количество крипты №2 </small>
             {{ onAmountInput() }}
           </div>
           <div class="exchange-button">
@@ -85,9 +85,10 @@ export default {
       CryptoService.exchangeCryptos(this.exchangeForm)
           .then(() => {
             this.fetchWalletsAndExchanges()
+            this.$toast.add({severity:'success', summary: 'Обмен', detail: "Успешно обменено!", life: 3000});
           })
           .catch((err)=>{
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'Обмен', detail: err.response.data, life: 3000});
           })
     },
     fetchWalletsAndExchanges(){
@@ -119,6 +120,9 @@ export default {
 </script>
 
 <style scoped>
+.field-2{
+  text-align: center;
+}
 .select-block-card, .exchange-block-card{
   height: 98vh;
   background: #FFFFFF;

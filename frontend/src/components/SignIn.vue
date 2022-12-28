@@ -48,7 +48,7 @@ export default {
               this.$router.push('/main/profile');
           })
           .catch((err)=>{
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'Вход', detail: err.response.data, life: 3000});
           }
       );
     }

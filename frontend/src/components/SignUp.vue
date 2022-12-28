@@ -53,9 +53,11 @@ export default {
       this.$store.dispatch('register', this.signupForm)
           .then(() => {
             this.$router.push('/login/signIn')
+            this.$toast.add({severity:'success', summary: 'Регистрация', detail: "Успешно зарегистрирован!", life: 3000});
+
           })
           .catch((err)=>{
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'Регистрация', detail: err.response.data, life: 3000});
           })
     }
   }

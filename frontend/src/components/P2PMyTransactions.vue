@@ -1,8 +1,7 @@
 <template>
   <div class="my-transactions">
     <div class="card">
-      <h5>Single Column</h5>
-      <DataTable :value="myTransactions" style="height: 70vh" responsiveLayout="scroll" scrollable="true" scrollHeight="flex">
+      <DataTable :value="myTransactions" style="height: 65vh" responsiveLayout="scroll" scrollable="true" scrollHeight="flex">
         <Column field="id" header="Id" :sortable="true"></Column>
         <Column field="walletOneAddress" header="Seller" :sortable="true"></Column>
         <Column field="cryptoName" header="Crypto" :sortable="true"></Column>

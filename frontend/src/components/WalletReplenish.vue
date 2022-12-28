@@ -1,4 +1,5 @@
 <template>
+
   <div class="form-crypto-fiat">
     <form>
       <div class="inputs">
@@ -42,10 +43,11 @@ export default {
       CryptoService.replenishCrypto(this.formCryptoFiat).then(
           (r) => {
             this.$emit('changed', true)
+            this.$toast.add({severity:'success', summary: 'Пополнение', detail: "Успешно пополнено!", life: 3000});
           },
           (err) => {
             this.$emit('changed', false)
-            alert(err.response.data)
+            this.$toast.add({severity:'error', summary: 'Пополнение', detail: err.response.data, life: 3000});
           }
       )
     },

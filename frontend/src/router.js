@@ -124,6 +124,7 @@ router.beforeEach((to, from, next) => {
     // redirect to login page
 
     if (authRequired && !loggedIn) {
+        localStorage.removeItem('user')
         next('/login/signIn');
     } else {
         next();

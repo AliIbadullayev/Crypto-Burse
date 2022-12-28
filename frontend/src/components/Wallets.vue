@@ -1,5 +1,6 @@
 <!--TODO transactions history, stacking history, tabs-menu to route between transaction, stacking, withdraw, history-->
 <template>
+  <Toast/>
 <div class="wallet">
     <div class="wallets-block">
       <Card class="wallets-block-card custom-card">
@@ -38,7 +39,6 @@
                       <Button icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text" @click="close"/>
                     </div>
                   </div>
-
                 </template>
                 <div class="card">
                   <TabMenu :model="items" v-model:activeIndex="active"/>
@@ -74,38 +74,62 @@
               <Column field="value" header="Цена(USD)">
                 <template #body="slot">
                   <div class="nft-balance">
-                    {{slot.data.value}}
+                    {{slot.data.price}}
                   </div>
                 </template>
               </Column>
-              <Column field="value" header="Рейтинг">
+              <Column field="value" header="Статус">
                 <template #body="slot">
                   <div class="nft-balance">
-                    {{ slot.data.rating !== 0 ? slot.data.rating : '-' }}
+                    {{ slot.data.placed ? "Размещен": "Не размещен"}}
                   </div>
                 </template>
               </Column>
             </DataTable>
 
             <div class="dialog-nft">
-              <Dialog  v-model:visible="nftDialogVisible" :style="{width: '75vw'}"  :modal="true" :contentStyle="{height: '75vh'}" >
+              <Dialog  v-model:visible="nftDialogVisible" :closable="false"  :style="{width: '45vw'}"  :modal="true" :contentStyle="{height: '75vh'}" >
+                <template #header>
+                  <div class="wallet-dialog-header">
+                    <div class="header-block">
+                      <h2>
+                        {{selectedNft.name}}
+                      </h2>
+                      <h4 style="margin-left: 2rem">
+                        {{selectedNft.price}}$
+                      </h4>
+                    </div>
+                    <div class="exit-button">
+                      <Button icon="pi pi-times" class="p-button-rounded p-button-danger p-button-text" @click="close"/>
+                    </div>
+                  </div>
+                </template>
                 <div class="nft-dialog-first-block">
-                  <h2>
-                    {{selectedNft.name}}
-                  </h2>
-                  <div class="nft-main-info">
-                    <div class="nft-amount-address-block">
-                      <div class="nft-amount-address-instance">
-                        <h3>Цена</h3>
-                        {{selectedNft.value}}
+                  <div class="image-block">
+                    <img :src="selectedNft.url"/>
+                  </div>
+                  <div class="block">
+                    <div class="like-dislike">
+                      <div class="like">
+                        <div class="button">
+                          <Button icon="pi pi-thumbs-up" class="p-button p-button-rounded p-button-success p-button-text"/>
+                        </div>
+                        <div class="text">
+                          {{ selectedNft.likes }}
+                        </div>
+                      </div>
+                      <div class="dislike">
+                        <div class="button">
+                          <Button icon="pi pi-thumbs-down" class="p-button p-button-rounded p-button-danger p-button-text"/>
+                        </div>
+                        <div class="text">
+                          {{ selectedNft.dislikes }}
+                        </div>
                       </div>
                     </div>
-                    <div class="nft-rating-address-block">
-                      <div class="nft-rating-address-instance">
-                        <h3>Рейтинг</h3>
-                        {{selectedNft.rating}}
-                      </div>
-                    </div>
+                  </div>
+                  <div class="toggle-button-placed">
+                    <ToggleButton v-model="selectedNft.placed" onLabel="Отозвать NFT" offLabel="Разместить NFT" onIcon="pi pi-times" offIcon="pi pi-check" class="w-full sm:w-10rem" aria-label="do you confirm" @click="placeOrReturnNft" />
                   </div>
                 </div>
                 <div class="nft-dialog-second-block">
@@ -180,12 +204,36 @@ export default {
       CryptoService.getClientWallet({address: this.selectedWallet.address}).then(
           r => {
             this.selectedWallet = r.data
+            this.wallets.find(x => x.address === this.selectedWallet.address).amount = this.selectedWallet.amount
+          }
+      )
+
+    },
+    fetchNfts(){
+      CryptoService.getAllClientNfts().then(
+          r => {
+            this.nfts = r.data
           }
       )
     },
-    onWalletSelect(){
-      this.$router.push('/main/wallets/replenish')
-      this.walletDialogVisible = true;
+    placeOrReturnNft() {
+      if (this.selectedNft.placed) {
+        CryptoService.sellNft({id: this.selectedNft.id}).then(
+            r => {
+              this.selectedNft = r.data
+              this.$toast.add({severity:'success', summary: 'NFT-cущность', detail: "Успешно размещена!", life: 3000});
+            }
+        )
+      }
+      else {
+        CryptoService.returnNft({id: this.selectedNft.id}).then(
+            r => {
+              this.selectedNft = r.data
+              this.$toast.add({severity:'success', summary: 'NFT-cущность', detail: "Успешно отозвана!", life: 3000});
+            }
+        )
+      }
+      this.nfts.find(x => x.id === this.selectedNft.id).placed = this.selectedNft.placed
     },
     onChange(value){
       if (value === true) {
@@ -195,27 +243,23 @@ export default {
         console.log('nothing was changed!')
       }
     },
-    onWalletClose() {
-      this.walletDialogVisible = false;
+    onWalletSelect(){
+      this.$router.push('/main/wallets/replenish')
+      this.walletDialogVisible = true;
     },
     onNftSelect(){
       this.nftDialogVisible = true;
     },
-    onNftClose() {
-      this.nftDialogVisible = false;
-    },
-    countPercent() {
-    //  TODO realize logic of giving percent
-    },
     close(){
       this.$router.push('/main/wallets')
+      this.nftDialogVisible = false;
       this.walletDialogVisible = false;
-    },
-
+    }
   },
   mounted() {
     this.fetchWalletsAndExchangeRates()
     this.fetchProfile()
+    this.fetchNfts()
   }
 }
 </script>
@@ -270,4 +314,29 @@ width: 94%;
 border-radius: 15px;
 }
 
+.image-block {
+  height: 50%;
+  text-align: center;
+}
+
+.image-block img {
+  width: 40vw;
+  height: 40vh;
+  object-fit: contain;
+}
+
+.like-dislike {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.like, .dislike {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-button-placed{
+  text-align:center;
+}
 </style>
