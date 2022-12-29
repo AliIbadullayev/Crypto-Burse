@@ -47,6 +47,7 @@ export default ({
       CryptoService.getAllOffers()
           .then((r) => {
             this.p2pOffers = r.data
+            this.p2pOffers.sort((a,b)=>a.id-b.id)
           })
     },
     respondToOffer(data){

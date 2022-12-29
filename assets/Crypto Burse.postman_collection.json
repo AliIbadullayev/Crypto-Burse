@@ -1,0 +1,1149 @@
+{
+	"info": {
+		"_postman_id": "e4bf3161-68ff-4dde-9dde-d9b2c2db6333",
+		"name": "Crypto Burse Copy",
+		"description": "Requests for Course Work",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18881800"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"test\",\r\n    \"password\": \"test\",\r\n    \"name\":\"John\",\r\n    \"surname\":\"Doe\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add_card",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcwNzYzMTcyLCJleHAiOjE2NzA3NjY3NzJ9.373nfY1fDYqL5ZT6737ObrDapmjZstovCuxqjsvGKrU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"cardNumber\": \"1234123412343328\",\r\n    \"nameOnCard\": \"Ali Ibadullaev\",\r\n    \"expireDate\": \"12/23\",\r\n    \"cvv\": \"666\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/addCard",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"addCard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deposit_fiat",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsd2JlYW1lciIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzA4Mzc5NjgsImV4cCI6MTY3MDg3Mzk2OH0.AJ8HmGz1gY-lkDw200epoyyRxG59k4lTsJA0cjHUOgc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"amount\": 100000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/depositFiat",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"depositFiat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "send_crypto",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMDk4MDI5LCJleHAiOjE2NzIxMzQwMjl9.XyPrJGbpVTL0KQotIt2qDTI830fkvSN8dYXfmwjnkJs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletFromAddress\":\"p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq\",\r\n    \"walletToAddress\":\"arS6dG3ApPoUYtaYGlcir1w0qODn8t\",\r\n    \"blockchainNetworkName\":\"Bn_shangai\",\r\n    \"amount\":\"100000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/sendCrypto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"sendCrypto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "exchange_crypto",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcxMTEyMDc3LCJleHAiOjE2NzExNDgwNzd9.gu9qRpIIoxL7Bpyg1-GU94I59dAIfiiDtbJNJgvw5G0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletToAddress\":\"m1GFuMZTuD3V9tqOkaCC\",\r\n    \"walletFromAddress\":\"ryDKpLjiJZdlrgKsisr1\",\r\n    \"amount\":\"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/exchangeCrypto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"exchangeCrypto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fiat_to_crypto",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcxMTEyMDc3LCJleHAiOjE2NzExNDgwNzd9.gu9qRpIIoxL7Bpyg1-GU94I59dAIfiiDtbJNJgvw5G0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletAddress\":\"XJRpzUpg7VMRxAom2Xop\",\r\n    \"amount\":\"2900\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/fiatToCrypto",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"fiatToCrypto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "score_nft",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcxNjEzNDEyLCJleHAiOjE2NzE2NDk0MTJ9.PS_X1Zdw9-Up4_BDGiNBnYwlOkZ0HiI-FXkkrihRwBg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nftId\":\"7\",\r\n    \"isLiked\":true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/scoreNft",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"scoreNft"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_client_info",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YXNzaWxpeSIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzIwNzQyNjMsImV4cCI6MTY3MjExMDI2M30.KyUPouj1qDZJyUP2hQwkBM_gglIKTnH8rmwBDKxIlOc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getClientInfo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getClientInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_wallets",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMjE0MTE3LCJleHAiOjE2NzIyNTAxMTd9.sCApntIZCmq85aWGaqRG14_Xg9E5gPqejg7w4Wp1Qlc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getAllClientWallets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getAllClientWallets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_bank_cards",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YXNzaWxpeSIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzIwNDI0MDEsImV4cCI6MTY3MjA3ODQwMX0.o7ooLiLSMLo6h9K5xnuAhXLatGHrMN7SOskLToc15wo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getAllClientBankCards",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getAllClientBankCards"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_client_nfts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMjE0MTE3LCJleHAiOjE2NzIyNTAxMTd9.sCApntIZCmq85aWGaqRG14_Xg9E5gPqejg7w4Wp1Qlc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getAllClientNfts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getAllClientNfts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_nfts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMjE0MTE3LCJleHAiOjE2NzIyNTAxMTd9.sCApntIZCmq85aWGaqRG14_Xg9E5gPqejg7w4Wp1Qlc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getAllNfts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getAllNfts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_client_transactions",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMTczMjM1LCJleHAiOjE2NzIyMDkyMzV9.kfJU64yVduA0iN1lDaCFjlKxOfBGwfQvleFy11PW9Cg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getClientTransactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getClientTransactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_client_exchanges",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMTczMjM1LCJleHAiOjE2NzIyMDkyMzV9.kfJU64yVduA0iN1lDaCFjlKxOfBGwfQvleFy11PW9Cg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getClientExchanges",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getClientExchanges"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_client_fiat_to_cryptos",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMTczMjM1LCJleHAiOjE2NzIyMDkyMzV9.kfJU64yVduA0iN1lDaCFjlKxOfBGwfQvleFy11PW9Cg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getClientFiatToCryptos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getClientFiatToCryptos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "to_stake",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMDk4MDI5LCJleHAiOjE2NzIxMzQwMjl9.XyPrJGbpVTL0KQotIt2qDTI830fkvSN8dYXfmwjnkJs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletAddress\":\"p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq\",\r\n    \"amount\":\"10\",\r\n    \"years\":\"5\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/toStake",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"toStake"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "free_stake",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMDk4MDI5LCJleHAiOjE2NzIxMzQwMjl9.XyPrJGbpVTL0KQotIt2qDTI830fkvSN8dYXfmwjnkJs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletAddress\":\"p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/freeStake",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"freeStake"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "post_p2p_offer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOiJST0xFX0NMSUVOVCIsImlhdCI6MTY3MTIyOTAwNSwiZXhwIjoxNjcxMjY1MDA1fQ.kp7wvtnJVtUaf0VgiuK8Rwz0H7cVh8S0lU6nh0mPKVw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"walletOneAddress\":\"CJOwdVnB74JVRnxdFznY9O6zSE5pfu\",\r\n    \"cryptoName\":\"Ethereum\",\r\n    \"cryptoAmount\":\"5\",\r\n    \"fiatAmount\":\"10000\",\r\n    \"operationType\":\"SELL_CRYPTO\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/postOffer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"postOffer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "respond_to_offer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcxMjI3OTAwLCJleHAiOjE2NzEyNjM5MDB9.cc51LpjtDEo0GUHK-USSJffgnILxjy9kIX0Dwgzcn-c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"10\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/respondToOffer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"respondToOffer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "make_decision",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjoiUk9MRV9BRE1JTiIsImlhdCI6MTY3MTIxNzQ0OCwiZXhwIjoxNjcxMjUzNDQ4fQ.KLtQ7Ia6DISC05xlk_L8A7iUzXuq_g4Sxhpkkn20VBM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"p2pTransactionId\":\"6\",\r\n    \"isApproved\":true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/admin/makeDecision",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"makeDecision"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_p2p_to_for_admin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjoiUk9MRV9BRE1JTiIsImlhdCI6MTY3MjIyNzM4MSwiZXhwIjoxNjcyMjYzMzgxfQ.hbStn7rkb1aRsoPzoM9lXxNlxxdq2FKyq493-RMip5c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/admin/getAllTransactionsToCheck",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"getAllTransactionsToCheck"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_offers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcxMjI3OTAwLCJleHAiOjE2NzEyNjM5MDB9.cc51LpjtDEo0GUHK-USSJffgnILxjy9kIX0Dwgzcn-c",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getAllOffers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getAllOffers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_my_p2p",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZXMiOiJST0xFX0NMSUVOVCIsImlhdCI6MTY3MTIyOTAwNSwiZXhwIjoxNjcxMjY1MDA1fQ.kp7wvtnJVtUaf0VgiuK8Rwz0H7cVh8S0lU6nh0mPKVw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getAllMyP2P",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getAllMyP2P"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_cryptos",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YXNzaWxpeSIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzIwOTA5NTQsImV4cCI6MTY3MjEyNjk1NH0._jc_M715LOVUSf7uXik49SYXXMDPvDbirQ4uls0oo8s",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getCryptos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getCryptos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_staking_by_wallet",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YXNzaWxpeSIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzIwNzQyNjMsImV4cCI6MTY3MjExMDI2M30.KyUPouj1qDZJyUP2hQwkBM_gglIKTnH8rmwBDKxIlOc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getStackingByWallet?walletAddress=p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getStackingByWallet"
+					],
+					"query": [
+						{
+							"key": "walletAddress",
+							"value": "p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "buy_nft",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsd2JlYW1lciIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzE0ODQ2NzIsImV4cCI6MTY3MTUyMDY3Mn0.VePDTeSP0ujQdBJ20nMHA7hHvo5er9q4dAZlb8E-6lY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"13\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/buyNft",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"buyNft"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sell_nft",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsd2JlYW1lciIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzE0ODQ2NzIsImV4cCI6MTY3MTUyMDY3Mn0.VePDTeSP0ujQdBJ20nMHA7hHvo5er9q4dAZlb8E-6lY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"40\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/sellNft",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"sellNft"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "return_nft",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsd2JlYW1lciIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzE0ODQ2NzIsImV4cCI6MTY3MTUyMDY3Mn0.VePDTeSP0ujQdBJ20nMHA7hHvo5er9q4dAZlb8E-6lY",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"40\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/returnNft",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"returnNft"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_client_wallet",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ2YXNzaWxpeSIsInJvbGVzIjoiUk9MRV9DTElFTlQiLCJpYXQiOjE2NzIwOTA5NTQsImV4cCI6MTY3MjEyNjk1NH0._jc_M715LOVUSf7uXik49SYXXMDPvDbirQ4uls0oo8s",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getClientWallet?address=ZMQb628QX0dh0EtGAkfBeK88TVBQtp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getClientWallet"
+					],
+					"query": [
+						{
+							"key": "address",
+							"value": "ZMQb628QX0dh0EtGAkfBeK88TVBQtp"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_blockchain_networks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGkiLCJyb2xlcyI6IlJPTEVfQ0xJRU5UIiwiaWF0IjoxNjcyMDk4MDI5LCJleHAiOjE2NzIxMzQwMjl9.XyPrJGbpVTL0KQotIt2qDTI830fkvSN8dYXfmwjnkJs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/users/getBlockchainNetworks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"getBlockchainNetworks"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

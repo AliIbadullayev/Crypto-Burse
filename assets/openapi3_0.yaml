@@ -1,0 +1,531 @@
+openapi: 3.0.0
+info:
+  title: Crypto Burse Copy
+  description: Requests for Course Work
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+components:
+  securitySchemes:
+    noauthAuth:
+      type: http
+      scheme: noauth
+    bearerAuth:
+      type: http
+      scheme: bearer
+paths:
+  /api/v1/auth/register:
+    post:
+      tags:
+        - default
+      summary: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: test
+                password: test
+                name: John
+                surname: Doe
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/auth/login:
+    post:
+      tags:
+        - default
+      summary: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: admin
+                password: test
+      security:
+        - noauthAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/addCard:
+    post:
+      tags:
+        - default
+      summary: add_card
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                cardNumber: '1234123412343328'
+                nameOnCard: Ali Ibadullaev
+                expireDate: 12/23
+                cvv: '666'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/depositFiat:
+    post:
+      tags:
+        - default
+      summary: deposit_fiat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                amount: 100000
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/sendCrypto:
+    post:
+      tags:
+        - default
+      summary: send_crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                walletFromAddress: p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq
+                walletToAddress: arS6dG3ApPoUYtaYGlcir1w0qODn8t
+                blockchainNetworkName: Bn_shangai
+                amount: '100000'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/exchangeCrypto:
+    post:
+      tags:
+        - default
+      summary: exchange_crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                walletToAddress: m1GFuMZTuD3V9tqOkaCC
+                walletFromAddress: ryDKpLjiJZdlrgKsisr1
+                amount: '1'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/fiatToCrypto:
+    post:
+      tags:
+        - default
+      summary: fiat_to_crypto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                walletAddress: XJRpzUpg7VMRxAom2Xop
+                amount: '2900'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/scoreNft:
+    post:
+      tags:
+        - default
+      summary: score_nft
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                nftId: '7'
+                isLiked: true
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getClientInfo:
+    get:
+      tags:
+        - default
+      summary: get_client_info
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getAllClientWallets:
+    get:
+      tags:
+        - default
+      summary: get_all_wallets
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getAllClientBankCards:
+    get:
+      tags:
+        - default
+      summary: get_all_bank_cards
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getAllClientNfts:
+    get:
+      tags:
+        - default
+      summary: get_all_client_nfts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getAllNfts:
+    get:
+      tags:
+        - default
+      summary: get_all_nfts
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getClientTransactions:
+    get:
+      tags:
+        - default
+      summary: get_client_transactions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getClientExchanges:
+    get:
+      tags:
+        - default
+      summary: get_client_exchanges
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getClientFiatToCryptos:
+    get:
+      tags:
+        - default
+      summary: get_client_fiat_to_cryptos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/toStake:
+    post:
+      tags:
+        - default
+      summary: to_stake
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                walletAddress: p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq
+                amount: '10'
+                years: '5'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/freeStake:
+    post:
+      tags:
+        - default
+      summary: free_stake
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                walletAddress: p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/postOffer:
+    post:
+      tags:
+        - default
+      summary: post_p2p_offer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                walletOneAddress: CJOwdVnB74JVRnxdFznY9O6zSE5pfu
+                cryptoName: Ethereum
+                cryptoAmount: '5'
+                fiatAmount: '10000'
+                operationType: SELL_CRYPTO
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/respondToOffer:
+    post:
+      tags:
+        - default
+      summary: respond_to_offer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: '10'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/admin/makeDecision:
+    post:
+      tags:
+        - default
+      summary: make_decision
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                p2pTransactionId: '6'
+                isApproved: true
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/admin/getAllTransactionsToCheck:
+    get:
+      tags:
+        - default
+      summary: get_all_p2p_to_for_admin
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getAllOffers:
+    get:
+      tags:
+        - default
+      summary: get_all_offers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getAllMyP2P:
+    get:
+      tags:
+        - default
+      summary: get_all_my_p2p
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getCryptos:
+    get:
+      tags:
+        - default
+      summary: get_cryptos
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getStackingByWallet:
+    get:
+      tags:
+        - default
+      summary: get_staking_by_wallet
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: walletAddress
+          in: query
+          schema:
+            type: string
+          example: p9LsbKHf8XIDnXzZIxtj8IjoFyPGkq
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/buyNft:
+    post:
+      tags:
+        - default
+      summary: buy_nft
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: '13'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/sellNft:
+    post:
+      tags:
+        - default
+      summary: sell_nft
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: '40'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/returnNft:
+    post:
+      tags:
+        - default
+      summary: return_nft
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: '40'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getClientWallet:
+    get:
+      tags:
+        - default
+      summary: get_client_wallet
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: address
+          in: query
+          schema:
+            type: string
+          example: ZMQb628QX0dh0EtGAkfBeK88TVBQtp
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/v1/users/getBlockchainNetworks:
+    get:
+      tags:
+        - default
+      summary: get_blockchain_networks
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

@@ -34,10 +34,13 @@
       <div class="card">
         <div class="available-resources">
           <div v-if="userData != null" class="available-fiat">
-            <h4>Доступно фиата:</h4>{{userData.fiatBalance}}
+            <h4>Доступно фиата:</h4>{{getFloatToFixed(userData.fiatBalance,5)}}
           </div>
           <div v-if="walletOne.crypto_name != null" class="available-crypto">
-            <h4>Доступно крипты:</h4>{{walletOne.amount}}
+            <h4>Доступно крипты:</h4>{{getFloatToFixed(walletOne.amount, 5)}}
+          </div>
+          <div v-if="walletOne.crypto_name != null" class="available-crypto-exchange">
+            <h4>Курс криптовалюты:</h4>{{getFloatToFixed(getExchange(exchangeRates, walletOne.crypto_name), 5)}}
           </div>
         </div>
         <Dropdown  :options="wallets" v-model="walletOne" optionLabel="name" placeholder="Сеть блокчейна" style="width: 30vw" @change="changeWallet">
@@ -53,7 +56,7 @@
             <div style="display: flex; justify-content: space-between">
               <div>{{slotProps.option.crypto_name}}</div>
               <div >
-                {{slotProps.option.amount}}
+                {{getFloatToFixed(slotProps.option.amount,5)}}
               </div>
             </div>
           </template>
@@ -136,7 +139,7 @@ export default {
         {name:"Покупка", value: "BUY_CRYPTO"},
         {name:"Продажа", value: "SELL_CRYPTO"},
       ],
-
+      exchangeRates: null
     }
   },
   methods: {
@@ -150,6 +153,11 @@ export default {
       CryptoService.getProfileInfo().then(
           r => {
             this.userData = r.data
+          }
+      )
+      CryptoService.getExchangeRates().then(
+          r => {
+            this.exchangeRates = r.data
           }
       )
     },

@@ -30,6 +30,7 @@ export default {
       CryptoService.getAllNfts()
           .then((r) => {
             this.nfts = r.data
+            this.nfts.sort((a,b)=> a.id - b.id)
           })
     },
     onChanged(value){

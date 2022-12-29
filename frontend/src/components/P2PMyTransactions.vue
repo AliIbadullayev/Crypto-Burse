@@ -39,6 +39,7 @@ export default {
       CryptoService.getAllMyP2P()
           .then((r) => {
             this.myTransactions = r.data
+            this.myTransactions.sort((a,b)=>a.id-b.id)
           })
     },
     getStatus(p2pTransactionStatus){
