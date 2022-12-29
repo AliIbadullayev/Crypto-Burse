@@ -1,5 +1,14 @@
 # Crypto-Burse
 Service that interact with crypto
+![Alt Text](assets/preview.gif)
+```
+◦ Service secured using JWT token.
+◦ Normalized database structure.
+◦ Optimized code ieararchy according to SOLID coding principles
+◦ UI/UX models and frontend app for implementing business processes.
+```
+In `assets/openapi3_0.yaml` you can find documentation for SwaggerEditor.\
+Also `assets/Crypto Burse.postman_collection.json` you can find documentation for Postman.\
 
 ## Запросы к серверу
 ### 1)Регистрация клиента
