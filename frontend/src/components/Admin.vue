@@ -5,11 +5,24 @@
       <template #content>
         <div class="p2p-main">
           <div class="p2p-client">
+            <div class="statistics" v-if="hasStatistics">
+              <h4>
+                Количество всех p2p: {{statistic.allCount}}
+              </h4>
+              <h4>
+                Количество обработанных p2p у данного админа: {{statistic.allForAdminCount}}
+              </h4>
+              <h4>
+                Количество подтвержденных p2p: {{statistic.confirmedByAdminCount}}
+              </h4>
+              <h4>
+                Количество отклоненных p2p у данного админа: {{statistic.canceledByAdminCount}}
+              </h4>
+
+            </div>
             <div class="card">
-              <DataTable :value="p2ps" style="height: 90vh" responsiveLayout="scroll" scrollable="true" scrollHeight="flex">
+              <DataTable :value="p2ps" style="height: 50vh" responsiveLayout="scroll" scrollable="true" scrollHeight="flex">
                 <Column field="id" header="Id" :sortable="true"></Column>
-<!--                <Column field="walletOneAddress" header="Seller" :sortable="true"></Column>-->
-<!--                <Column field="walletTwoAddress" header="Seller" :sortable="true"></Column>-->
                 <Column field="cryptoName" header="Crypto" :sortable="true"></Column>
                 <Column field="cryptoAmount" header="Amount" :sortable="true"></Column>
                 <Column field="fiatAmount" header="Price" :sortable="true"></Column>
@@ -48,6 +61,8 @@ export default {
   data() {
     return{
       p2ps: null,
+      statistic: null,
+      hasStatistics: false,
     }
   },
   methods: {
@@ -55,6 +70,14 @@ export default {
       CryptoService.getAllTransactionsToCheck()
           .then((r) => {
             this.p2ps = r.data
+            this.fetchStatistics()
+          })
+    },
+    fetchStatistics(){
+      CryptoService.getStats()
+          .then((r) => {
+            this.statistic = r.data
+            this.hasStatistics = true
           })
     },
     makeDecision(data, isApproved){

@@ -92,6 +92,9 @@ class CryptoService{
     makeDecision(formP2P){
         return axios.post('/api/v1/admin/makeDecision', formP2P,  {headers: authHeader()})
     }
+    getStats(){
+        return axios.get('/api/v1/admin/getStatistics', {headers: authHeader()})
+    }
 
 }
 
