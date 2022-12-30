@@ -3,15 +3,14 @@ package db.service.crypto.service;
 
 import db.service.crypto.dto.TransactionDto;
 import db.service.crypto.exception.*;
-import db.service.crypto.model.BlockchainNetwork;
-import db.service.crypto.model.Client;
-import db.service.crypto.model.Transaction;
-import db.service.crypto.model.Wallet;
+import db.service.crypto.model.*;
 import db.service.crypto.repository.BlockchainNetworkRepository;
 import db.service.crypto.repository.TransactionRepository;
 import db.service.crypto.repository.WalletRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +30,17 @@ public class TransactionService {
 
     private final WalletService walletService;
 
+
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void initializeNetworks(){
+        List<BlockchainNetwork> networks = new ArrayList<>();
+        networks.add(new BlockchainNetwork("Solana_network",0.8,50));
+        networks.add(new BlockchainNetwork("Bitcoin_network",0.45,150));
+        networks.add(new BlockchainNetwork("Tera_network",1,10));
+        networks.add(new BlockchainNetwork("Ethereum_network",0.3,180));
+        blockchainNetworkRepository.saveAll(networks);
+    }
 
     @Autowired
     public TransactionService(WalletRepository walletRepository, BlockchainNetworkRepository blockchainNetworkRepository, TransactionRepository transactionRepository, WalletService walletService) {
