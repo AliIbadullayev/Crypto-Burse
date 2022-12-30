@@ -2,6 +2,7 @@ package db.service.crypto.service;
 
 
 import db.service.crypto.dto.P2PDto;
+import db.service.crypto.dto.StatsDto;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.*;
 import db.service.crypto.repository.CryptoRepository;
@@ -206,4 +207,30 @@ public class P2PService {
     }
 
 
+    public StatsDto getStats(String adminLogin) {
+        StatsDto statsDto = new StatsDto();
+
+        List<P2PTransaction> p2PTransactions = p2pRepository.findAll();
+
+        int confirmedByAdminCount = 0;
+        int allForAdminCount = 0;
+        int canceledByAdminCount = 0;
+
+
+
+        for (P2PTransaction p2PTransaction : p2PTransactions) {
+            if (p2PTransaction.getAdmin() != null && p2PTransaction.getAdmin().getUserLogin().equals(adminLogin)){
+                allForAdminCount++;
+                if (p2PTransaction.getP2pTransactionStatus().equals(P2PTransactionStatus.APPROVED)) confirmedByAdminCount++;
+                else canceledByAdminCount++;
+            }
+        }
+
+        statsDto.setAllCount(p2PTransactions.size());
+        statsDto.setConfirmedByAdminCount(confirmedByAdminCount);
+        statsDto.setAllForAdminCount(allForAdminCount);
+        statsDto.setCanceledByAdminCount(canceledByAdminCount);
+
+        return statsDto;
+    }
 }

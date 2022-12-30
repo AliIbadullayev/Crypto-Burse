@@ -89,6 +89,22 @@ public class AdminRestControllerV1 {
         return new ResponseEntity<>(p2pService.getAllTransactionsToCheck(),HttpStatus.OK);
     }
 
+    @GetMapping("getStatistics")
+    public ResponseEntity<?> getStatistics(HttpServletRequest request){
+        String username = null;
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null){
+            username = jwtTokenProvider.getUsername(token);
+        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
+        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
+        Admin admin = adminService.findByUsername(username);
+        if (admin == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
+
+        return new ResponseEntity<>(p2pService.getStats(username),HttpStatus.OK);
+    }
+
+
+
 
 
 
