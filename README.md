@@ -2,10 +2,13 @@
 Service that interact with crypto
 ![Alt Text](assets/preview.gif)
 ```
-◦ Service secured using JWT token.
-◦ Normalized database structure.
-◦ Optimized code ieararchy according to SOLID coding principles
-◦ UI/UX models and frontend app for implementing business processes.
+◦ Security is provided using JWT tokens.
+◦ Role interaction (Client, Admin) is implemented.
+◦ Optimized code hierarchy using the SOLID principle.
+◦ DB built and normalized (up to 3rd NF).
+◦ UI designed and frontend built using PrimeVue, a state management template (vuex),
+Promise-based HTTP client (axios).
+◦ State logging on the backend using SLF4J.
 ```
 In `assets/openapi3_0.yaml` you can find documentation for SwaggerEditor.\
 Also `assets/Crypto Burse.postman_collection.json` you can find documentation for Postman.\
