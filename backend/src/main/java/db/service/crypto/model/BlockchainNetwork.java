@@ -13,6 +13,13 @@ import javax.persistence.Table;
 @Data
 public class BlockchainNetwork {
 
+
+    public BlockchainNetwork(String name, double fee, int leadTime) {
+        this.name = name;
+        this.fee = fee;
+        this.leadTime = leadTime;
+    }
+
     @Id
     private String name;
 
@@ -21,4 +28,8 @@ public class BlockchainNetwork {
 
     @Column(name = "lead_time")
     private int leadTime;
+
+    public BlockchainNetwork() {
+
+    }
 }
