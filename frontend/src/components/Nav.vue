@@ -109,7 +109,14 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  text-align: center;
 }
+
+.second-group{
+  display: flex;
+  flex-direction: column;
+}
+
 .second-group button {
   margin-bottom: 15px;
 }
