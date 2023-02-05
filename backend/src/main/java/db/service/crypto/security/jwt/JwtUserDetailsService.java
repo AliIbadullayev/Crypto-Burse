@@ -1,9 +1,7 @@
-package db.service.crypto.security;
+package db.service.crypto.security.jwt;
 
 
 import db.service.crypto.model.User;
-import db.service.crypto.security.jwt.JwtUser;
-import db.service.crypto.security.jwt.JwtUserFactory;
 import db.service.crypto.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
