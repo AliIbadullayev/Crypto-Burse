@@ -50,7 +50,11 @@ const auth = createStore({
                     return Promise.reject(error);
                 }
             );
-        }
+        },
+        loginOAuth({ commit }, user) {
+            AuthService.loginOAuth(user)
+            commit('loginSuccess', user);
+        },
     },
     mutations: {
         loginSuccess(state, user) {

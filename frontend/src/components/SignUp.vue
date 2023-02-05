@@ -30,11 +30,21 @@
         <Button label="Регистрация" icon="pi pi-check" @click="signUp"/>
       </div>
     </form>
+    <div class="signin-oauth">
+      <span>Также можете зарегистрироваться при помощи</span>
+      <div class="button">
+        <Button class="google p-0 p-button-outlined" aria-label="Google" @click="signUpOauth">
+          <i class="pi pi-google px-2"></i>
+          <span class="px-3">Google</span>
+        </Button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import {AppProps} from "../../config";
 
 export default {
   name: "SignUp",
@@ -59,7 +69,10 @@ export default {
           .catch((err)=>{
             this.$toast.add({severity:'error', summary: 'Регистрация', detail: err.response.data, life: 3000});
           })
-    }
+    },
+    signUpOauth(){
+      window.location.href = AppProps.GOOGLE_OAUTH;
+    },
   }
 }
 </script>
@@ -79,5 +92,25 @@ export default {
 
   .p-password::v-deep input {
     width: 30vw
+  }
+
+  .google{
+    width: 100%;
+  }
+
+  .google span{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .signin-oauth > span{
+    color: #909090;
+    display: block;
+    text-align: center;
+  }
+
+  .signin-oauth > .button {
+    margin-top: 1rem;
   }
 </style>

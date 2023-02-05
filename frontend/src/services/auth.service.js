@@ -16,6 +16,11 @@ class AuthService{
     signUp(signupForm){
         return axios.post('/api/v1/auth/register', signupForm)
     }
+
+    loginOAuth(user){
+        if (user != null) localStorage.setItem('user', JSON.stringify(user))
+        return user
+    }
 }
 
 export default new AuthService()
