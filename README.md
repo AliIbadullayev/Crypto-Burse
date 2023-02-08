@@ -9,6 +9,7 @@ Service that interact with crypto
 ◦ UI designed and frontend built using PrimeVue, a state management template (vuex),
 Promise-based HTTP client (axios).
 ◦ State logging on the backend using SLF4J.
+◦ Provided signing in with OAuth2.0 (Google)
 ```
 In `assets/openapi3_0.yaml` you can find documentation for SwaggerEditor.\
 Also `assets/Crypto Burse.postman_collection.json` you can find documentation for Postman.\
