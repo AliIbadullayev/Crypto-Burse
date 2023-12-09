@@ -10,12 +10,9 @@ import java.util.List;
 
 public final class JwtUserFactory {
 
-    public JwtUserFactory(){
-
-    }
+    public JwtUserFactory(){}
 
     public static JwtUser create(User user){
-
         return new JwtUser(
                 user.getUsername(),
                 user.getPassword(),
