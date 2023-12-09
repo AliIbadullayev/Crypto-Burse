@@ -1,0 +1,15 @@
+services:
+  crypto_burse_db:
+    container_name: crypto_burse_db
+    image: postgres:15
+    ports:
+      - 5437:5432
+    environment:
+      - POSTGRES_USER=lwbeamer
+      - POSTGRES_PASSWORD=2281337
+      - POSTGRES_DB=crypto_service
+    volumes:
+      - postgres-data-cb:/var/lib/postgresql/data
+
+volumes:
+  postgres-data-cb:
