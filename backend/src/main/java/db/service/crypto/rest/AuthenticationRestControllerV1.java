@@ -8,7 +8,7 @@ import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.ClientService;
 import db.service.crypto.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,25 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/auth/")
 public class AuthenticationRestControllerV1 {
 
-    private final AuthenticationManager authenticationManager;
-
-    private final JwtTokenProvider jwtTokenProvider;
-
     private final UserService userService;
     private final ClientService clientService;
-
-    @Autowired
-    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager,
-                                          JwtTokenProvider jwtTokenProvider, UserService userService,
-                                          ClientService clientService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
-        this.clientService = clientService;
-    }
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto) {

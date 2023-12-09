@@ -9,7 +9,6 @@ public class JwtUser implements UserDetails {
 
     private final String username;
     private final String password;
-
     private final boolean enabled;
     private final Collection<? extends GrantedAuthority> authorities;
 

@@ -1,17 +1,13 @@
 package db.service.crypto.service;
 
 import db.service.crypto.dto.BankCardDto;
-import db.service.crypto.dto.WalletDto;
 import db.service.crypto.exception.CardAlreadyExistException;
 import db.service.crypto.exception.IncorrectCardDataException;
-import db.service.crypto.exception.UserAlreadyExistException;
 import db.service.crypto.model.BankCard;
 import db.service.crypto.model.Client;
-import db.service.crypto.model.User;
-import db.service.crypto.model.Wallet;
 import db.service.crypto.repository.BankCardRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -20,25 +16,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Service
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class BankCardService {
 
     private final BankCardRepository bankCardRepository;
 
-    @Autowired
-    public BankCardService(BankCardRepository bankCardRepository) {
-        this.bankCardRepository = bankCardRepository;
-    }
-
-
-    public BankCard addCard(BankCard cardToAdd) throws CardAlreadyExistException, IncorrectCardDataException {
+    public void addCard(BankCard cardToAdd) {
         cardToAdd = validateCard(cardToAdd);
-        return bankCardRepository.save(cardToAdd);
+        bankCardRepository.save(cardToAdd);
     }
 
-
-// мб сделать так, что одна карта может быть у разных клиентов, но тогда надо ещё проверки делать, пока что одна и та же карта может быть только у одного клиента
     public BankCard validateCard(BankCard bankCard) throws CardAlreadyExistException, IncorrectCardDataException {
 
         String cardNumber = bankCard.getCardNumber().trim();
@@ -102,14 +91,11 @@ public class BankCardService {
 
 
     public BankCard findByCardName(String cardNumber) {
-        BankCard result = null;
-        result = bankCardRepository.findByCardNumber(cardNumber);
-
+        BankCard result = bankCardRepository.findByCardNumber(cardNumber);
         if (result == null){
             log.info("IN findByCardName - no card found by cardNumber: {}",cardNumber);
             return null;
         }
-
         log.info("IN findByCardName - card: {} found by cardNumber: {}",result,cardNumber);
         return result;
     }
@@ -124,3 +110,4 @@ public class BankCardService {
     }
 
 }
+
