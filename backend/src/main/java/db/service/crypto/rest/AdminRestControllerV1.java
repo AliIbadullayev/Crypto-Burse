@@ -5,8 +5,11 @@ import db.service.crypto.dto.AdminDecisionDto;
 import db.service.crypto.dto.P2PDto;
 import db.service.crypto.dto.UserDto;
 import db.service.crypto.exception.InvalidAmountException;
+import db.service.crypto.exception.JwtTokenIsEmptyException;
 import db.service.crypto.exception.NoSuchP2POfferException;
+import db.service.crypto.exception.UserNotFoundException;
 import db.service.crypto.model.Admin;
+import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.AdminService;
@@ -55,16 +58,12 @@ public class AdminRestControllerV1 {
 
     @PostMapping("makeDecision")
     public ResponseEntity<?> makeDecision(@RequestBody AdminDecisionDto adminDecisionDto, HttpServletRequest request){
-        String username = null;
-        String token = jwtTokenProvider.resolveToken(request);
-        if (token != null){
-            username = jwtTokenProvider.getUsername(token);
-        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
-        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
-        Admin admin = adminService.findByUsername(username);
-        if (admin == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
-
-
+        String token = jwtTokenProvider.resolveToken(request)
+                .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
+        String username = jwtTokenProvider.getUsername(token)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с таким токеном не найден!"));
+        Admin admin = adminService.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Клиент с таким токеном не найден"));
         try {
             P2PDto p2pDto = adminService.makeDecision(adminDecisionDto,admin);
             return new ResponseEntity<>(p2pDto, HttpStatus.OK);
@@ -77,36 +76,23 @@ public class AdminRestControllerV1 {
 
     @GetMapping("getAllTransactionsToCheck")
     public ResponseEntity<?> getAllTransactionsToCheck(HttpServletRequest request){
-        String username = null;
-        String token = jwtTokenProvider.resolveToken(request);
-        if (token != null){
-            username = jwtTokenProvider.getUsername(token);
-        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
-        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
-        Admin admin = adminService.findByUsername(username);
-        if (admin == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
-
+        String token = jwtTokenProvider.resolveToken(request)
+                .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
+        String username = jwtTokenProvider.getUsername(token)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с таким токеном не найден!"));
+        adminService.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Клиент с таким токеном не найден"));
         return new ResponseEntity<>(p2pService.getAllTransactionsToCheck(),HttpStatus.OK);
     }
 
     @GetMapping("getStatistics")
     public ResponseEntity<?> getStatistics(HttpServletRequest request){
-        String username = null;
-        String token = jwtTokenProvider.resolveToken(request);
-        if (token != null){
-            username = jwtTokenProvider.getUsername(token);
-        } else return new ResponseEntity<>("Токен пуст!", HttpStatus.OK);
-        if (username == null) return new ResponseEntity<>("Пользователь по данному токену не найден!!", HttpStatus.OK);
-        Admin admin = adminService.findByUsername(username);
-        if (admin == null) return new ResponseEntity<>("Не удалось найти такого пользователя", HttpStatus.OK);
-
+        String token = jwtTokenProvider.resolveToken(request)
+                .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
+        String username = jwtTokenProvider.getUsername(token)
+                .orElseThrow(() -> new UserNotFoundException("Пользователь с таким токеном не найден!"));
+        adminService.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Клиент с таким токеном не найден"));
         return new ResponseEntity<>(p2pService.getStats(username),HttpStatus.OK);
     }
-
-
-
-
-
-
-
 }

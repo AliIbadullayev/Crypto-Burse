@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -33,7 +34,7 @@ public class ClientService {
     public Client createClient(Client client) throws UserAlreadyExistException {
 
 
-        if (findByUsername(client.getUserLogin())!=null)
+        if (findByUsername(client.getUserLogin()).isPresent())
         {
             throw new UserAlreadyExistException("Пользователь с таким именем уже зарегистрирован!");
         }
@@ -47,17 +48,14 @@ public class ClientService {
     }
 
 
-    public Client findByUsername(String username) {
-        Client result = null;
-        result = clientRepository.findByUserLogin(username);
-
+    public Optional<Client> findByUsername(String username) {
+        Client result = clientRepository.findByUserLogin(username);
         if (result == null){
             log.info("IN findByUsername - no user found by username: {}",username);
-            return null;
+            return Optional.empty();
         }
-
         log.info("IN findByUsername - user: {} found by username: {}",result,username);
-        return result;
+        return Optional.of(result);
     }
 
 

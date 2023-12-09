@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import javax.swing.text.html.Option;
 
 @Service
 @Slf4j
@@ -36,17 +38,14 @@ public class AdminService {
         this.walletService = walletService;
     }
 
-    public Admin findByUsername(String username) {
-        Admin result = null;
-        result = adminRepository.findById(username).orElse(null);
-
+    public Optional<Admin> findByUsername(String username) {
+        Admin result = adminRepository.findById(username).orElse(null);
         if (result == null){
             log.info("IN findByUsername - no admin found by username: {}",username);
-            return null;
+            return Optional.empty();
         }
-
         log.info("IN findByUsername - admin: {} found by username: {}",result,username);
-        return result;
+        return Optional.of(result);
     }
 
     public P2PDto makeDecision(AdminDecisionDto adminDecisionDto, Admin admin) throws NoSuchP2POfferException, InvalidAmountException {
