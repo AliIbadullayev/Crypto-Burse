@@ -58,7 +58,7 @@ public class NftService {
             newPrice = currentPrice + priceChange;
         }
 
-        NftLikes currentRecord = nftLikesRepository.findById(new NftLikesId(clientService.findByUsername(username),nftEntity)).orElse(null);
+        NftLikes currentRecord = nftLikesRepository.findById(new NftLikesId(clientService.findByUsername(username).orElse(null),nftEntity)).orElse(null);
 
         if (currentRecord != null){
             if (currentRecord.isLiked() == scoreNftRequestDto.isLiked()){
@@ -71,7 +71,7 @@ public class NftService {
         nftEntityRepository.save(nftEntity);
 
         NftLikes nftLikes = new NftLikes();
-        nftLikes.setPk(new NftLikesId(clientService.findByUsername(username),nftEntity));
+        nftLikes.setPk(new NftLikesId(clientService.findByUsername(username).orElse(null),nftEntity));
         nftLikes.setLiked(scoreNftRequestDto.isLiked());
         nftLikesRepository.save(nftLikes);
 

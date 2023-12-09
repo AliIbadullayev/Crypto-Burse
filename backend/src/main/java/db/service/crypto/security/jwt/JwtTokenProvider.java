@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtTokenProvider {
@@ -62,20 +63,21 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token){
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token).orElse(null));
         return new UsernamePasswordAuthenticationToken(userDetails,"",userDetails.getAuthorities());
     }
 
-    public String getUsername(String token){
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+    public Optional<String> getUsername(String token){
+        String username =  Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+        return username == null ? Optional.empty() : Optional.of(username);
     }
 
-    public String resolveToken(HttpServletRequest req){
+    public Optional<String> resolveToken(HttpServletRequest req){
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")){
-            return bearerToken.substring(7, bearerToken.length());
+            return Optional.of(bearerToken.substring(7, bearerToken.length()));
         }
-        return null;
+        return Optional.empty();
     }
 
     public boolean validateToken(String token) {
