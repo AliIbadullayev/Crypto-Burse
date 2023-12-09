@@ -1,6 +1,6 @@
 package db.service.crypto.exception;
 
-public class AlreadyScoredException extends Exception{
+public class AlreadyScoredException extends RuntimeException {
 
     public AlreadyScoredException(String message) {
 
