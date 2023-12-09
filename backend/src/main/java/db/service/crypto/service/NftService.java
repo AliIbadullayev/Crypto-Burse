@@ -8,6 +8,7 @@ import db.service.crypto.repository.NftEntityRepository;
 import db.service.crypto.repository.NftLikesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,8 +25,10 @@ public class NftService {
     private final NftLikesRepository nftLikesRepository;
     private final NftEntityRepository nftEntityRepository;
 
-    private static final int priceChange = 10;
-    private static final int minPrice = 100;
+    @Value("${cb.nft.price-change:10}")
+    private int priceChange;
+    @Value("${cb.nft.min-price:100}")
+    private int minPrice;
 
     public NftDto scoreNft(ScoreNftRequestDto scoreNftRequestDto, String username) throws NftNotFoundException, NftPlacingException, AlreadyScoredException {
 
