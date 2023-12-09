@@ -1,12 +1,11 @@
 package db.service.crypto.service;
 
-
 import db.service.crypto.dto.*;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.*;
 import db.service.crypto.repository.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -18,38 +17,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-@Service
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class WalletService {
 
     private static final double STACKING_INTEREST_RATE  = 1.2;
-
-    //2 minutes
-    private static final int STACKING_DURATION_IN_MILLISECONDS = 120000;
-
-    //half a year
-//    private static final int STACKING_DURATION_IN_MILLISECONDS = 15770000000;
-
     private final WalletRepository walletRepository;
-
-
     private final ClientRepository clientRepository;
-
     private final CryptoRepository cryptoRepository;
-
-    private final FiatToCryptoRepository fiatToCryptoRepository;
-
     private final StackingRepository stackingRepository;
-
-    @Autowired
-    public WalletService(WalletRepository walletRepository, ClientRepository clientRepository, CryptoRepository cryptoRepository, FiatToCryptoRepository fiatToCryptoRepository, StackingRepository stackingRepository) {
-        this.walletRepository = walletRepository;
-        this.clientRepository = clientRepository;
-        this.cryptoRepository = cryptoRepository;
-        this.fiatToCryptoRepository = fiatToCryptoRepository;
-        this.stackingRepository = stackingRepository;
-    }
-
+    private final FiatToCryptoRepository fiatToCryptoRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initializeCryptos(){

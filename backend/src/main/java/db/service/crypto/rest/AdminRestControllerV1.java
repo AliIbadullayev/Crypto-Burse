@@ -12,6 +12,7 @@ import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.AdminService;
 import db.service.crypto.service.P2PService;
 import db.service.crypto.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,25 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/admin/")
 public class AdminRestControllerV1 {
 
-    private final UserService userService;
-
-    private final AdminService adminService;
-
     private final P2PService p2pService;
-
+    private final UserService userService;
+    private final AdminService adminService;
     private final JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    public AdminRestControllerV1(UserService userService, AdminService adminService, P2PService p2pService,
-                                 JwtTokenProvider jwtTokenProvider) {
-        this.userService = userService;
-        this.adminService = adminService;
-        this.p2pService = p2pService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @GetMapping(value = "users/{username}")
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "username") String username) {

@@ -5,7 +5,7 @@ import db.service.crypto.exception.*;
 import db.service.crypto.model.*;
 import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,44 +13,20 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/users/")
 public class UserRestControllerV1 {
 
-    private final JwtTokenProvider jwtTokenProvider;
-
-    private final UserService userService;
-
-    private final ClientService clientService;
-
-    private final WalletService walletService;
-
-    private final BankCardService bankCardService;
-
-    private final TransactionService transactionService;
-
-    private final ExchangeService exchangeService;
-
     private final NftService nftService;
-
     private final P2PService p2pService;
-
-    @Autowired
-    public UserRestControllerV1(JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService,
-                                WalletService walletService, BankCardService bankCardService,
-                                TransactionService transactionService, ExchangeService exchangeService,
-                                NftService nftService, P2PService p2pService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userService = userService;
-        this.clientService = clientService;
-        this.walletService = walletService;
-        this.bankCardService = bankCardService;
-        this.transactionService = transactionService;
-        this.exchangeService = exchangeService;
-        this.nftService = nftService;
-        this.p2pService = p2pService;
-    }
+    private final UserService userService;
+    private final WalletService walletService;
+    private final ClientService clientService;
+    private final BankCardService bankCardService;
+    private final ExchangeService exchangeService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final TransactionService transactionService;
 
     @GetMapping(value = "{username}")
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "username") String username) {
@@ -395,3 +371,4 @@ public class UserRestControllerV1 {
         return new ResponseEntity<>(cryptoList, HttpStatus.OK);
     }
 }
+

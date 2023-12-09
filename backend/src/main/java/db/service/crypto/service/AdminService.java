@@ -1,7 +1,6 @@
 package db.service.crypto.service;
 
 import db.service.crypto.dto.AdminDecisionDto;
-import db.service.crypto.dto.NftDto;
 import db.service.crypto.dto.P2PDto;
 import db.service.crypto.exception.InvalidAmountException;
 import db.service.crypto.exception.NoSuchP2POfferException;
@@ -11,32 +10,21 @@ import db.service.crypto.model.P2PTransaction;
 import db.service.crypto.model.P2PTransactionStatus;
 import db.service.crypto.repository.AdminRepository;
 import db.service.crypto.repository.P2PRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import javax.swing.text.html.Option;
 
-@Service
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class AdminService {
 
     private final AdminRepository adminRepository;
-
     private final P2PRepository p2pRepository;
-
     private final WalletService walletService;
-
-    @Autowired
-    public AdminService(AdminRepository adminRepository, P2PRepository p2pRepository, WalletService walletService) {
-        this.adminRepository = adminRepository;
-        this.p2pRepository = p2pRepository;
-        this.walletService = walletService;
-    }
 
     public Optional<Admin> findByUsername(String username) {
         Admin result = adminRepository.findById(username).orElse(null);

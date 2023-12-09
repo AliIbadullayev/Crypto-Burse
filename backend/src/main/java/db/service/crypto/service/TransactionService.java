@@ -1,14 +1,13 @@
 package db.service.crypto.service;
 
-
 import db.service.crypto.dto.TransactionDto;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.*;
 import db.service.crypto.repository.BlockchainNetworkRepository;
 import db.service.crypto.repository.TransactionRepository;
 import db.service.crypto.repository.WalletRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -18,19 +17,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class TransactionService {
 
-
-    private final WalletRepository walletRepository;
-    private final BlockchainNetworkRepository blockchainNetworkRepository;
-
-    private final TransactionRepository transactionRepository;
-
     private final WalletService walletService;
-
-
+    private final WalletRepository walletRepository;
+    private final TransactionRepository transactionRepository;
+    private final BlockchainNetworkRepository blockchainNetworkRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     public void initializeNetworks(){
@@ -40,14 +35,6 @@ public class TransactionService {
         networks.add(new BlockchainNetwork("Tera_network",1,10));
         networks.add(new BlockchainNetwork("Ethereum_network",0.3,180));
         blockchainNetworkRepository.saveAll(networks);
-    }
-
-    @Autowired
-    public TransactionService(WalletRepository walletRepository, BlockchainNetworkRepository blockchainNetworkRepository, TransactionRepository transactionRepository, WalletService walletService) {
-        this.walletRepository = walletRepository;
-        this.blockchainNetworkRepository = blockchainNetworkRepository;
-        this.transactionRepository = transactionRepository;
-        this.walletService = walletService;
     }
 
     @Transactional

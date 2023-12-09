@@ -1,6 +1,5 @@
 package db.service.crypto.service;
 
-
 import db.service.crypto.dto.P2PDto;
 import db.service.crypto.dto.StatsDto;
 import db.service.crypto.exception.*;
@@ -8,39 +7,24 @@ import db.service.crypto.model.*;
 import db.service.crypto.repository.CryptoRepository;
 import db.service.crypto.repository.P2PRepository;
 import db.service.crypto.repository.WalletRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class P2PService {
 
-    private final WalletRepository walletRepository;
-
     private final WalletService walletService;
-
-
+    private final P2PRepository p2pRepository;
+    private final WalletRepository walletRepository;
     private final CryptoRepository cryptoRepository;
 
-    private final P2PRepository p2pRepository;
-
-
-
-    @Autowired
-    public P2PService(WalletRepository walletRepository, WalletService walletService, CryptoRepository cryptoRepository, P2PRepository p2PRepository) {
-        this.walletRepository = walletRepository;
-        this.walletService = walletService;
-        this.cryptoRepository = cryptoRepository;
-        this.p2pRepository = p2PRepository;
-    }
-
-
-    //Здесь в дто только walletOne, cryptoName, cryptoAmount, fiatAmount, operationType
     public P2PDto postOffer(P2PDto p2pDto, String username) throws WalletNotFoundException, IllegalWalletPermissionAttemptException, CryptoNotFoundException, InvalidAmountException, InvalidOperationTypeException, NotSameCryptoException, InsufficientBalanceException {
         String walletOneAddress = p2pDto.getWalletOneAddress();
 

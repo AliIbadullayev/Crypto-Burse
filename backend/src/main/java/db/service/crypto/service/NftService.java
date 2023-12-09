@@ -1,43 +1,31 @@
 package db.service.crypto.service;
 
-
 import db.service.crypto.dto.NftDto;
 import db.service.crypto.dto.ScoreNftRequestDto;
 import db.service.crypto.exception.*;
 import db.service.crypto.model.*;
 import db.service.crypto.repository.NftEntityRepository;
 import db.service.crypto.repository.NftLikesRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class NftService {
 
-
-    private final NftEntityRepository nftEntityRepository;
-    private final NftLikesRepository nftLikesRepository;
-
     private final WalletService walletService;
-
     private final ClientService clientService;
-
+    private final NftLikesRepository nftLikesRepository;
+    private final NftEntityRepository nftEntityRepository;
 
     private static final int priceChange = 10;
     private static final int minPrice = 100;
-
-
-    @Autowired
-    public NftService(NftEntityRepository nftEntityRepository, NftLikesRepository nftLikesRepository, WalletService walletService, ClientService clientService) {
-        this.nftEntityRepository = nftEntityRepository;
-        this.nftLikesRepository = nftLikesRepository;
-        this.walletService = walletService;
-        this.clientService = clientService;
-    }
-
 
     public NftDto scoreNft(ScoreNftRequestDto scoreNftRequestDto, String username) throws NftNotFoundException, NftPlacingException, AlreadyScoredException {
 

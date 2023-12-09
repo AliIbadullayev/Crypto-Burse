@@ -5,31 +5,21 @@ import db.service.crypto.model.Client;
 import db.service.crypto.model.Crypto;
 import db.service.crypto.repository.ClientRepository;
 import db.service.crypto.repository.CryptoRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class ClientService {
 
-
-    private final ClientRepository clientRepository;
-
     private final WalletService walletService;
-
     private final CryptoRepository cryptoRepository;
-
-    @Autowired
-    public ClientService(ClientRepository clientRepository, WalletService walletService, CryptoRepository cryptoRepository) {
-        this.clientRepository = clientRepository;
-        this.walletService = walletService;
-        this.cryptoRepository = cryptoRepository;
-    }
-
+    private final ClientRepository clientRepository;
 
     public Client createClient(Client client) throws UserAlreadyExistException {
 

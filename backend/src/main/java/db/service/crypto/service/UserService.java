@@ -3,31 +3,23 @@ package db.service.crypto.service;
 import db.service.crypto.exception.UserAlreadyExistException;
 import db.service.crypto.model.Role;
 import db.service.crypto.model.User;
-import db.service.crypto.model.Client;
-import db.service.crypto.repository.ClientRepository;
 import db.service.crypto.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
-@Service
 @Slf4j
+@RequiredArgsConstructor
+@Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-//TODO проверку на пробелы в нике и пароле (не по краям). Пока работает обычный трим по краям
     public User register(User user) throws UserAlreadyExistException {
 
 
