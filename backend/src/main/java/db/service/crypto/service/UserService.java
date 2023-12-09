@@ -20,21 +20,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public User register(User user) throws UserAlreadyExistException {
-
-
-        if (findByUsername(user.getUsername())!=null)
-        {
+    public void register(User user) throws UserAlreadyExistException {
+        if (findByUsername(user.getUsername()) != null) {
             throw new UserAlreadyExistException("Пользователь с таким именем уже зарегистрирован!");
         }
-
         user.setRole(Role.ROLE_CLIENT);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User registeredUser = userRepository.save(user);
-
         log.info("IN register - user {} successfully registred", registeredUser);
-
-        return registeredUser;
     }
 
     public List<User> getAll() {
@@ -44,20 +37,12 @@ public class UserService {
     }
 
     public User findByUsername(String username) {
-        User result = null;
-        result = userRepository.findByUsername(username);
-
-        if (result == null){
-            log.info("IN findByUsername - no user found by username: {}",username);
+        User result = userRepository.findByUsername(username);
+        if (result == null) {
+            log.info("IN findByUsername - no user found by username: {}", username);
             return null;
         }
-
-        log.info("IN findByUsername - user: {} found by username: {}",result,username);
+        log.info("IN findByUsername - user: {} found by username: {}", result, username);
         return result;
-    }
-
-    public void delete(String username) {
-        userRepository.deleteById(username);
-        log.info("IN delete - user with username: {} successfully deleted",username);
     }
 }

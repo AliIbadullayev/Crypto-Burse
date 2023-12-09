@@ -91,14 +91,11 @@ public class BankCardService {
 
 
     public BankCard findByCardName(String cardNumber) {
-        BankCard result = null;
-        result = bankCardRepository.findByCardNumber(cardNumber);
-
+        BankCard result = bankCardRepository.findByCardNumber(cardNumber);
         if (result == null){
             log.info("IN findByCardName - no card found by cardNumber: {}",cardNumber);
             return null;
         }
-
         log.info("IN findByCardName - card: {} found by cardNumber: {}",result,cardNumber);
         return result;
     }

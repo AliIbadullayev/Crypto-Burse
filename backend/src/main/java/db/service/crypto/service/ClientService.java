@@ -21,42 +21,29 @@ public class ClientService {
     private final CryptoRepository cryptoRepository;
     private final ClientRepository clientRepository;
 
-    public Client createClient(Client client) throws UserAlreadyExistException {
-
-
-        if (findByUsername(client.getUserLogin()).isPresent())
-        {
+    public void createClient(Client client) throws UserAlreadyExistException {
+        if (findByUsername(client.getUserLogin()).isPresent()) {
             throw new UserAlreadyExistException("Пользователь с таким именем уже зарегистрирован!");
         }
-
         Client registeredClient = clientRepository.save(client);
         walletService.createWalletsForUser(client);
-
         log.info("IN register - user {} successfully registred", registeredClient);
-
-        return registeredClient;
     }
 
 
     public Optional<Client> findByUsername(String username) {
         Client result = clientRepository.findByUserLogin(username);
-        if (result == null){
-            log.info("IN findByUsername - no user found by username: {}",username);
+        if (result == null) {
+            log.info("IN findByUsername - no user found by username: {}", username);
             return Optional.empty();
         }
-        log.info("IN findByUsername - user: {} found by username: {}",result,username);
+        log.info("IN findByUsername - user: {} found by username: {}", result, username);
         return Optional.of(result);
     }
 
-
-    public List<Crypto> getAllCryptos(){
+    public List<Crypto> getAllCryptos() {
         return cryptoRepository.findAll();
     }
-
-
-
-
-
 
 
 }
