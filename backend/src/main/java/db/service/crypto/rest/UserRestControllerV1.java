@@ -128,7 +128,6 @@ public class UserRestControllerV1 {
         return new ResponseEntity<>("Обмен успешно проведён", HttpStatus.OK);
     }
 
-
     @PostMapping("fiatToCrypto")
     public ResponseEntity<String> fiatToCrypto(@RequestBody FiatToCryptoDto fiatToCryptoDto,
                                                HttpServletRequest request) {
@@ -141,7 +140,6 @@ public class UserRestControllerV1 {
         walletService.fiatToCrypto(fiatToCryptoDto, username);
         return new ResponseEntity<>("Обмен успешно проведён", HttpStatus.OK);
     }
-
 
     @PostMapping("scoreNft")
     public ResponseEntity<?> likeNft(@RequestBody ScoreNftRequestDto scoreNftRequestDto, HttpServletRequest request) {

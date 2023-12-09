@@ -2,6 +2,7 @@ package db.service.crypto.rest;
 
 import db.service.crypto.dto.AuthenticationRequestDto;
 import db.service.crypto.dto.RegistrationRequestDto;
+import db.service.crypto.exception.InvalidRequestException;
 import db.service.crypto.model.Client;
 import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
@@ -32,7 +33,9 @@ public class AuthenticationRestControllerV1 {
     private final ClientService clientService;
 
     @Autowired
-    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService, ClientService clientService) {
+    public AuthenticationRestControllerV1(AuthenticationManager authenticationManager,
+                                          JwtTokenProvider jwtTokenProvider, UserService userService,
+                                          ClientService clientService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
@@ -63,16 +66,27 @@ public class AuthenticationRestControllerV1 {
     public ResponseEntity<String> register(@RequestBody RegistrationRequestDto requestDto) {
         User userToAdd = new User();
         Client clientToAdd = new Client();
-
+        this.validateRequest(requestDto);
         userToAdd.setUsername(requestDto.getUsername().trim());
         userToAdd.setPassword(requestDto.getPassword().trim());
         clientToAdd.setUserLogin(requestDto.getUsername().trim());
         clientToAdd.setName(requestDto.getName().trim());
         clientToAdd.setSurname(requestDto.getSurname().trim());
-
         userService.register(userToAdd);
         clientService.createClient(clientToAdd);
-
         return ResponseEntity.ok("Пользователь успешно зарегистрирован");
+    }
+
+    private void validateRequest(RegistrationRequestDto requestDto) {
+        if (requestDto.getName() == null ||
+                requestDto.getSurname() == null ||
+                requestDto.getPassword() == null ||
+                requestDto.getUsername() == null) {
+            throw new InvalidRequestException("Null поля в запросе!");
+        }
+        if (requestDto.getUsername().trim().contains(" ") ||
+                requestDto.getPassword().trim().contains(" ")) {
+            throw new InvalidRequestException("Логин и пароль не могут содержать пробелы!");
+        }
     }
 }

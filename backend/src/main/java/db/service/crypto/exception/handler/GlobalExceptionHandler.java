@@ -9,6 +9,7 @@ import db.service.crypto.exception.IncorrectStakingDurationException;
 import db.service.crypto.exception.InsufficientBalanceException;
 import db.service.crypto.exception.InvalidAmountException;
 import db.service.crypto.exception.InvalidOperationTypeException;
+import db.service.crypto.exception.InvalidRequestException;
 import db.service.crypto.exception.JwtAuthenticationException;
 import db.service.crypto.exception.JwtTokenIsEmptyException;
 import db.service.crypto.exception.NftNotFoundException;
@@ -63,7 +64,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             SameClientException.class, IllegalWalletPermissionAttemptException.class, SameCryptoInWalletsException.class,
             AlreadyScoredException.class, NftPlacingException.class, StakingIsAlreadyExistException.class,
             IncorrectStakingDurationException.class, StakeIsNotReadyYetException.class, InvalidOperationTypeException.class,
-            NftOwnerException.class, UserAlreadyExistException.class
+            NftOwnerException.class, UserAlreadyExistException.class, InvalidRequestException.class
     })
     public ResponseEntity<?> handleBadRequestException(Exception ex) {
         log.warn("Bad Request: {}", ex.getMessage());
