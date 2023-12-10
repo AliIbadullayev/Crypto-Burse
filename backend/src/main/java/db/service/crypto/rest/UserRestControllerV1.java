@@ -28,6 +28,7 @@ import db.service.crypto.service.TransactionService;
 import db.service.crypto.service.UserService;
 import db.service.crypto.service.WalletService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/users/")
@@ -58,6 +60,7 @@ public class UserRestControllerV1 {
 
     @GetMapping(value = "{username}")
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "username") String username) {
+        log.info("GET --> /api/v1/users/{}", username);
         User user = userService.findByUsername(username);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -68,6 +71,7 @@ public class UserRestControllerV1 {
 
     @PostMapping(value = "addCard")
     public ResponseEntity<String> addCard(@RequestBody BankCardDto requestDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/addCard");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -87,6 +91,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("depositFiat")
     public ResponseEntity<String> depositFiat(@RequestBody FiatDepositDto fiatDepositDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/depositFiat");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -100,6 +105,7 @@ public class UserRestControllerV1 {
     @GetMapping("getClientWallet")
     public ResponseEntity<?> getClientWallet(@RequestParam(name = "address") String walletAddress,
                                              HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getClientWallet");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -111,6 +117,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("sendCrypto")
     public ResponseEntity<String> sendMoney(@RequestBody TransactionDto transactionDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/sendCrypto");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -123,6 +130,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("exchangeCrypto")
     public ResponseEntity<String> exchangeCrypto(@RequestBody ExchangeDto exchangeDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/exchangeCrypto");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -136,6 +144,7 @@ public class UserRestControllerV1 {
     @PostMapping("fiatToCrypto")
     public ResponseEntity<String> fiatToCrypto(@RequestBody FiatToCryptoDto fiatToCryptoDto,
                                                HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/fiatToCrypto");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -148,6 +157,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("scoreNft")
     public ResponseEntity<?> likeNft(@RequestBody ScoreNftRequestDto scoreNftRequestDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/scoreNft");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -160,6 +170,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("toStake")
     public ResponseEntity<?> toStake(@RequestBody StackingRequestDto stackingRequestDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/toStake");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -172,6 +183,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("freeStake")
     public ResponseEntity<?> freeStake(@RequestBody StackingDto stackingDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/freeStake");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -184,6 +196,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("postOffer")
     public ResponseEntity<?> postOffer(@RequestBody P2PDto p2pDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/postOffer");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -196,6 +209,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("respondToOffer")
     public ResponseEntity<?> respondToOffer(@RequestBody P2PDto p2pDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/respondToOffer");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -208,6 +222,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("buyNft")
     public ResponseEntity<?> buyNft(@RequestBody NftDto nftDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/buyNft");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -220,6 +235,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("sellNft")
     public ResponseEntity<?> sellNft(@RequestBody NftDto nftDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/sellNft");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -232,6 +248,7 @@ public class UserRestControllerV1 {
 
     @PostMapping("returnNft")
     public ResponseEntity<?> returnNft(@RequestBody NftDto nftDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/users/returnNft");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -244,6 +261,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getCryptos")
     public ResponseEntity<?> getCryptos(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getCryptos");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -255,6 +273,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getBlockchainNetworks")
     public ResponseEntity<?> getBlockchainNetworks(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getBlockchainNetworks");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -266,6 +285,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getAllOffers")
     public ResponseEntity<?> getAllOffers(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getAllOffers");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -277,6 +297,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getAllMyP2P")
     public ResponseEntity<?> getAllMyP2P(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getAllMyP2P");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -288,6 +309,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getClientInfo")
     public ResponseEntity<?> getCurrentClientInfo(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getClientInfo");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -300,6 +322,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getAllClientWallets")
     public ResponseEntity<?> getAllClientWallets(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getAllClientWallets");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -311,6 +334,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getAllClientBankCards")
     public ResponseEntity<?> getAllClientBankCards(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getAllClientBankCards");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -322,6 +346,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getAllClientNfts")
     public ResponseEntity<?> getAllClientNfts(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getAllClientNfts");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -333,6 +358,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getAllNfts")
     public ResponseEntity<?> getAllNfts(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getAllNfts");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -344,6 +370,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getClientTransactions")
     public ResponseEntity<?> getClientTransactions(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getClientTransactions");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -355,6 +382,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getClientExchanges")
     public ResponseEntity<?> getClientExchanges(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getClientExchanges");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -366,6 +394,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getClientFiatToCryptos")
     public ResponseEntity<?> getClientFiatToCryptos(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getClientFiatToCryptos");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -378,6 +407,7 @@ public class UserRestControllerV1 {
     @GetMapping("getStackingByWallet")
     public ResponseEntity<?> getStackingByWallet(@RequestParam(name = "walletAddress") String wallet,
                                                  HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getStackingByWallet");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -390,6 +420,7 @@ public class UserRestControllerV1 {
 
     @GetMapping("getCryptoExchangeRates")
     public ResponseEntity<?> getCryptoExchangesRate(HttpServletRequest request) {
+        log.info("GET --> /api/v1/users/getCryptoExchangeRates");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
