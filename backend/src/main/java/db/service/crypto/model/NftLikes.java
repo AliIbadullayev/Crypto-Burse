@@ -1,12 +1,13 @@
 package db.service.crypto.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name="nft_likes")
@@ -20,8 +21,4 @@ public class NftLikes {
     private NftLikesId pk;
 
     private boolean liked;
-
-
-
-
 }

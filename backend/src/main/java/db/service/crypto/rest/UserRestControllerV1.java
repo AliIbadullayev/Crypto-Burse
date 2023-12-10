@@ -1,17 +1,45 @@
 package db.service.crypto.rest;
 
-import db.service.crypto.dto.*;
-import db.service.crypto.exception.*;
-import db.service.crypto.model.*;
+import db.service.crypto.dto.BankCardDto;
+import db.service.crypto.dto.ClientInfoDto;
+import db.service.crypto.dto.ExchangeDto;
+import db.service.crypto.dto.FiatDepositDto;
+import db.service.crypto.dto.FiatToCryptoDto;
+import db.service.crypto.dto.NftDto;
+import db.service.crypto.dto.P2PDto;
+import db.service.crypto.dto.ScoreNftRequestDto;
+import db.service.crypto.dto.StackingDto;
+import db.service.crypto.dto.StackingRequestDto;
+import db.service.crypto.dto.TransactionDto;
+import db.service.crypto.dto.UserDto;
+import db.service.crypto.exception.JwtTokenIsEmptyException;
+import db.service.crypto.exception.UserNotFoundException;
+import db.service.crypto.model.BankCard;
+import db.service.crypto.model.Client;
+import db.service.crypto.model.Crypto;
+import db.service.crypto.model.User;
 import db.service.crypto.security.jwt.JwtTokenProvider;
-import db.service.crypto.service.*;
+import db.service.crypto.service.BankCardService;
+import db.service.crypto.service.ClientService;
+import db.service.crypto.service.ExchangeService;
+import db.service.crypto.service.NftService;
+import db.service.crypto.service.P2PService;
+import db.service.crypto.service.TransactionService;
+import db.service.crypto.service.UserService;
+import db.service.crypto.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor

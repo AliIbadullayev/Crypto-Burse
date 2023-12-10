@@ -1,7 +1,11 @@
 package db.service.crypto.service;
 
 import db.service.crypto.dto.ExchangeDto;
-import db.service.crypto.exception.*;
+import db.service.crypto.exception.IllegalWalletPermissionAttemptException;
+import db.service.crypto.exception.InsufficientBalanceException;
+import db.service.crypto.exception.InvalidAmountException;
+import db.service.crypto.exception.SameCryptoInWalletsException;
+import db.service.crypto.exception.WalletNotFoundException;
 import db.service.crypto.model.Client;
 import db.service.crypto.model.Crypto;
 import db.service.crypto.model.CryptoExchange;

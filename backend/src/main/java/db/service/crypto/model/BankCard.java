@@ -5,7 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 
 @Entity
 @Table(name="bank_card")
@@ -26,7 +33,6 @@ public class BankCard {
 
     @Column(name="cvv")
     private String cvv;
-
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_login")
