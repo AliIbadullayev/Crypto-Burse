@@ -63,12 +63,13 @@ public class TransactionService {
             walletService.withdrawFromWallet(walletFrom, amount);
             Timestamp transactionTimestamp =
                     new Timestamp(System.currentTimeMillis() + blockchainNetwork.getLeadTime());
-            Transaction transaction = new Transaction();
-            transaction.setAmount(amount);
-            transaction.setWalletFrom(walletFrom);
-            transaction.setWalletTo(walletTo);
-            transaction.setBlockchainNetwork(blockchainNetwork);
-            transaction.setTimestamp(transactionTimestamp);
+            Transaction transaction = Transaction.builder()
+                    .amount(amount)
+                    .walletFrom(walletFrom)
+                    .walletTo(walletTo)
+                    .blockchainNetwork(blockchainNetwork)
+                    .timestamp(transactionTimestamp)
+                    .build();
             transactionRepository.save(transaction);
         }
 

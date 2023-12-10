@@ -1,29 +1,26 @@
 package db.service.crypto.dto;
 
 import db.service.crypto.model.FiatToCrypto;
+import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Timestamp;
 
 @Data
+@Builder
 public class FiatToCryptoDto {
 
-
     private String walletAddress;
-
     private double amount;
-
     private Timestamp timestamp;
 
-    public static FiatToCryptoDto fromFiatToCrypto(FiatToCrypto fiatToCrypto){
-        FiatToCryptoDto fiatToCryptoDto = new FiatToCryptoDto();
+    public static FiatToCryptoDto fromFiatToCrypto(FiatToCrypto fiatToCrypto) {
+        assert fiatToCrypto.getWallet() != null;
 
-        fiatToCryptoDto.setAmount(fiatToCrypto.getAmount());
-        fiatToCryptoDto.setWalletAddress(fiatToCrypto.getWallet().getAddress());
-        fiatToCryptoDto.setTimestamp(fiatToCrypto.getTimestamp());
-
-        return fiatToCryptoDto;
+        return FiatToCryptoDto.builder()
+                .amount(fiatToCrypto.getAmount())
+                .walletAddress(fiatToCrypto.getWallet().getAddress())
+                .timestamp(fiatToCrypto.getTimestamp())
+                .build();
     }
-
-
 }

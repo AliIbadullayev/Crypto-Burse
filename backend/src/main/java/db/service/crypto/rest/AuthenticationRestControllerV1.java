@@ -53,14 +53,16 @@ public class AuthenticationRestControllerV1 {
 
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegistrationRequestDto requestDto) {
-        User userToAdd = new User();
-        Client clientToAdd = new Client();
         this.validateRequest(requestDto);
-        userToAdd.setUsername(requestDto.getUsername().trim());
-        userToAdd.setPassword(requestDto.getPassword().trim());
-        clientToAdd.setUserLogin(requestDto.getUsername().trim());
-        clientToAdd.setName(requestDto.getName().trim());
-        clientToAdd.setSurname(requestDto.getSurname().trim());
+        User userToAdd = User.builder()
+                .username(requestDto.getUsername().trim())
+                .password(requestDto.getPassword().trim())
+                .build();
+        Client clientToAdd = Client.builder()
+                .userLogin(requestDto.getUsername().trim())
+                .name(requestDto.getName().trim())
+                .surname(requestDto.getSurname().trim())
+                .build();
         userService.register(userToAdd);
         clientService.createClient(clientToAdd);
         return ResponseEntity.ok("Пользователь успешно зарегистрирован");

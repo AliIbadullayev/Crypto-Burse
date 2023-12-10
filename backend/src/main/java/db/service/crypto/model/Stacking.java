@@ -1,8 +1,10 @@
 package db.service.crypto.model;
 
 
-import lombok.Cleanup;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -10,6 +12,9 @@ import java.sql.Timestamp;
 @Entity
 @Table(name="stacking")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Stacking {
 
     @Id

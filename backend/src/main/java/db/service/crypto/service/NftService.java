@@ -49,9 +49,10 @@ public class NftService {
         nftEntity.setPrice(newPrice);
         nftEntityRepository.save(nftEntity);
 
-        NftLikes nftLikes = new NftLikes();
-        nftLikes.setPk(new NftLikesId(clientService.findByUsername(username).orElse(null), nftEntity));
-        nftLikes.setLiked(scoreNftRequestDto.isLiked());
+        NftLikes nftLikes = NftLikes.builder()
+                .pk(new NftLikesId(clientService.findByUsername(username).orElse(null), nftEntity))
+                .liked(scoreNftRequestDto.isLiked())
+                .build();
         nftLikesRepository.save(nftLikes);
 
         return NftDto.fromNft(nftEntity, getScores(nftEntity)[0], getScores(nftEntity)[1]);

@@ -1,13 +1,18 @@
 package db.service.crypto.model;
 
-import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="client")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Client{
 
     @Id
@@ -26,8 +31,4 @@ public class Client{
 
     @Column
     private double fiatBalance;
-
-
-
-
 }

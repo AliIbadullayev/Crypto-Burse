@@ -46,12 +46,13 @@ public class UserRestControllerV1 {
                 .orElseThrow(() -> new UserNotFoundException("Пользователь с таким токеном не найден!"));
         Client client = clientService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Клиент с таким токеном не найден"));
-        BankCard bankCardToAdd = new BankCard();
-        bankCardToAdd.setNameOnCard(requestDto.getNameOnCard());
-        bankCardToAdd.setExpireDate(requestDto.getExpireDate());
-        bankCardToAdd.setCardNumber(requestDto.getCardNumber());
-        bankCardToAdd.setClient(client);
-        bankCardToAdd.setCvv(requestDto.getCvv());
+        BankCard bankCardToAdd = BankCard.builder()
+                .nameOnCard(requestDto.getNameOnCard())
+                .expireDate(requestDto.getExpireDate())
+                .cardNumber(requestDto.getCardNumber())
+                .client(client)
+                .cvv(requestDto.getCvv())
+                .build();
         bankCardService.addCard(bankCardToAdd);
         return new ResponseEntity<>("Карта успешно добавлена", HttpStatus.OK);
     }

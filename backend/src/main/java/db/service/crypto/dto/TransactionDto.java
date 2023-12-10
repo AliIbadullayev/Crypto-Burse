@@ -1,11 +1,13 @@
 package db.service.crypto.dto;
 
 import db.service.crypto.model.Transaction;
+import lombok.Builder;
 import lombok.Data;
 
 import java.sql.Timestamp;
 
 @Data
+@Builder
 public class TransactionDto {
     private String walletToAddress;
     private String walletFromAddress;
@@ -14,12 +16,15 @@ public class TransactionDto {
     private Timestamp timestamp;
 
     public static TransactionDto fromTransaction(Transaction transaction){
-        TransactionDto transactionDto = new TransactionDto();
-        transactionDto.setAmount(transaction.getAmount());
-        transactionDto.setWalletFromAddress(transaction.getWalletFrom().getAddress());
-        transactionDto.setWalletToAddress(transaction.getWalletTo().getAddress());
-        transactionDto.setBlockchainNetworkName(transaction.getBlockchainNetwork().getName());
-        transactionDto.setTimestamp(transaction.getTimestamp());
-        return transactionDto;
+        assert transaction.getWalletFrom() != null;
+        assert transaction.getWalletTo() != null;
+        assert transaction.getBlockchainNetwork() != null;
+        return TransactionDto.builder()
+                .amount(transaction.getAmount())
+                .walletFromAddress(transaction.getWalletFrom().getAddress())
+                .walletToAddress(transaction.getWalletTo().getAddress())
+                .blockchainNetworkName(transaction.getBlockchainNetwork().getName())
+                .timestamp(transaction.getTimestamp())
+                .build();
     }
 }

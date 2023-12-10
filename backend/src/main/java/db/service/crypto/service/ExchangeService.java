@@ -52,11 +52,12 @@ public class ExchangeService {
             double cryptoToAmount = amountInFiat / cryptoTo.getExchange_rate();
             walletService.withdrawFromWallet(walletFrom, amount);
             walletService.depositWallet(walletTo, cryptoToAmount);
-            CryptoExchange cryptoExchange = new CryptoExchange();
-            cryptoExchange.setWalletFrom(walletFrom);
-            cryptoExchange.setWalletTo(walletTo);
-            cryptoExchange.setAmount(amount);
-            cryptoExchange.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            CryptoExchange cryptoExchange = CryptoExchange.builder()
+                    .walletFrom(walletFrom)
+                    .walletTo(walletTo)
+                    .amount(amount)
+                    .timestamp(new Timestamp(System.currentTimeMillis()))
+                    .build();
             exchangeRepository.save(cryptoExchange);
         }
 

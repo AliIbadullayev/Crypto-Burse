@@ -46,10 +46,11 @@ public class WalletService {
         cryptoList = cryptoRepository.findAll();
 
         for (Crypto crypto : cryptoList) {
-            Wallet wallet = new Wallet();
-            wallet.setAddress(generateId());
-            wallet.setCryptoName(crypto.getName());
-            wallet.setClient(client);
+            Wallet wallet = Wallet.builder()
+                    .address(generateId())
+                    .cryptoName(crypto.getName())
+                    .client(client)
+                    .build();
             walletRepository.save(wallet);
         }
     }
@@ -95,11 +96,11 @@ public class WalletService {
         withdrawFiat(username, amount);
         depositWallet(wallet, amountInCrypto);
 
-        FiatToCrypto fiatToCrypto = new FiatToCrypto();
-
-        fiatToCrypto.setWallet(wallet);
-        fiatToCrypto.setAmount(amount);
-        fiatToCrypto.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        FiatToCrypto fiatToCrypto = FiatToCrypto.builder()
+                .wallet(wallet)
+                .amount(amount)
+                .timestamp(new Timestamp(System.currentTimeMillis()))
+                .build();
 
         fiatToCryptoRepository.save(fiatToCrypto);
     }
@@ -141,11 +142,12 @@ public class WalletService {
         }
 
         withdrawFromWallet(wallet, amount);
-        Stacking stacking = new Stacking();
-        stacking.setAmount(amount);
-        stacking.setWalletAddress(walletAddress);
-        stacking.setInterestRate(STACKING_INTEREST_RATE);
-        stacking.setExpireDate(new Timestamp(System.currentTimeMillis() + yearsInMilliseconds));
+        Stacking stacking = Stacking.builder()
+                .amount(amount)
+                .walletAddress(walletAddress)
+                .interestRate(STACKING_INTEREST_RATE)
+                .expireDate(new Timestamp(System.currentTimeMillis() + yearsInMilliseconds))
+                .build();
         stackingRepository.save(stacking);
         return StackingDto.fromStacking(stacking);
     }
