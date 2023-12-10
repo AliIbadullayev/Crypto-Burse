@@ -14,23 +14,23 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User user =  super.loadUser(userRequest);
+        OAuth2User user = super.loadUser(userRequest);
         return new CustomOAuth2User(user);
     }
 
-    public User oauthUserIntoUser(CustomOAuth2User oAuth2User){
-        User user = new User();
-        user.setPassword("google_password");
-        user.setRole(Role.ROLE_CLIENT);
-        user.setUsername(oAuth2User.getUsername());
-        return user;
+    public User oauthUserIntoUser(CustomOAuth2User oAuth2User) {
+        return User.builder()
+                .password("google_password")
+                .role(Role.ROLE_CLIENT)
+                .username(oAuth2User.getUsername())
+                .build();
     }
 
-    public Client oauthUserIntoClient(CustomOAuth2User customOAuth2User){
-        Client client = new Client();
-        client.setUserLogin(customOAuth2User.getUsername());
-        client.setName(customOAuth2User.getName());
-        client.setSurname(customOAuth2User.getSurname());
-        return client;
+    public Client oauthUserIntoClient(CustomOAuth2User customOAuth2User) {
+        return Client.builder()
+                .userLogin(customOAuth2User.getUsername())
+                .name(customOAuth2User.getName())
+                .surname(customOAuth2User.getSurname())
+                .build();
     }
 }

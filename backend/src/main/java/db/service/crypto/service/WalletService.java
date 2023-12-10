@@ -1,9 +1,29 @@
 package db.service.crypto.service;
 
-import db.service.crypto.dto.*;
-import db.service.crypto.exception.*;
-import db.service.crypto.model.*;
-import db.service.crypto.repository.*;
+import db.service.crypto.dto.FiatToCryptoDto;
+import db.service.crypto.dto.StackingDto;
+import db.service.crypto.dto.StackingRequestDto;
+import db.service.crypto.dto.WalletDto;
+import db.service.crypto.exception.CryptoNotFoundException;
+import db.service.crypto.exception.IllegalWalletPermissionAttemptException;
+import db.service.crypto.exception.IncorrectStakingDurationException;
+import db.service.crypto.exception.InsufficientBalanceException;
+import db.service.crypto.exception.InvalidAmountException;
+import db.service.crypto.exception.NoSuchWalletException;
+import db.service.crypto.exception.StakeIsNotReadyYetException;
+import db.service.crypto.exception.StakingIsAlreadyExistException;
+import db.service.crypto.exception.StakingNotFoundException;
+import db.service.crypto.exception.WalletNotFoundException;
+import db.service.crypto.model.Client;
+import db.service.crypto.model.Crypto;
+import db.service.crypto.model.FiatToCrypto;
+import db.service.crypto.model.Stacking;
+import db.service.crypto.model.Wallet;
+import db.service.crypto.repository.ClientRepository;
+import db.service.crypto.repository.CryptoRepository;
+import db.service.crypto.repository.FiatToCryptoRepository;
+import db.service.crypto.repository.StackingRepository;
+import db.service.crypto.repository.WalletRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,10 +66,11 @@ public class WalletService {
         cryptoList = cryptoRepository.findAll();
 
         for (Crypto crypto : cryptoList) {
-            Wallet wallet = new Wallet();
-            wallet.setAddress(generateId());
-            wallet.setCryptoName(crypto.getName());
-            wallet.setClient(client);
+            Wallet wallet = Wallet.builder()
+                    .address(generateId())
+                    .cryptoName(crypto.getName())
+                    .client(client)
+                    .build();
             walletRepository.save(wallet);
         }
     }
@@ -95,11 +116,11 @@ public class WalletService {
         withdrawFiat(username, amount);
         depositWallet(wallet, amountInCrypto);
 
-        FiatToCrypto fiatToCrypto = new FiatToCrypto();
-
-        fiatToCrypto.setWallet(wallet);
-        fiatToCrypto.setAmount(amount);
-        fiatToCrypto.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        FiatToCrypto fiatToCrypto = FiatToCrypto.builder()
+                .wallet(wallet)
+                .amount(amount)
+                .timestamp(new Timestamp(System.currentTimeMillis()))
+                .build();
 
         fiatToCryptoRepository.save(fiatToCrypto);
     }
@@ -141,11 +162,12 @@ public class WalletService {
         }
 
         withdrawFromWallet(wallet, amount);
-        Stacking stacking = new Stacking();
-        stacking.setAmount(amount);
-        stacking.setWalletAddress(walletAddress);
-        stacking.setInterestRate(STACKING_INTEREST_RATE);
-        stacking.setExpireDate(new Timestamp(System.currentTimeMillis() + yearsInMilliseconds));
+        Stacking stacking = Stacking.builder()
+                .amount(amount)
+                .walletAddress(walletAddress)
+                .interestRate(STACKING_INTEREST_RATE)
+                .expireDate(new Timestamp(System.currentTimeMillis() + yearsInMilliseconds))
+                .build();
         stackingRepository.save(stacking);
         return StackingDto.fromStacking(stacking);
     }

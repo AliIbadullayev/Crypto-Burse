@@ -1,40 +1,35 @@
 package db.service.crypto.dto;
 
 import db.service.crypto.model.NftEntity;
+import lombok.Builder;
 import lombok.Data;
 
-import javax.crypto.MacSpi;
-
 @Data
+@Builder
 public class NftDto {
 
     private Long id;
     private String name;
-
     private double price;
-
     private String url;
-
     private boolean placed;
-
     private long likes;
-
     private long dislikes;
-
     private String owner;
 
+    public static NftDto fromNft(NftEntity nftEntity, long likes, long dislikes) {
+        assert nftEntity.getClient() != null;
 
-    public static NftDto fromNft(NftEntity nftEntity,long likes, long dislikes){
-        NftDto nftDto = new NftDto();
-        nftDto.setId(nftEntity.getId());
-        nftDto.setName(nftEntity.getName());
-        nftDto.setPrice(nftEntity.getPrice());
-        nftDto.setPlaced(nftEntity.isPlaced());
-        nftDto.setOwner(nftEntity.getClient().getUserLogin());
-        nftDto.setUrl(nftEntity.getUrl());
-        nftDto.setLikes(likes);
-        nftDto.setDislikes(dislikes);
-        return nftDto;
+        return NftDto.builder()
+                .id(nftEntity.getId())
+                .name(nftEntity.getName())
+                .price(nftEntity.getPrice())
+                .placed(nftEntity.isPlaced())
+                .owner(nftEntity.getClient().getUserLogin())
+                .url(nftEntity.getUrl())
+                .likes(likes)
+                .dislikes(dislikes)
+                .build();
     }
 
 }

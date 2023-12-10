@@ -9,6 +9,7 @@ import db.service.crypto.security.jwt.JwtTokenProvider;
 import db.service.crypto.service.ClientService;
 import db.service.crypto.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/auth/")
@@ -33,6 +35,7 @@ public class AuthenticationRestControllerV1 {
 
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto requestDto) {
+        log.info("POST --> /api/v1/auth/login");
         String username = requestDto.getUsername().trim();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
         User user = userService.findByUsername(username);
@@ -53,14 +56,17 @@ public class AuthenticationRestControllerV1 {
 
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegistrationRequestDto requestDto) {
-        User userToAdd = new User();
-        Client clientToAdd = new Client();
+        log.info("POST --> /api/v1/auth/register");
         this.validateRequest(requestDto);
-        userToAdd.setUsername(requestDto.getUsername().trim());
-        userToAdd.setPassword(requestDto.getPassword().trim());
-        clientToAdd.setUserLogin(requestDto.getUsername().trim());
-        clientToAdd.setName(requestDto.getName().trim());
-        clientToAdd.setSurname(requestDto.getSurname().trim());
+        User userToAdd = User.builder()
+                .username(requestDto.getUsername().trim())
+                .password(requestDto.getPassword().trim())
+                .build();
+        Client clientToAdd = Client.builder()
+                .userLogin(requestDto.getUsername().trim())
+                .name(requestDto.getName().trim())
+                .surname(requestDto.getSurname().trim())
+                .build();
         userService.register(userToAdd);
         clientService.createClient(clientToAdd);
         return ResponseEntity.ok("Пользователь успешно зарегистрирован");

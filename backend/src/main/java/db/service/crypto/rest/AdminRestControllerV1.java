@@ -13,14 +13,19 @@ import db.service.crypto.service.AdminService;
 import db.service.crypto.service.P2PService;
 import db.service.crypto.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/admin/")
@@ -33,6 +38,7 @@ public class AdminRestControllerV1 {
 
     @GetMapping(value = "users/{username}")
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "username") String username) {
+        log.info("GET --> /api/v1/admin/users/{}", username);
         User user = userService.findByUsername(username);
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -43,6 +49,7 @@ public class AdminRestControllerV1 {
 
     @PostMapping("makeDecision")
     public ResponseEntity<?> makeDecision(@RequestBody AdminDecisionDto adminDecisionDto, HttpServletRequest request) {
+        log.info("POST --> /api/v1/admin/makeDecision");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -55,6 +62,7 @@ public class AdminRestControllerV1 {
 
     @GetMapping("getAllTransactionsToCheck")
     public ResponseEntity<?> getAllTransactionsToCheck(HttpServletRequest request) {
+        log.info("GET --> /api/v1/admin/getAllTransactionsToCheck");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)
@@ -66,6 +74,7 @@ public class AdminRestControllerV1 {
 
     @GetMapping("getStatistics")
     public ResponseEntity<?> getStatistics(HttpServletRequest request) {
+        log.info("GET --> /api/v1/admin/getStatistics");
         String token = jwtTokenProvider.resolveToken(request)
                 .orElseThrow(() -> new JwtTokenIsEmptyException("Токен пуст!"));
         String username = jwtTokenProvider.getUsername(token)

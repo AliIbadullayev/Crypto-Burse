@@ -1,8 +1,16 @@
 package db.service.crypto.service;
 
 import db.service.crypto.dto.TransactionDto;
-import db.service.crypto.exception.*;
-import db.service.crypto.model.*;
+import db.service.crypto.exception.IllegalWalletPermissionAttemptException;
+import db.service.crypto.exception.InsufficientBalanceException;
+import db.service.crypto.exception.InvalidAmountException;
+import db.service.crypto.exception.NotSameCryptoException;
+import db.service.crypto.exception.SameClientException;
+import db.service.crypto.exception.WalletNotFoundException;
+import db.service.crypto.model.BlockchainNetwork;
+import db.service.crypto.model.Client;
+import db.service.crypto.model.Transaction;
+import db.service.crypto.model.Wallet;
 import db.service.crypto.repository.BlockchainNetworkRepository;
 import db.service.crypto.repository.TransactionRepository;
 import db.service.crypto.repository.WalletRepository;
@@ -63,12 +71,13 @@ public class TransactionService {
             walletService.withdrawFromWallet(walletFrom, amount);
             Timestamp transactionTimestamp =
                     new Timestamp(System.currentTimeMillis() + blockchainNetwork.getLeadTime());
-            Transaction transaction = new Transaction();
-            transaction.setAmount(amount);
-            transaction.setWalletFrom(walletFrom);
-            transaction.setWalletTo(walletTo);
-            transaction.setBlockchainNetwork(blockchainNetwork);
-            transaction.setTimestamp(transactionTimestamp);
+            Transaction transaction = Transaction.builder()
+                    .amount(amount)
+                    .walletFrom(walletFrom)
+                    .walletTo(walletTo)
+                    .blockchainNetwork(blockchainNetwork)
+                    .timestamp(transactionTimestamp)
+                    .build();
             transactionRepository.save(transaction);
         }
 

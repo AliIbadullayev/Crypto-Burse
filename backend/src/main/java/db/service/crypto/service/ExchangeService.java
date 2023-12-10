@@ -1,7 +1,11 @@
 package db.service.crypto.service;
 
 import db.service.crypto.dto.ExchangeDto;
-import db.service.crypto.exception.*;
+import db.service.crypto.exception.IllegalWalletPermissionAttemptException;
+import db.service.crypto.exception.InsufficientBalanceException;
+import db.service.crypto.exception.InvalidAmountException;
+import db.service.crypto.exception.SameCryptoInWalletsException;
+import db.service.crypto.exception.WalletNotFoundException;
 import db.service.crypto.model.Client;
 import db.service.crypto.model.Crypto;
 import db.service.crypto.model.CryptoExchange;
@@ -52,11 +56,12 @@ public class ExchangeService {
             double cryptoToAmount = amountInFiat / cryptoTo.getExchange_rate();
             walletService.withdrawFromWallet(walletFrom, amount);
             walletService.depositWallet(walletTo, cryptoToAmount);
-            CryptoExchange cryptoExchange = new CryptoExchange();
-            cryptoExchange.setWalletFrom(walletFrom);
-            cryptoExchange.setWalletTo(walletTo);
-            cryptoExchange.setAmount(amount);
-            cryptoExchange.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            CryptoExchange cryptoExchange = CryptoExchange.builder()
+                    .walletFrom(walletFrom)
+                    .walletTo(walletTo)
+                    .amount(amount)
+                    .timestamp(new Timestamp(System.currentTimeMillis()))
+                    .build();
             exchangeRepository.save(cryptoExchange);
         }
 

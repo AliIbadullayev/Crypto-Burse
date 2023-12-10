@@ -2,8 +2,16 @@ package db.service.crypto.service;
 
 import db.service.crypto.dto.NftDto;
 import db.service.crypto.dto.ScoreNftRequestDto;
-import db.service.crypto.exception.*;
-import db.service.crypto.model.*;
+import db.service.crypto.exception.AlreadyScoredException;
+import db.service.crypto.exception.InsufficientBalanceException;
+import db.service.crypto.exception.InvalidAmountException;
+import db.service.crypto.exception.NftNotFoundException;
+import db.service.crypto.exception.NftOwnerException;
+import db.service.crypto.exception.NftPlacingException;
+import db.service.crypto.model.Client;
+import db.service.crypto.model.NftEntity;
+import db.service.crypto.model.NftLikes;
+import db.service.crypto.model.NftLikesId;
 import db.service.crypto.repository.NftEntityRepository;
 import db.service.crypto.repository.NftLikesRepository;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +57,10 @@ public class NftService {
         nftEntity.setPrice(newPrice);
         nftEntityRepository.save(nftEntity);
 
-        NftLikes nftLikes = new NftLikes();
-        nftLikes.setPk(new NftLikesId(clientService.findByUsername(username).orElse(null), nftEntity));
-        nftLikes.setLiked(scoreNftRequestDto.isLiked());
+        NftLikes nftLikes = NftLikes.builder()
+                .pk(new NftLikesId(clientService.findByUsername(username).orElse(null), nftEntity))
+                .liked(scoreNftRequestDto.isLiked())
+                .build();
         nftLikesRepository.save(nftLikes);
 
         return NftDto.fromNft(nftEntity, getScores(nftEntity)[0], getScores(nftEntity)[1]);

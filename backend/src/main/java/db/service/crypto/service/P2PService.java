@@ -2,8 +2,22 @@ package db.service.crypto.service;
 
 import db.service.crypto.dto.P2PDto;
 import db.service.crypto.dto.StatsDto;
-import db.service.crypto.exception.*;
-import db.service.crypto.model.*;
+import db.service.crypto.exception.CryptoNotFoundException;
+import db.service.crypto.exception.IllegalWalletPermissionAttemptException;
+import db.service.crypto.exception.InsufficientBalanceException;
+import db.service.crypto.exception.InvalidAmountException;
+import db.service.crypto.exception.InvalidOperationTypeException;
+import db.service.crypto.exception.NoSuchP2POfferException;
+import db.service.crypto.exception.NoSuchWalletException;
+import db.service.crypto.exception.NotSameCryptoException;
+import db.service.crypto.exception.SameClientException;
+import db.service.crypto.exception.WalletNotFoundException;
+import db.service.crypto.model.Client;
+import db.service.crypto.model.Crypto;
+import db.service.crypto.model.OperationType;
+import db.service.crypto.model.P2PTransaction;
+import db.service.crypto.model.P2PTransactionStatus;
+import db.service.crypto.model.Wallet;
 import db.service.crypto.repository.CryptoRepository;
 import db.service.crypto.repository.P2PRepository;
 import db.service.crypto.repository.WalletRepository;
@@ -78,18 +92,17 @@ public class P2PService {
         P2PTransactionStatus p2pTransactionStatus = P2PTransactionStatus.PARTNER_WAITING;
         Timestamp p2pPostTimestamp = new Timestamp(System.currentTimeMillis());
 
-        P2PTransaction p2pTransaction = new P2PTransaction();
-
-        p2pTransaction.setCrypto(crypto);
-        p2pTransaction.setCryptoAmount(cryptoAmount);
-        p2pTransaction.setFiatAmount(fiatAmount);
-        p2pTransaction.setWalletOne(wallet);
-        p2pTransaction.setOperationType(operationType);
-        p2pTransaction.setTimestamp(p2pPostTimestamp);
-        p2pTransaction.setP2pTransactionStatus(p2pTransactionStatus);
+        P2PTransaction p2pTransaction = P2PTransaction.builder()
+                .crypto(crypto)
+                .cryptoAmount(cryptoAmount)
+                .fiatAmount(fiatAmount)
+                .walletOne(wallet)
+                .operationType(operationType)
+                .timestamp(p2pPostTimestamp)
+                .p2pTransactionStatus(p2pTransactionStatus)
+                .build();
 
         p2pTransaction = p2pRepository.save(p2pTransaction);
-
         p2pDto.setP2pTransactionStatus(p2pTransactionStatus);
         p2pDto.setTimestamp(p2pPostTimestamp);
         p2pDto.setId(p2pTransaction.getId());
@@ -214,7 +227,6 @@ public class P2PService {
 
 
     public StatsDto getStats(String adminLogin) {
-        StatsDto statsDto = new StatsDto();
 
         List<P2PTransaction> p2PTransactions = p2pRepository.findAll();
 
@@ -233,11 +245,11 @@ public class P2PService {
             }
         }
 
-        statsDto.setAllCount(p2PTransactions.size());
-        statsDto.setConfirmedByAdminCount(confirmedByAdminCount);
-        statsDto.setAllForAdminCount(allForAdminCount);
-        statsDto.setCanceledByAdminCount(canceledByAdminCount);
-
-        return statsDto;
+        return StatsDto.builder()
+                .allCount(p2PTransactions.size())
+                .confirmedByAdminCount(confirmedByAdminCount)
+                .allForAdminCount(allForAdminCount)
+                .canceledByAdminCount(canceledByAdminCount)
+                .build();
     }
 }
